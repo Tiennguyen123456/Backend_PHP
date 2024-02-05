@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companys', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_id')
                 ->nullable();
@@ -57,7 +57,7 @@ return new class extends Migration
             /* RELATIONSHIP */
             $table->foreign('parent_id')
                 ->references('id')
-                ->on('companys')
+                ->on('companies')
                 ->onDelete('set null');
             $table->foreign('created_by')
                 ->references('id')
@@ -75,6 +75,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companys');
+        Schema::dropIfExists('companies');
     }
 };

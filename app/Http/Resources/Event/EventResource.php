@@ -25,9 +25,9 @@ class EventResource extends BaseResource
         ];
 
         $this->attrMores = [
-            'client_count'  => $this->client()->getClientsByEventId($this->id)->count(),
-            'from_date'     => Helper::getDateFormat($this->from_date),
-            'end_date'      => Helper::getDateFormat($this->end_date),
+            // 'client_count'  => $this->client()->getClientsByEventId($this->id)->count(),
+            'start_time'     => Helper::getDateFormat($this->start_time),
+            'end_time'      => Helper::getDateFormat($this->end_time),
         ];
 
         $this->attrExcepts = [

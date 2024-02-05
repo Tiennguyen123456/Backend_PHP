@@ -22,8 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $logo_path
  * @property string $location
  * @property bool $encrypt_file_link
- * @property Carbon $from_date
- * @property Carbon $end_date
+ * @property Carbon $start_time
+ * @property Carbon $end_time
  * @property array $main_field_template
  * @property array $custom_field_template
  * @property array $languages
@@ -72,8 +72,8 @@ class Event extends BaseModel
 		'company_id'                => 'int',
 		'is_default'                => 'bool',
 		'encrypt_file_link'         => 'bool',
-		'from_date'                 => 'date',
-		'end_date'                  => 'date',
+		'start_time'                => 'date',
+		'end_time'                  => 'date',
 		'main_field_templates'      => 'json',
 		'custom_field_templates'    => 'json',
 		'languages'                 => 'json',
@@ -90,8 +90,8 @@ class Event extends BaseModel
 		'logo_path',
 		'location',
 		'encrypt_file_link',
-		'from_date',
-		'end_date',
+		'start_time',
+		'end_time',
 		'main_field_templates',
 		'custom_field_templates',
 		'languages',

@@ -36,8 +36,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Company extends BaseModel
 {
-	protected $table = 'companys';
-
 	protected $casts = [
 		'parent_id'         => 'int',
 		'is_default'        => 'bool',

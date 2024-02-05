@@ -45,11 +45,11 @@ class UserController extends Controller
         }
     }
 
-    
+
     public function store(StoreRequest $request)
     {
         $this->service->attributes = $request->all();
-        
+
         if ($model = $this->service->store()) {
             return $this->responseSuccess(new UserResource($model), trans('_response.success.store'));
         } else {

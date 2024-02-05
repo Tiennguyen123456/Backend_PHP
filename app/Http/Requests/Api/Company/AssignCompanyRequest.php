@@ -14,8 +14,8 @@ class AssignCompanyRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id'            => ['required', 'numeric', $this->tableHasId('companys')],
-            'company_id'    => ['nullable', 'numeric', $this->tableHasId('companys')],
+            'id'            => ['required', 'numeric', $this->tableHasId('companies')],
+            'company_id'    => ['nullable', 'numeric', $this->tableHasId('companies')],
         ];
     }
 }

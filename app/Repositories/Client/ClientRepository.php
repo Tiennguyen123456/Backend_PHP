@@ -42,8 +42,8 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
                 $query = $query->where('country_id', $filters['country_id']);
             }
 
-            if (isset($filters['from_date'])) {
-                $query = $query->whereDate('created_at', '>=', $filters['from_date']);
+            if (isset($filters['start_time'])) {
+                $query = $query->whereDate('created_at', '>=', $filters['start_time']);
             }
 
             if (isset($filters['to_date'])) {
@@ -100,8 +100,8 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
                 $query = $query->where('country_id', $filters['country_id']);
             }
 
-            if (isset($filters['from_date'])) {
-                $query = $query->whereDate('created_at', '>=', $filters['from_date']);
+            if (isset($filters['start_time'])) {
+                $query = $query->whereDate('created_at', '>=', $filters['start_time']);
             }
 
             if (isset($filters['to_date'])) {

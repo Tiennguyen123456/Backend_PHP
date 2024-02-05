@@ -32,7 +32,7 @@ class BaseFormRequest extends FormRequest
             $msgErrors = (new ValidationException($validator))->errors();
 
             throw new HttpResponseException(
-                $this->responseError($msgErrors, 422),
+                $this->responseError($msgErrors, 422, 'VALIDATION_ERROR'),
                 JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         }

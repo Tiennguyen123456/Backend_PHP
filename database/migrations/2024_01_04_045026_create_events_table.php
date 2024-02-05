@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')
                 ->nullable(false);
-            $table->boolean('is_default')
-                ->default(false)
-                ->nullable(false);
+            // $table->boolean('is_default')
+            //     ->default(false)
+            //     ->nullable(false);
             $table->string('code', 200)
                 ->nullable(false);
             $table->string('name', 255)
@@ -31,14 +31,18 @@ return new class extends Migration
             $table->boolean('encrypt_file_link')
                 ->default(false)
                 ->nullable(false);
-            $table->date('from_date')
+            $table->date('start_time')
                 ->nullable(false);
-            $table->date('end_date')
+            $table->date('end_time')
                 ->nullable(false);
             $table->json('main_field_templates')
-                ->nullable();;
+                ->nullable();
+            $table->text('email_template')
+                ->nullable();
+            $table->text('cards_template')
+                ->nullable();
             $table->json('custom_field_templates')
-                ->nullable();;
+                ->nullable();
             $table->json('languages')
                 ->nullable();
             $table->string('contact_name', 255)
@@ -67,7 +71,7 @@ return new class extends Migration
             /* RELATIONSHIP */
             $table->foreign('company_id')
                 ->references('id')
-                ->on('companys')
+                ->on('companies')
                 ->onDelete('restrict');
             $table->foreign('created_by')
                 ->references('id')

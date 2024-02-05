@@ -24,12 +24,12 @@ class BaseCollection extends ResourceCollection
     public function getPaginateMeta()
     {
         return [
-            'links' => [
-                'first'         => $this->url(1),
-                'last'          => $this->url($this->lastPage()),
-                'prev'          => $this->previousPageUrl(),
-                'next'          => $this->nextPageUrl(),
-            ],
+            // 'links' => [
+            //     'first'         => $this->url(1),
+            //     'last'          => $this->url($this->lastPage()),
+            //     'prev'          => $this->previousPageUrl(),
+            //     'next'          => $this->nextPageUrl(),
+            // ],
             'meta' => [
                 'current_page'  => $this->currentPage(),
                 'from'          => $this->firstItem(),

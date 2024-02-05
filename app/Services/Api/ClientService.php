@@ -15,7 +15,7 @@ class ClientService extends BaseService
     public function getList()
     {
         $filterMores = [
-            'from_date',
+            'start_time',
             'to_date'
         ];
 
@@ -32,7 +32,7 @@ class ClientService extends BaseService
     public function getClientsByEventId($eventId)
     {
         $filterMores = [
-            'from_date',
+            'start_time',
             'to_date'
         ];
 

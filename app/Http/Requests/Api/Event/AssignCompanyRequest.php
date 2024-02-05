@@ -15,7 +15,7 @@ class AssignCompanyRequest extends BaseFormRequest
     {
         return [
             'id'            => ['required', 'numeric', $this->tableHasId('events')],
-            'company_id'    => ['required', 'numeric', $this->tableHasId('companys')],
+            'company_id'    => ['required', 'numeric', $this->tableHasId('companies')],
         ];
     }
 }

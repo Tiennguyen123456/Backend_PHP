@@ -15,8 +15,8 @@ class EventService extends BaseService
     {
         $attrs = [
             'name'              => $this->attributes['name'],
-            'from_date'         => $this->attributes['from_date'],
-            'end_date'          => $this->attributes['end_date'],
+            'start_time'         => $this->attributes['start_time'],
+            'end_time'          => $this->attributes['end_time'],
             'is_default'        => $this->attributes['is_default'] ?? false,
             'description'       => $this->attributes['description'] ?? null,
             'location'          => $this->attributes['location'] ?? null,

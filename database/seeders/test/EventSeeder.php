@@ -30,8 +30,8 @@ class EventSeeder extends Seeder
             'description'           => 'Event for testing',
             'location'              => 'Adora Center, HCM',
             'main_field_templates'  => Event::buildDefaultMainFieldTemplate(),
-            'from_date'             => '2024-01-01',
-            'end_date'              => '2024-01-31',
+            'start_time'             => '2024-01-01',
+            'end_time'              => '2024-01-31',
         ]);
     }
 }

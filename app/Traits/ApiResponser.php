@@ -15,7 +15,6 @@ trait ApiResponser
 			'status'        => 'success',
             'status_code'   => $code,
 			'message_code'  => $messageCode,
-			'message'       => $message,
 			'data'          => $data
 		], $code);
 	}
@@ -31,7 +30,6 @@ trait ApiResponser
 			'status'        => 'error',
 			'status_code'   => $code,
 			'message_code'  => $messageCode,
-			'message'       => $message,
 			'data'          => null
 		], $code);
 	}

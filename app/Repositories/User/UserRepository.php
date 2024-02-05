@@ -58,8 +58,8 @@ class UserRepository extends Repository implements UserRepositoryInterface
                 }
             }
 
-            if (isset($filters['from_date'])) {
-                $query = $query->whereDate('created_at', '>=', $filters['from_date']);
+            if (isset($filters['start_time'])) {
+                $query = $query->whereDate('created_at', '>=', $filters['start_time']);
             }
 
             if (isset($filters['to_date'])) {

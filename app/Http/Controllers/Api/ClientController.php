@@ -12,14 +12,4 @@ class ClientController extends Controller
     {
         $this->service = $service;
     }
-
-    public function index()
-    {
-        
-    }
-
-    public function detail($id)
-    {
-        
-    }
 }

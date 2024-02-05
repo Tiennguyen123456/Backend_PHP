@@ -31,7 +31,7 @@ return new class extends Migration
             /* RELATIONSHIP */
             $table->foreign('company_id')
                 ->references('id')
-                ->on('companys')
+                ->on('companies')
                 ->onDelete('restrict');
             $table->foreign('event_id')
                 ->references('id')

@@ -18,7 +18,7 @@ class StoreRequest extends BaseFormRequest
         $ruleMores = [];
         $rules = [
             'id'                => ['nullable', 'numeric'],
-            'parent_id'         => ['nullable', 'numeric', $this->tableHasId('companys')],
+            'parent_id'         => ['nullable', 'numeric', $this->tableHasId('companies')],
             'is_default'        => ['nullable', 'boolean'],
             'name'              => ['required', 'string', 'max:255'],
             'contact_email'     => ['nullable', 'string', 'max:255'],
@@ -34,7 +34,7 @@ class StoreRequest extends BaseFormRequest
 
         if (empty($this->id)) {
             $ruleMores = [
-                'code'          => ['required', 'string', 'max:200', Rule::unique('companys')->ignore($this->id)],
+                'code'          => ['required', 'string', 'max:200', Rule::unique('companies')->ignore($this->id)],
                 // 'code'          => ['required', 'string', 'max:200', 'unique:companys,code'],
             ];
         }
