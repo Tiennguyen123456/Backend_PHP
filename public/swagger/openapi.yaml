@@ -1,0 +1,322 @@
+openapi: 3.0.3
+info:
+  title: Checkin System - OpenAPI 3.0
+  version: 1.0.0
+servers:
+  - url: http://backendcheckin.test/api
+# tags:
+#   - name: login
+#     description: Operations about user
+#   - name: pet
+#     description: Everything about your Pets
+#     externalDocs:
+#       description: Find out more
+#       url: http://swagger.io
+#   - name: store
+#     description: Access to Petstore orders
+#     externalDocs:
+#       description: Find out more about our store
+#       url: http://swagger.io
+#   - name: user
+#     description: Operations about user
+paths:
+  /login:
+    post:
+      tags:
+        - login
+      summary: Start login
+      description: ''
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccess'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginValidateFailed'
+  /self:
+    get:
+      tags:
+        - self
+      summary: Get user profile
+      operationId: self
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Self'
+      security:
+        - bearerAuth: []
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get list user
+      operationId: users
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUser'
+components:
+  schemas:
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: sysadmin@delfi.vn
+        password:
+          type: string
+          example: sysadmin@
+    LoginSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message_code:
+          type: string
+          example: LOGIN_SUCCESS
+        data:
+          type: object
+          example: {
+              "id": 11,
+              "username": "sysadmin",
+              "name": "System Admin",
+              "email": "sysadmin@delfi.vn",
+              "type": "SYSTEM_ADMIN",
+              "access_token": "18|whktRQmrURWof7wC6uaXwvz1XGsCF1V2840r2pMR2841301e",
+              "token_type": "Bearer"
+          }
+    UnauthorizedError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message_code:
+          type: string
+          example: USER_NAME_OR_PASSWORD_INCORRECT
+        data:
+          type: string
+          example: null
+    LoginValidateFailed:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message_code:
+          type: string
+          example: VALIDATION_ERROR
+        data:
+          type: string
+          example: null
+    Self:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          example: {
+            "id": 11,
+            "company_id": null,
+            "event_id": null,
+            "is_admin": true,
+            "expire_date": null,
+            "name": "System Admin",
+            "username": "sysadmin",
+            "email": "sysadmin@delfi.vn",
+            "type": "SYSTEM_ADMIN",
+            "gate": null,
+            "avatar_path": null,
+            "note": null,
+            "status": "ACTIVE",
+            "created_by": null,
+            "updated_by": null,
+            "last_login_at": "2024-02-05 15:01:51",
+            "created_at": "2024-01-20 01:43:51",
+            "updated_at": "2024-02-05 15:01:51",
+            "roles": {
+                "system-admin": [
+                    "user_role:view",
+                    "user_role:create",
+                    "user_role:assign-to-user",
+                    "user_permission:view",
+                    "user_permission:assign-to-role",
+                    "user_permission:revoke-from-role",
+                    "user:view",
+                    "user:create",
+                    "user:create-admin",
+                    "user:update",
+                    "user:update-admin",
+                    "user:delete",
+                    "system:view-history",
+                    "system:restore-default",
+                    "company:view",
+                    "company:create",
+                    "company:update",
+                    "company:assign-company",
+                    "company:delete",
+                    "event:view",
+                    "event:create",
+                    "event:update",
+                    "event:assign-company",
+                    "event:config",
+                    "event:delete",
+                    "event_asset:view",
+                    "event_asset:create",
+                    "event_asset:update",
+                    "event_asset:delete",
+                    "organizer:view",
+                    "organizer:create",
+                    "organizer:update",
+                    "organizer:import",
+                    "organizer:export",
+                    "client:view",
+                    "client:create",
+                    "client:update",
+                    "client:check-in",
+                    "client:import",
+                    "client:delete",
+                    "client:reset",
+                    "client:export",
+                    "checkin:view",
+                    "checkin:reset",
+                    "checkin:export",
+                    "export_log:view",
+                    "language:view",
+                    "language:create",
+                    "language:update",
+                    "language:define",
+                    "language:import-definition",
+                    "country:view",
+                    "country:update",
+                    "country:export",
+                    "campaign:view",
+                    "campaign:create",
+                    "campaign:update",
+                    "campaign:delete",
+                    "campaign:export",
+                    "email:view",
+                    "email:create",
+                    "email:update",
+                    "email:send",
+                    "email:delete",
+                    "label:view",
+                    "label:create",
+                    "label:update",
+                    "label:delete",
+                    "card:view",
+                    "card:create",
+                    "card:update",
+                    "card:delete"
+                ]
+            }
+          }
+    ListUser:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          properties:
+            collection:
+              $ref: '#/components/schemas/ListCollection'
+            pagination:
+              $ref: '#/components/schemas/ListPaginate'
+    ListPaginate:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              format: int32
+            from:
+              type: integer
+              format: int32
+            to:
+              type: integer
+              format: int32
+            per_page:
+              type: integer
+              format: int32
+            total:
+              type: integer
+              format: int32
+            last_page:
+              type: integer
+              format: int32
+    ListCollection:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          company_id:
+            type: integer
+          is_admin:
+            type: boolean
+          name:
+            type: string
+          username:
+            type: string
+          email:
+            type: string
+          status:
+            type: string
+          expire_date:
+            type: string
+          created_at:
+            type: string
+          updated_at:
+            type: string
+          role:
+            type: object
+            example: []
+
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
