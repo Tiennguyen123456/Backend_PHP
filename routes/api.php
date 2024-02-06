@@ -52,21 +52,21 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/users', [UserController::class, 'list'])->middleware('permission:user:view');
     Route::get('/user/{id}', [UserController::class, 'detail'])->middleware('permission:user:view');
     Route::post('/user/store', [UserController::class, 'store'])->middleware('permission:user:create');
-    Route::delete('/user/delete/{id}', [UserController::class, 'remove'])->middleware('permission:user:delete');
+    Route::delete('/user/{id}', [UserController::class, 'remove'])->middleware('permission:user:delete');
 
     /* COMPANY */
     Route::get('/companies', [CompanyController::class, 'index'])->middleware('permission:company:view');
     Route::get('/company/{id}', [CompanyController::class, 'detail'])->middleware('permission:company:view');
     Route::post('/company/store', [CompanyController::class, 'store'])->middleware('permission:company:create');
     Route::post('/company/assign-company', [CompanyController::class, 'assignCompany'])->middleware('permission:company:create');
-    Route::delete('/company/delete/{id}', [CompanyController::class, 'remove'])->middleware('permission:company:delete');
+    Route::delete('/company/{id}', [CompanyController::class, 'remove'])->middleware('permission:company:delete');
 
     /* EVENT */
     Route::get('/events', [EventController::class, 'index'])->middleware('permission:event:view');
     Route::get('/event/{id}', [EventController::class, 'detail'])->middleware('permission:event:view');
     Route::post('/event/store', [EventController::class, 'store'])->middleware('permission:event:create');
     Route::post('/event/assign-company', [EventController::class, 'assignCompany'])->middleware('permission:event:assign-company');
-    Route::delete('/event/delete/{id}', [EventController::class, 'remove'])->middleware('permission:event:delete');
+    Route::delete('/event/{id}', [EventController::class, 'remove'])->middleware('permission:event:delete');
     /* FIELDS */
     Route::get('/event/{id}/fields', [EventController::class, 'getFieldTemplate'])->middleware('permission:event:config');
     Route::post('/event/field/update', [EventController::class, 'updateFieldTemplate'])->middleware('permission:event:config');

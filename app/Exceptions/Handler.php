@@ -59,7 +59,7 @@ class Handler extends ExceptionHandler
             /* This is authorized by roles or permisions assigned to users */
             if ($request->expectsJson()) {
                 $msgError = ['message' => '403 This action is unauthorized'];
-                return $this->responseError($msgError, 403);
+                return $this->responseError($msgError, 403, 'UNAUTHORIZED_ACTION');
             }
         });
 
@@ -68,7 +68,7 @@ class Handler extends ExceptionHandler
             /* This is authorized by request class */
             if ($request->expectsJson()) {
                 $msgError = ['message' => '403 Forbidden'];
-                return $this->responseError($msgError, 403);
+                return $this->responseError($msgError, 403, 'PERMISSION_DENIED');
             }
         });
 
