@@ -112,6 +112,9 @@ class BaseService
         return false;
     }
 
+    /**
+     * Search LIKE in columns
+     */
     public function getSearch()
     {
         $table = $this->repo->getModelTable();
@@ -127,6 +130,9 @@ class BaseService
         return $this->searches;
     }
 
+    /**
+     * Filter WHERE in columns
+     */
     public function getFilters($filterMores = [])
     {
         $table = $this->repo->getModelTable();
