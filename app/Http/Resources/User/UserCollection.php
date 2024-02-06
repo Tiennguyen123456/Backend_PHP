@@ -15,7 +15,7 @@ class UserCollection extends BaseCollection
     public function toArray(Request $request): array
     {
         return [
-            // 'count'         => $this->collection->count(),
+            'count'         => $this->collection->count(),
             'collection'    => parent::toArray($request),
             'pagination'    => $this->getPaginateMeta(),
         ];

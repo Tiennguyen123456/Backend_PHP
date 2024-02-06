@@ -17,12 +17,11 @@ class UserResource extends BaseResource
     {
         $this->attrMores = [
             'last_login_at' => Helper::getDateTimeFormat($this->last_login_at),
-            'role'         => $this->getRoleNames(),
+            'roles'         => $this->getRoleNames(),
         ];
 
         $this->attrExcepts = [
-            'email_verified_at',
-            'roles'
+            'email_verified_at'
         ];
 
         return $this->finalizeResult($request);
