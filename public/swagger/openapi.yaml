@@ -3,82 +3,515 @@ info:
   title: Checkin System - OpenAPI 3.0
   version: 1.0.0
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/minhtanle/CheckinSystem/1.0.0
   - url: http://backendcheckin.test/api
-# tags:
-#   - name: login
-#     description: Operations about user
-#   - name: pet
-#     description: Everything about your Pets
-#     externalDocs:
-#       description: Find out more
-#       url: http://swagger.io
-#   - name: store
-#     description: Access to Petstore orders
-#     externalDocs:
-#       description: Find out more about our store
-#       url: http://swagger.io
-#   - name: user
-#     description: Operations about user
+tags:
+  - name: Authentication
+    description: Operations about authentication
+  - name: Users
+    description: Operations about Users
 paths:
   /login:
     post:
       tags:
-        - login
+        - Authentication
       summary: Start login
-      description: ''
+      description: ""
       operationId: login
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: "#/components/schemas/Login"
       responses:
-        '200':
+        "200":
           description: success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginSuccess'
-        '401':
+                $ref: "#/components/schemas/LoginSuccess"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
-        '422':
+                $ref: "#/components/schemas/UnauthorizedError"
+        "422":
           description: Unprocessable Content
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginValidateFailed'
+                $ref: "#/components/schemas/LoginValidateFailed"
   /self:
     get:
       tags:
-        - self
+        - Users
       summary: Get user profile
       operationId: self
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Self'
+                $ref: "#/components/schemas/Self"
       security:
         - bearerAuth: []
   /users:
     get:
       tags:
-        - users
+        - Users
       summary: Get list user
       operationId: users
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+        - name: search[role_id]
+          in: query
+          description: Role ID
+          schema:
+            type: integer
+        - name: search[status]
+          in: query
+          description: Status of user
+          schema:
+            type: string
+            enum: [ACTIVE, NEW]
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListUser'
+                $ref: "#/components/schemas/ListUser"
+      security:
+        - bearerAuth: []
+  /user/store:
+    post:
+      tags:
+        - Users
+      summary: Create or Update user
+      operationId: updateOrCreateUser
+      description: This route use for Create or Update (<b>with ID</b>)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserById"
+      security:
+        - bearerAuth: []
+  /user/{id}:
+    get:
+      tags:
+        - Users
+      summary: Find user by id
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserById"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Users
+      summary: Delete user by id
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteSuccess"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteFailed"
+      security:
+        - bearerAuth: []
+  /roles:
+    get:
+      tags:
+        - Roles
+      summary: Get list roles
+      operationId: roles
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListRole"
+      security:
+        - bearerAuth: []
+  /role/store:
+    post:
+      tags:
+        - Roles
+      summary: Create a new role
+      operationId: createRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRole"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateRoleSuccess"
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  status_code:
+                    type: integer
+                    example: 500
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
+  /role/assign:
+    post:
+      tags:
+        - Roles
+      summary: Assign permission
+      operationId: assignPermission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleAssignPermission"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  status_code:
+                    type: integer
+                    example: 500
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
+  /permissions:
+    get:
+      tags:
+        - Permissions
+      summary: Get list permissions
+      operationId: permissions
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListPermission"
+      security:
+        - bearerAuth: []
+  /permission/self:
+    get:
+      tags:
+        - Permissions
+      summary: "Show all current user's permission"
+      operationId: currentUserPermission
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyPermission"
+      security:
+        - bearerAuth: []
+  /permission/role/{roleID}:
+    get:
+      tags:
+        - Permissions
+      summary: "Show all permission by role ID"
+      operationId: getPermissionByRoleId
+      parameters:
+        - name: roleID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyPermission"
+      security:
+        - bearerAuth: []
+  /permission/assign:
+    post:
+      tags:
+        - Permissions
+      summary: "Assign permission to role"
+      operationId: assignPermissionUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleAssignPermission"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  status_code:
+                    type: integer
+                    example: 500
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
+  /companies:
+    get:
+      tags:
+        - Company
+      summary: "Get list company"
+      operationId: companies
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListCompany"
+      security:
+        - bearerAuth: []
+  /company/{id}:
+    get:
+      tags:
+        - Company
+      summary: "Show company by ID"
+      operationId: getCompanyById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/CompanyCollection"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: eror
+                  status_code:
+                    type: string
+                    example: null
+                  message_code:
+                    type: string
+                    example: "RESOURCE_NOT_FOUND"
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Company
+      summary: Delete Company by id
+      operationId: deleteCompanyById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteSuccess"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteFailed"
+      security:
+        - bearerAuth: []
+  /company/store:
+    post:
+      tags:
+        - Company
+      summary: Create or Update Company
+      operationId: updateOrCreateCompany
+      description: "Create : not send ID <br><b>Update : post data with ID</b>"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCompany"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/CompanyCollection"
+      security:
+        - bearerAuth: []
 components:
   schemas:
     Login:
@@ -102,15 +535,16 @@ components:
           example: LOGIN_SUCCESS
         data:
           type: object
-          example: {
+          example:
+            {
               "id": 11,
               "username": "sysadmin",
               "name": "System Admin",
               "email": "sysadmin@delfi.vn",
               "type": "SYSTEM_ADMIN",
               "access_token": "18|whktRQmrURWof7wC6uaXwvz1XGsCF1V2840r2pMR2841301e",
-              "token_type": "Bearer"
-          }
+              "token_type": "Bearer",
+            }
     UnauthorizedError:
       type: object
       properties:
@@ -148,102 +582,105 @@ components:
           example: null
         data:
           type: object
-          example: {
-            "id": 11,
-            "company_id": null,
-            "event_id": null,
-            "is_admin": true,
-            "expire_date": null,
-            "name": "System Admin",
-            "username": "sysadmin",
-            "email": "sysadmin@delfi.vn",
-            "type": "SYSTEM_ADMIN",
-            "gate": null,
-            "avatar_path": null,
-            "note": null,
-            "status": "ACTIVE",
-            "created_by": null,
-            "updated_by": null,
-            "last_login_at": "2024-02-05 15:01:51",
-            "created_at": "2024-01-20 01:43:51",
-            "updated_at": "2024-02-05 15:01:51",
-            "roles": {
-                "system-admin": [
-                    "user_role:view",
-                    "user_role:create",
-                    "user_role:assign-to-user",
-                    "user_permission:view",
-                    "user_permission:assign-to-role",
-                    "user_permission:revoke-from-role",
-                    "user:view",
-                    "user:create",
-                    "user:create-admin",
-                    "user:update",
-                    "user:update-admin",
-                    "user:delete",
-                    "system:view-history",
-                    "system:restore-default",
-                    "company:view",
-                    "company:create",
-                    "company:update",
-                    "company:assign-company",
-                    "company:delete",
-                    "event:view",
-                    "event:create",
-                    "event:update",
-                    "event:assign-company",
-                    "event:config",
-                    "event:delete",
-                    "event_asset:view",
-                    "event_asset:create",
-                    "event_asset:update",
-                    "event_asset:delete",
-                    "organizer:view",
-                    "organizer:create",
-                    "organizer:update",
-                    "organizer:import",
-                    "organizer:export",
-                    "client:view",
-                    "client:create",
-                    "client:update",
-                    "client:check-in",
-                    "client:import",
-                    "client:delete",
-                    "client:reset",
-                    "client:export",
-                    "checkin:view",
-                    "checkin:reset",
-                    "checkin:export",
-                    "export_log:view",
-                    "language:view",
-                    "language:create",
-                    "language:update",
-                    "language:define",
-                    "language:import-definition",
-                    "country:view",
-                    "country:update",
-                    "country:export",
-                    "campaign:view",
-                    "campaign:create",
-                    "campaign:update",
-                    "campaign:delete",
-                    "campaign:export",
-                    "email:view",
-                    "email:create",
-                    "email:update",
-                    "email:send",
-                    "email:delete",
-                    "label:view",
-                    "label:create",
-                    "label:update",
-                    "label:delete",
-                    "card:view",
-                    "card:create",
-                    "card:update",
-                    "card:delete"
-                ]
+          example:
+            {
+              "id": 11,
+              "company_id": null,
+              "event_id": null,
+              "is_admin": true,
+              "expire_date": null,
+              "name": "System Admin",
+              "username": "sysadmin",
+              "email": "sysadmin@delfi.vn",
+              "type": "SYSTEM_ADMIN",
+              "gate": null,
+              "avatar_path": null,
+              "note": null,
+              "status": "ACTIVE",
+              "created_by": null,
+              "updated_by": null,
+              "last_login_at": "2024-02-05 15:01:51",
+              "created_at": "2024-01-20 01:43:51",
+              "updated_at": "2024-02-05 15:01:51",
+              "roles":
+                {
+                  "system-admin":
+                    [
+                      "user_role:view",
+                      "user_role:create",
+                      "user_role:assign-to-user",
+                      "user_permission:view",
+                      "user_permission:assign-to-role",
+                      "user_permission:revoke-from-role",
+                      "user:view",
+                      "user:create",
+                      "user:create-admin",
+                      "user:update",
+                      "user:update-admin",
+                      "user:delete",
+                      "system:view-history",
+                      "system:restore-default",
+                      "company:view",
+                      "company:create",
+                      "company:update",
+                      "company:assign-company",
+                      "company:delete",
+                      "event:view",
+                      "event:create",
+                      "event:update",
+                      "event:assign-company",
+                      "event:config",
+                      "event:delete",
+                      "event_asset:view",
+                      "event_asset:create",
+                      "event_asset:update",
+                      "event_asset:delete",
+                      "organizer:view",
+                      "organizer:create",
+                      "organizer:update",
+                      "organizer:import",
+                      "organizer:export",
+                      "client:view",
+                      "client:create",
+                      "client:update",
+                      "client:check-in",
+                      "client:import",
+                      "client:delete",
+                      "client:reset",
+                      "client:export",
+                      "checkin:view",
+                      "checkin:reset",
+                      "checkin:export",
+                      "export_log:view",
+                      "language:view",
+                      "language:create",
+                      "language:update",
+                      "language:define",
+                      "language:import-definition",
+                      "country:view",
+                      "country:update",
+                      "country:export",
+                      "campaign:view",
+                      "campaign:create",
+                      "campaign:update",
+                      "campaign:delete",
+                      "campaign:export",
+                      "email:view",
+                      "email:create",
+                      "email:update",
+                      "email:send",
+                      "email:delete",
+                      "label:view",
+                      "label:create",
+                      "label:update",
+                      "label:delete",
+                      "card:view",
+                      "card:create",
+                      "card:update",
+                      "card:delete",
+                    ],
+                },
             }
-          }
     ListUser:
       properties:
         status:
@@ -259,10 +696,95 @@ components:
           type: object
           properties:
             collection:
-              $ref: '#/components/schemas/ListCollection'
+              $ref: "#/components/schemas/UserCollection"
             pagination:
-              $ref: '#/components/schemas/ListPaginate'
-    ListPaginate:
+              $ref: "#/components/schemas/Pagination"
+    ListRole:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          properties:
+            collection:
+              $ref: "#/components/schemas/RoleCollection"
+            pagination:
+              $ref: "#/components/schemas/Pagination"
+    CreateRoleSuccess:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            guard_name:
+              type: string
+              example: admin
+            name:
+              type: string
+              example: admin
+            enable:
+              type: boolean
+              example: true
+            updated_at:
+              type: string
+              example: "2024-02-06 09:45:28"
+            created_at:
+              type: string
+              example: "2024-02-06 09:45:28"
+    UserById:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          example:
+            {
+              "id": 1,
+              "company_id": null,
+              "event_id": null,
+              "is_admin": false,
+              "expire_date": null,
+              "name": "Yasmine Kling",
+              "username": "rleuschke",
+              "email": "gemard@example.net",
+              "type": "WEB",
+              "gate": null,
+              "avatar_path": null,
+              "note": null,
+              "status": "ACTIVE",
+              "created_by": null,
+              "updated_by": 11,
+              "last_login_at": "2024-02-06 08:07:25",
+              "created_at": "2024-01-20 01:43:43",
+              "updated_at": "2024-01-21 11:23:31",
+              "roles": ["admin"],
+            }
+    Pagination:
       type: object
       properties:
         meta:
@@ -286,7 +808,7 @@ components:
             last_page:
               type: integer
               format: int32
-    ListCollection:
+    UserCollection:
       type: array
       items:
         type: object
@@ -314,9 +836,280 @@ components:
           role:
             type: object
             example: []
-
+    RoleCollection:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          guard_name:
+            type: string
+            example: "api"
+          enable:
+            type: integer
+            example: 1
+          is_hidden:
+            type: integer
+          created_at:
+            type: string
+            example: "2024-01-20 01:43:46"
+          updated_at:
+            type: string
+            example: "2024-01-20 01:43:46"
+    PermissionCollection:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          guard_name:
+            type: string
+            example: "api"
+          created_at:
+            type: string
+            example: "2024-01-20 01:43:46"
+          updated_at:
+            type: string
+            example: "2024-01-20 01:43:46"
+    CreateUser:
+      type: object
+      description: "ID for update user, if not ID for create new user"
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        role_id:
+          type: integer
+        status:
+          type: string
+      required:
+        - email
+        - name
+        - username
+        - role_id
+        - status
+    CreateRole:
+      type: object
+      properties:
+        name:
+          type: string
+        guard_name:
+          type: string
+        enable:
+          type: boolean
+      required:
+        - name
+        - guard_name
+        - enable
+    RoleAssignPermission:
+      type: object
+      properties:
+        permission_ids:
+          type: object
+          example: [1, 2, 3]
+        role_id:
+          type: integer
+          example: 11
+      required:
+        - name
+        - guard_name
+        - enable
+    DeleteSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: string
+          example: null
+    DeleteFailed:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        status_code:
+          type: integer
+          example: 400
+        message_code:
+          type: string
+          example: null
+        data:
+          type: string
+          example: null
+    ListPermission:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          properties:
+            collection:
+              $ref: "#/components/schemas/PermissionCollection"
+            pagination:
+              $ref: "#/components/schemas/Pagination"
+    MyPermission:
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 200
+        message_code:
+          type: string
+          example: null
+        data:
+          type: object
+          properties:
+            count:
+              type: integer
+              example: 2
+            collection:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: user_role:view
+    ListCompany:
+      properties:
+        collection:
+          $ref: "#/components/schemas/CompanyCollection"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    CompanyCollection:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 1
+          parent_id:
+            type: string
+            example: null
+          is_default:
+            type: boolean
+            example: false
+          code:
+            type: integer
+            example: "ABCD"
+          name:
+            type: string
+          contact_email:
+            type: string
+          contact_phone:
+            type: string
+          website:
+            type: string
+          address:
+            type: string
+          city:
+            type: string
+          limited_users:
+            type: string
+            example: null
+          limited_events:
+            type: string
+            example: null
+          limited_campaigns:
+            type: string
+            example: null
+          status:
+            type: string
+            enum: [NEW, ACTIVE, INACTIVE]
+          created_at:
+            type: string
+            example: "2024-01-20 01:43:46"
+          updated_at:
+            type: string
+            example: "2024-01-20 01:43:46"
+    CreateCompany:
+      type: object
+      description: "ID for update user, if not ID for create new user"
+      properties:
+        id:
+          type: integer
+        address:
+          type: string
+        city:
+          type: string
+        code:
+          type: string
+        contact_email:
+          type: string
+        contact_phone:
+          type: string
+        limited_campaigns:
+          type: integer
+          example: null
+        limited_events:
+          type: integer
+          example: null
+        limited_users:
+          type: integer
+          example: null
+        name:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, NEW, INACTIVE]
+        website:
+          type: string
+      required:
+        - name
+        - code
+  parameters:
+    pageParam:
+      in: query
+      name: page
+      required: false
+      description: Page of result
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    pageSizeParam:
+      in: query
+      name: pageSize
+      required: false
+      description: The numbers of items to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
   securitySchemes:
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth: # arbitrary name for the security scheme
       type: http
       scheme: bearer
-      bearerFormat: JWT

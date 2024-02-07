@@ -33,5 +33,10 @@ If you would like to contribute to this project, please follow the CONTRIBUTING.
 License
 This project is licensed under the MIT License.
 
+## Swagger API
 
-Please replace <repository_url> and <project_directory> with your actual repository URL and project directory name.
+http://localhost:8000/swagger-ui
+
+Basic Authen:
+- Username: admin
+- Password: admin
