@@ -37,9 +37,7 @@ class Controller extends BaseController
         if (!empty($model)) {
             return $this->responseSuccess(new BaseResource($model), trans('_response.success.detail'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError('', 400, 'RESOURCE_NOT_FOUND');
         }
     }
 
@@ -48,9 +46,7 @@ class Controller extends BaseController
         if ($this->service->remove($id)) {
             return $this->responseSuccess(null, trans('_response.success.remove'));
         } else {
-            return $this->responseError([
-                'message' => 'Unable to remove item'
-            ], 400);
+            return $this->responseError('', 400, 'UNABLE_TO_REMOVE_ITEM');
         }
     }
 
@@ -59,9 +55,7 @@ class Controller extends BaseController
         if ($this->service->delete($id)) {
             return $this->responseSuccess(null, trans('_response.success.delete'));
         } else {
-            return $this->responseError([
-                'message' => 'Unable to delete item'
-            ], 400);
+            return $this->responseError('', 400, 'UNABLE_TO_DELETE_ITEM');
         }
     }
 }

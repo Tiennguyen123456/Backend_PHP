@@ -76,17 +76,17 @@ class Handler extends ExceptionHandler
         $this->renderable(function(NotFoundHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Page Not Found'];
-                return $this->responseError($msgError, 400);
+                return $this->responseError($msgError, 400, 'PAGE_NOT_FOUND');
             }
         });
 
         /* 404 message */
-        $this->renderable(function(NotFoundHttpException $e, Request $request) {
-            if ($request->expectsJson()) {
-                $msgError = ['message' => 'Page Not Found'];
-                return $this->responseError($msgError, 404);
-            }
-        });
+        // $this->renderable(function(NotFoundHttpException $e, Request $request) {
+        //     if ($request->expectsJson()) {
+        //         $msgError = ['message' => 'Page Not Found'];
+        //         return $this->responseError($msgError, 404);
+        //     }
+        // });
 
         /* 429 message */
         $this->renderable(function(ThrottleRequestsException $e, Request $request) {

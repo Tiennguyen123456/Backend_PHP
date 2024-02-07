@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/companies', [CompanyController::class, 'index'])->middleware('permission:company:view');
     Route::get('/company/{id}', [CompanyController::class, 'detail'])->middleware('permission:company:view');
     Route::post('/company/store', [CompanyController::class, 'store'])->middleware('permission:company:create');
-    Route::post('/company/assign-company', [CompanyController::class, 'assignCompany'])->middleware('permission:company:create');
+    // Route::post('/company/assign-company', [CompanyController::class, 'assignCompany'])->middleware('permission:company:create');
     Route::delete('/company/{id}', [CompanyController::class, 'remove'])->middleware('permission:company:delete');
 
     /* EVENT */
@@ -72,18 +72,18 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/event/field/update', [EventController::class, 'updateFieldTemplate'])->middleware('permission:event:config');
 
     /* COUNTRY */
-    Route::get('/countries', [CountryController::class, 'index']);
+    // Route::get('/countries', [CountryController::class, 'index']);
     // Route::get('/country/default', [CountryController::class, 'getDefaultCountry']);
-    Route::get('/country/fetch-global-countries', [CountryController::class, 'fetchGobalCountry']);
+    // Route::get('/country/fetch-global-countries', [CountryController::class, 'fetchGobalCountry']);
 
     /* ROLE */
     Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:user_role:view');
     Route::post('/role/store', [RoleController::class, 'store'])->middleware('permission:user_role:create');
-    Route::post('/role/assign', [RoleController::class, 'assign'])->middleware('permission:user_role:assign-to-user');
+    // Route::post('/role/assign', [RoleController::class, 'assign'])->middleware('permission:user_role:assign-to-user');
 
     /* PERMISSION */
     Route::get('/permissions', [PermissionController::class, 'index'])->middleware('permission:user_permission:view');
-    Route::get('/permissions/self', [PermissionController::class, 'getListFromCurrentUser'])->middleware('permission:user_permission:view');
-    Route::get('/permissions/role/{roleId}', [PermissionController::class, 'getListFromRole'])->middleware('permission:user_permission:view');
+    Route::get('/permission/self', [PermissionController::class, 'getListFromCurrentUser'])->middleware('permission:user_permission:view');
+    Route::get('/permission/role/{roleId}', [PermissionController::class, 'getListFromRole'])->middleware('permission:user_permission:view');
     Route::post('/permission/assign', [PermissionController::class, 'assignToRole'])->middleware('permission:user_permission:assign-to-role');
 });
