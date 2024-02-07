@@ -15,13 +15,24 @@ class StoreRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        return [
-            'id'                => ['nullable', 'numeric'],
+        $ruleMores = [];
+        $rules = [
+            'id'                => ['nullable', 'numeric', 'exists:users,id'],
             'role_id'           => ['nullable', 'numeric', $this->tableHasId('roles')],
             'name'              => ['required', 'string', 'max:255'],
-            'username'          => ['required', 'string', 'max:255'],
-            'email'             => ['required', 'string', 'max:255'],
+            'username'          => ['required', 'string', 'max:255', Rule::unique('users')],
+            'email'             => ['required', 'string', 'max:255', Rule::unique('users')],
             'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(User::getStatuesValid()))],
+            'company_id'        => ['nullable', 'numeric', $this->tableHasId('companies')],
         ];
+
+        if ($this->id) {
+            $ruleMores = [
+                'username'    => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->username, 'username')],
+                'email'       => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->email, 'email')],
+            ];
+        }
+
+        return array_merge($rules, $ruleMores);
     }
 }

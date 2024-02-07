@@ -75,7 +75,8 @@ class UserService extends BaseService
             ];
 
             $user = $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));
-            $user->syncRoles([$role->name]);
+            if ($user)
+                $user->syncRoles([$role->name]);
         }
 
         return $user;
