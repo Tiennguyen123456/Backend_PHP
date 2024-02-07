@@ -30,7 +30,7 @@ trait ApiResponser
 			'status'        => 'error',
 			'status_code'   => $code,
 			'message_code'  => $messageCode,
-			'data'          => null
+			'data'          => $message
 		], $code);
 	}
 
