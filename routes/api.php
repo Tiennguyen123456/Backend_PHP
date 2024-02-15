@@ -67,11 +67,16 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/events', [EventController::class, 'index'])->middleware('permission:event:view');
     Route::get('/event/{id}', [EventController::class, 'detail'])->middleware('permission:event:view');
     Route::post('/event/store', [EventController::class, 'store'])->middleware('permission:event:create');
-    Route::post('/event/assign-company', [EventController::class, 'assignCompany'])->middleware('permission:event:assign-company');
+    // Route::post('/event/assign-company', [EventController::class, 'assignCompany'])->middleware('permission:event:assign-company');
     Route::delete('/event/{id}', [EventController::class, 'remove'])->middleware('permission:event:delete');
-    /* FIELDS */
-    Route::get('/event/{id}/fields', [EventController::class, 'getFieldTemplate'])->middleware('permission:event:config');
-    Route::post('/event/field/update', [EventController::class, 'updateFieldTemplate'])->middleware('permission:event:config');
+
+    /* CUSTOM FIELDS */
+    Route::get('/event/{id}/custom-fields', [EventController::class, 'listCustomField'])->middleware('permission:event:config');
+    Route::post('/event/{id}/custom-field/store', [EventController::class, 'storeCustomField'])->middleware('permission:event:config');
+    Route::delete('/event/custom-field/{id}', [EventController::class, 'removeCustomField'])->middleware('permission:event:config');
+    /* CLIENT */
+    Route::get('/event/{id}/clients', [ClientController::class, 'list'])->middleware('permission:client:view');
+    Route::post('/event/{id}/client/import', [ClientController::class, 'import'])->middleware('permission:client:import');
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);

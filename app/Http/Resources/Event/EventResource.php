@@ -25,15 +25,11 @@ class EventResource extends BaseResource
         ];
 
         $this->attrMores = [
-            // 'client_count'  => $this->client()->getClientsByEventId($this->id)->count(),
-            'start_time'     => Helper::getDateFormat($this->start_time),
-            'end_time'      => Helper::getDateFormat($this->end_time),
+
         ];
 
         $this->attrExcepts = [
-            'main_field_templates',
-            'custom_field_templates',
-            'languages'
+
         ];
 
         return $this->finalizeResult($request);

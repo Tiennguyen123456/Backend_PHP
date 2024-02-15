@@ -4,12 +4,12 @@ namespace App\Http\Requests;
 
 use App\Rules\TableHasColumn;
 use App\Rules\TableHasId;
+use App\Rules\UniqueCustomField;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Rule;
 use App\Traits\ApiResponser;
 
 class BaseFormRequest extends FormRequest
@@ -48,5 +48,10 @@ class BaseFormRequest extends FormRequest
     protected function tableHasColumn($tableName)
     {
         return new TableHasColumn($tableName);
+    }
+
+    protected function uniqueCustomField($eventId)
+    {
+        return new UniqueCustomField($eventId);
     }
 }

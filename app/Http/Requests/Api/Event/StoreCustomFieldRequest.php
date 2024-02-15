@@ -3,9 +3,8 @@
 namespace App\Http\Requests\Api\Event;
 
 use App\Http\Requests\BaseFormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateFieldRequest extends BaseFormRequest
+class StoreCustomFieldRequest extends BaseFormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,10 +13,13 @@ class UpdateFieldRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        return [
-            'event_id'         => ['required', 'numeric', Rule::exists('events', 'id')],
-            // 'main_fields'   => ['required', 'array'],
-            // 'custom_fields' => ['required', 'array'],
+        $ruleMores = [];
+
+        $rules = [
+            '*.name'      => ['required', 'string'],
+            '*.value'     => ['required', 'string'],
         ];
+
+        return array_merge($rules, $ruleMores);
     }
 }

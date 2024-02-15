@@ -1,12 +1,16 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
-use App\Services\Api\EventService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Event\AssignCompanyRequest;
+use App\Http\Resources\BaseResource;
+use App\Http\Resources\DefaultCollection;
 use App\Http\Requests\Api\Event\StoreRequest;
-use App\Http\Requests\Api\Event\UpdateFieldRequest;
-use App\Http\Resources\Event\EventResource;
+use App\Http\Requests\Api\Event\AssignCompanyRequest;
+use App\Http\Requests\Api\Event\StoreCustomFieldRequest;
+use App\Services\Api\EventService;
+use App\Services\Api\EventCustomFieldService;
+use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
@@ -20,11 +24,9 @@ class EventController extends Controller
         $this->service->attributes = $request->all();
 
         if ($model = $this->service->store()) {
-            return $this->responseSuccess(new EventResource($model), trans('_response.success.store'));
+            return $this->responseSuccess(new BaseResource($model), trans('_response.success.store'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError(trans('_response.failed.400'), 400);
         }
     }
 
@@ -35,33 +37,58 @@ class EventController extends Controller
         if ($this->service->assignCompany()) {
             return $this->responseSuccess(null, trans('_response.success.assign'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError(trans('_response.failed.400'), 400);
         }
     }
 
-    public function getFieldTemplate($id)
+    public function listCustomField(Request $request, $eventId)
     {
-        if ($result = $this->service->getFieldTemplate($id)) {
-            return $this->responseSuccess($result, trans('_response.success.detail'));
+        $eventCustomFieldService = app(EventCustomFieldService::class);
+        $eventCustomFieldService->attributes = $request->all();
+        $eventCustomFieldService->attributes['filters']['event_id'] = $eventId;
+
+        if (!empty($list = $eventCustomFieldService->getList())) {
+            return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError(trans('_response.failed.400'), 400);
         }
     }
 
-    public function updateFieldTemplate(UpdateFieldRequest $request)
+    public function storeCustomField(StoreCustomFieldRequest $request, $eventId)
     {
-        $this->service->attributes = $request->all();
+        $eventCustomFieldService = app(EventCustomFieldService::class);
 
-        if ($result = $this->service->updateFieldTemplate()) {
-            return $this->responseSuccess($result, trans('_response.success.detail'));
+        try {
+            foreach ($request->all() as $array) {
+                $eventCustomFieldService->updateOrCreate(
+                    ['event_id' => $eventId, 'name' => $array['name']],
+                    [
+                        'event_id' => $eventId,
+                        'name' => $array['name'],
+                        'value' => $array['value'],
+                        'created_by' => auth()->user()->id,
+                        'updated_by' => auth()->user()->id,
+                    ]
+                );
+            }
+
+            $eventCustomFieldService->attributes['filters']['event_id'] = $eventId;
+            $list = $eventCustomFieldService->getList();
+
+            return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
+        } catch (\Throwable $th) {
+            return $this->responseError(trans('_response.failed.400'), 400);
+        }
+    }
+
+    public function removeCustomField($id)
+    {
+        $eventCustomFieldService = app(EventCustomFieldService::class);
+
+        if ($eventCustomFieldService->remove($id)) {
+            return $this->responseSuccess(null, trans('_response.success.remove'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError(trans('_response.failed.400'), 400);
         }
     }
 }

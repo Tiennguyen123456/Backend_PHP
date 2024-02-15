@@ -72,8 +72,8 @@ class Event extends BaseModel
 		'company_id'                => 'int',
 		'is_default'                => 'bool',
 		'encrypt_file_link'         => 'bool',
-		'start_time'                => 'date',
-		'end_time'                  => 'date',
+		'start_time'                => 'datetime:Y-m-d H:i:s',
+		'end_time'                  => 'datetime:Y-m-d H:i:s',
 		'main_field_templates'      => 'json',
 		'custom_field_templates'    => 'json',
 		'languages'                 => 'json',
@@ -129,6 +129,11 @@ class Event extends BaseModel
 	public function event_assets()
 	{
 		return $this->hasMany(EventAsset::class);
+	}
+
+	public function custom_fields()
+	{
+		return $this->hasMany(EventCustomField::class);
 	}
 
 	public function event_settings()
@@ -305,28 +310,28 @@ class Event extends BaseModel
         return $template;
     }
 
-    public static function buildDefaultMainFieldTemplate()
-    {
+    // public static function buildDefaultMainFieldTemplate()
+    // {
 
-        foreach (self::getAttributeDetailTemplate() as $attr => $config) {
-            $defaultDetailAttributes[$attr] = $config['default'];
-        }
+    //     foreach (self::getAttributeDetailTemplate() as $attr => $config) {
+    //         $defaultDetailAttributes[$attr] = $config['default'];
+    //     }
 
-        foreach (self::getMainFields() as $field => $desc) {
-            $mainFieldTemplate[$field] = [
-                "field"         => $field,
-                "desc"          => $desc,
-                "is_main"       => true,
-                "attributes"    => [
-                    "desktop"   => $defaultDetailAttributes,
-                    "mobile"    => $defaultDetailAttributes,
-                    "tablet"    => $defaultDetailAttributes,
-                ],
-            ];
-        }
+    //     foreach (self::getMainFields() as $field => $desc) {
+    //         $mainFieldTemplate[$field] = [
+    //             "field"         => $field,
+    //             "desc"          => $desc,
+    //             "is_main"       => true,
+    //             "attributes"    => [
+    //                 "desktop"   => $defaultDetailAttributes,
+    //                 "mobile"    => $defaultDetailAttributes,
+    //                 "tablet"    => $defaultDetailAttributes,
+    //             ],
+    //         ];
+    //     }
 
-        return $mainFieldTemplate;
-    }
+    //     return $mainFieldTemplate;
+    // }
 
     /* public function processFields($fieldTemplates)
     {

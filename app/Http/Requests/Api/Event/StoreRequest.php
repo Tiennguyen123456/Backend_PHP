@@ -18,25 +18,20 @@ class StoreRequest extends BaseFormRequest
         $ruleMores = [];
 
         $rules = [
-            'id'                => ['nullable', 'numeric'],
-            'is_default'        => ['nullable', 'boolean'],
+            'code'              => ['required', 'string', 'max:50'],
+            'name'              => ['required', 'string', 'max:255'],
+            'start_time'        => ['required', 'date'],
+            'end_time'          => ['required', 'date'],
+            'company_id'        => ['required', 'numeric', $this->tableHasId('companies')],
+            'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(Event::getStatuesValid()))],
             'description'       => ['nullable', 'string', 'max:255'],
-            'location'          => ['nullable', 'string', 'max:255'],
-            // 'contact_name'      => ['nullable', 'string', 'max:255'],
-            // 'contact_email'     => ['nullable', 'string', 'max:255'],
-            // 'contact_phone'     => ['nullable', 'string', 'max:255'],
-            // 'note'              => ['nullable', 'string', 'max:255'],
-            // 'encrypt_file_link' => ['nullable', 'boolean'],
-            'status'            => ['nullable', 'string', 'max:50', Rule::in(array_keys(Event::getStatuesValid()))],
+            'email_content'     => ['nullable', 'string'],
+            'cards_content'     => ['nullable', 'string'],
         ];
 
-        if (empty($this->id)) {
+        if (!empty($this->id)) {
             $ruleMores = [
-                'company_id'    => ['required', 'numeric', $this->tableHasId('companies')],
-                'code'          => ['required', 'string', 'max:200'],
-                'name'          => ['required', 'string', 'max:255'],
-                'start_time'     => ['required', 'date'],
-                'end_time'      => ['required', 'date'],
+                'id'    => ['required', 'numeric', $this->tableHasId('events')],
             ];
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Api;
 
 use App\Repositories\Event\EventRepository;
@@ -15,27 +16,20 @@ class EventService extends BaseService
     {
         $attrs = [
             'name'              => $this->attributes['name'],
-            'start_time'         => $this->attributes['start_time'],
+            'start_time'        => $this->attributes['start_time'],
             'end_time'          => $this->attributes['end_time'],
-            'is_default'        => $this->attributes['is_default'] ?? false,
             'description'       => $this->attributes['description'] ?? null,
             'location'          => $this->attributes['location'] ?? null,
-            'note'              => $this->attributes['note'] ?? null,
-            'contact_name'      => $this->attributes['contact_name'] ?? null,
-            'contact_email'     => $this->attributes['contact_email'] ?? null,
-            'contact_phone'     => $this->attributes['contact_phone'] ?? null,
             'status'            => $this->attributes['status'] ?? null,
         ];
 
         if (!isset($this->attributes['id'])) {
-            $model = $this->init();
 
             $attrMores = [
                 'company_id'            => $this->attributes['company_id'],
                 'code'                  => $this->attributes['code'],
                 'created_by'            => auth()->user()->id,
                 'updated_by'            => auth()->user()->id,
-                'main_field_templates'  => $model->buildDefaultMainFieldTemplate(),
             ];
         } else {
             $attrMores = [
