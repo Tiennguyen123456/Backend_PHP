@@ -106,6 +106,11 @@ class UserRepository extends Repository implements UserRepositoryInterface
         return $query->first();
     }
 
+    public function findByEmail($email)
+    {
+        return $this->model->where('email', $email)->first();
+    }
+
     public function checkGrantedUserStatusByEmail($email)
     {
         $query = $this->model->whereIn('status', $this->model->getStatuesGranted());
