@@ -2,10 +2,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\MessageCodeEnum;
+use App\Events\UserCreatedEvent;
 use App\Services\Api\AuthService;
+use App\Services\Api\UserService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\LoginRequest;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Auth\LoginResource;
+use App\Services\Api\PasswordResetService;
+use App\Http\Requests\Api\User\LoginRequest;
+use App\Http\Requests\Api\User\ResetPasswordRequest;
+use App\Http\Requests\Api\User\SendMailResetPasswordRequest;
 
 class AuthController extends Controller
 {
@@ -24,5 +30,41 @@ class AuthController extends Controller
         } else {
             return $this->responseError($result['msg'], 401, MessageCodeEnum::USER_NAME_OR_PASSWORD_INCORRECT);
         }
+    }
+
+    public function sendMailResetPassword(SendMailResetPasswordRequest $request)
+    {
+        $userService = app(UserService::class);
+
+        $user = $userService->findByEmail($request->email);
+        if (!$user) {
+            return $this->responseError('', 400, 'USER_NOT_FOUND');
+        }
+
+        event(new UserCreatedEvent($user));
+
+        return $this->responseSuccess('', 'SEND_MAIL_RESET_PASSWORD_SUCCESS');
+    }
+
+    public function resetPassword(ResetPasswordRequest $request, $token)
+    {
+        $userService          = app(UserService::class);
+        $passwordResetService = app(PasswordResetService::class);
+
+        $passwordReset = $passwordResetService->findByToken($token);
+        if (empty($passwordReset)) {
+            return $this->responseError('Token not found', 400, 'TOKEN_NOT_FOUND');
+        }
+        $passwordResetService->deleteByEmail($passwordReset->email);
+
+        $user = $userService->findByEmail($passwordReset->email);
+        if (!$user) {
+            return $this->responseError('', 400, 'USER_NOT_FOUND');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return $this->responseSuccess('', 'RESET_PASSWORD_SUCCESS', 200);
     }
 }

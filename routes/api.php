@@ -34,6 +34,8 @@ Route::middleware(['guest'])->group(function() {
     });
 
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/reset-password', [AuthController::class, 'sendMailResetPassword']);
+    Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword']);
 });
 
 Route::get('/connect', function () {

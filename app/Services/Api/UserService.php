@@ -1,10 +1,11 @@
 <?php
 namespace App\Services\Api;
 
-use App\Repositories\User\UserRepository;
-use Illuminate\Support\Facades\Hash;
-use App\Services\BaseService;
 use Illuminate\Support\Str;
+use App\Services\BaseService;
+use App\Events\UserCreatedEvent;
+use Illuminate\Support\Facades\Hash;
+use App\Repositories\User\UserRepository;
 
 class UserService extends BaseService
 {
@@ -68,6 +69,7 @@ class UserService extends BaseService
             $user = $this->repo->create(array_merge($attrs, $attrMores));
             $user->syncRoles([$role->name]);
 
+            event(new UserCreatedEvent($user));
         } else {
             $attrMores = [
                 'id'            => $this->attributes['id'],
@@ -80,5 +82,10 @@ class UserService extends BaseService
         }
 
         return $user;
+    }
+
+    public function findByEmail($email)
+    {
+        return $this->repo->findByEmail($email);
     }
 }
