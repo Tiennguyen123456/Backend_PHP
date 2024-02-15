@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function(AuthenticationException $e, Request $request) {
             /* This is authorized by logged in users */
             if ($request->expectsJson()) {
-                $msgError = ['message' => '401 This action is unauthorized'];
+                $msgError = ['message' => 'This action is unauthorized'];
                 return $this->responseError($msgError, 401);
             }
         });
@@ -58,7 +58,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function(UnauthorizedException $e, Request $request) {
             /* This is authorized by roles or permisions assigned to users */
             if ($request->expectsJson()) {
-                $msgError = ['message' => '403 This action is unauthorized'];
+                $msgError = ['message' => 'This action is unauthorized'];
                 return $this->responseError($msgError, 403, 'UNAUTHORIZED_ACTION');
             }
         });
@@ -67,7 +67,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function(AccessDeniedHttpException $e, Request $request) {
             /* This is authorized by request class */
             if ($request->expectsJson()) {
-                $msgError = ['message' => '403 Forbidden'];
+                $msgError = ['message' => 'Permission Denied'];
                 return $this->responseError($msgError, 403, 'PERMISSION_DENIED');
             }
         });
