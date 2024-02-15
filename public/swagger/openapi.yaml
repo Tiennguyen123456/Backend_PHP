@@ -27,7 +27,7 @@ paths:
               $ref: "#/components/schemas/Login"
       responses:
         "200":
-          description: success
+          description: Success
           content:
             application/json:
               schema:
@@ -44,6 +44,92 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginValidateFailed"
+  /reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: Make action reset password over email
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Resourse Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  status_code:
+                    type: integer
+                    example: 400
+                  message_code:
+                    type: string
+                    enum: [TOKEN_NOT_FOUND, USER_NOT_FOUND]
+                  data:
+                    type: string
+                    example: null
+  /reset-password/{token}:
+    post:
+      tags:
+        - Authentication
+      summary: Update password by token
+      operationId: updatePassword
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Resourse Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  status_code:
+                    type: integer
+                    example: 400
+                  message_code:
+                    type: string
+                    enum: [TOKEN_NOT_FOUND, USER_NOT_FOUND]
+                  data:
+                    type: string
+                    example: null
   /self:
     get:
       tags:
@@ -147,13 +233,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DeleteSuccess"
+                $ref: "#/components/schemas/Success"
         "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DeleteFailed"
+                $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
   /roles:
@@ -431,7 +517,7 @@ paths:
                     type: string
                     example: null
                   data:
-                    $ref: "#/components/schemas/CompanyCollection"
+                    $ref: "#/components/schemas/CompanyResource"
         "400":
           description: Bad request
           content:
@@ -470,13 +556,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DeleteSuccess"
+                $ref: "#/components/schemas/Success"
         "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DeleteFailed"
+                $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
   /company/store:
@@ -490,7 +576,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateCompany"
+              $ref: "#/components/schemas/StoreCompany"
       responses:
         "200":
           description: Successful
@@ -509,7 +595,253 @@ paths:
                     type: string
                     example: null
                   data:
-                    $ref: "#/components/schemas/CompanyCollection"
+                    $ref: "#/components/schemas/CompanyResource"
+      security:
+        - bearerAuth: []
+  /events:
+    get:
+      tags:
+        - Event
+      summary: "Get list events"
+      operationId: events
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListCompany"
+      security:
+        - bearerAuth: []
+  /event/store:
+    post:
+      tags:
+        - Event
+      summary: Create or Update event
+      operationId: updateOrCreateEvent
+      description: "Create : not send ID <br><b>Update : post data with ID</b>"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreEvent"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/EventResource"
+      security:
+        - bearerAuth: []
+  /event/{id}:
+    get:
+      tags:
+        - Event
+      summary: "Show event by ID"
+      operationId: getEventById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/EventResource"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: eror
+                  status_code:
+                    type: string
+                    example: null
+                  message_code:
+                    type: string
+                    example: "RESOURCE_NOT_FOUND"
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Event
+      summary: Delete event
+      operationId: deleteEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Failed"
+      security:
+        - bearerAuth: []
+  /event/{id}/custom-fields:
+    get:
+      tags:
+        - Event Custom Field
+      summary: "Show custom field by Event ID"
+      operationId: getCustomFieldByEventId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListEventCustomField"
+      security:
+        - bearerAuth: []
+  /event/{id}/custom-field/store:
+    post:
+      tags:
+        - Event Custom Field
+      summary: Create or Update event custom field
+      operationId: updateOrCreateEventCustomField
+      description: "Create : not send ID <br><b>Update : post data with ID</b>"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreEventCustomField"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    properties:
+                      collection:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/EventCustomFieldResource"
+      security:
+        - bearerAuth: []
+  /event/custom-field/{id}:
+    delete:
+      tags:
+        - Event Custom Field
+      summary: Delete event custom field
+      operationId: deleteEventCustomField
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
 components:
@@ -893,12 +1225,15 @@ components:
           type: integer
         status:
           type: string
+        company_id:
+          type: integer
       required:
         - email
         - name
         - username
         - role_id
         - status
+        - company_id
     CreateRole:
       type: object
       properties:
@@ -925,7 +1260,7 @@ components:
         - name
         - guard_name
         - enable
-    DeleteSuccess:
+    Success:
       type: object
       properties:
         status:
@@ -940,7 +1275,7 @@ components:
         data:
           type: string
           example: null
-    DeleteFailed:
+    Failed:
       type: object
       properties:
         status:
@@ -1004,12 +1339,20 @@ components:
     ListCompany:
       properties:
         collection:
-          $ref: "#/components/schemas/CompanyCollection"
+          type: array
+          items:
+            $ref: "#/components/schemas/CompanyResource"
         pagination:
           $ref: "#/components/schemas/Pagination"
-    CompanyCollection:
-      type: array
-      items:
+    ListEventCustomField:
+      properties:
+        collection:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventCustomFieldResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    CompanyResource:
         type: object
         properties:
           id:
@@ -1047,14 +1390,14 @@ components:
             example: null
           status:
             type: string
-            enum: [NEW, ACTIVE, INACTIVE]
+            enum: [NEW,ACTIVE,INACTIVE]
           created_at:
             type: string
             example: "2024-01-20 01:43:46"
           updated_at:
             type: string
             example: "2024-01-20 01:43:46"
-    CreateCompany:
+    StoreCompany:
       type: object
       description: "ID for update user, if not ID for create new user"
       properties:
@@ -1083,12 +1426,112 @@ components:
           type: string
         status:
           type: string
-          enum: [ACTIVE, NEW, INACTIVE]
+          enum: [ACTIVE,NEW,INACTIVE]
         website:
           type: string
       required:
         - name
         - code
+    StoreEvent:
+      type: object
+      description: "ID for update, if not ID for create"
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        start_time:
+          type: string
+          format: date
+          example: '2023-12-31 10:00:00'
+        end_time:
+          type: string
+          format: date
+          example: '2023-12-31 22:00:00'
+        company_id:
+          type: integer
+        description:
+          type: string
+        location:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE,NEW,INACTIVE,DONE,CANCEL]
+      required:
+        - name
+        - code
+        - status
+        - start_time
+        - end_time
+        - company_id
+    EventResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+        name:
+          type: string
+        company_id:
+          type: integer
+        start_time:
+          type: string
+          format: date
+          example: '2023-12-31 10:00:00'
+        end_time:
+          type: string
+          format: date
+          example: '2023-12-31 22:00:00'
+        status:
+          type: string
+          enum: [ACTIVE,NEW,INACTIVE,DONE,CANCEL]
+        created_by:
+          type: integer
+        updated_by:
+          type: integer
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+    EventCustomFieldResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        event_id:
+          type: integer
+        name:
+          type: string
+        value:
+          type: string
+        created_by:
+          type: integer
+        updated_by:
+          type: integer
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+    StoreEventCustomField:
+      type: array
+      items:
+        properties:
+          name:
+            type: string
+          value:
+            type: string
+        required:
+          - name
+          - value
   parameters:
     pageParam:
       in: query
