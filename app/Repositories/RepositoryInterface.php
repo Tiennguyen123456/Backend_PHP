@@ -23,7 +23,7 @@ interface RepositoryInterface
 
     public function getItems($status = null, $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 0);
 
-    public function getList($status = null, $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50);
+    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50);
 
     public function addSearchQuery($query, $searches = []);
 
@@ -67,4 +67,10 @@ interface RepositoryInterface
     public function delete($id);
 
     public function user();
+
+    /**
+     * Count
+     * @return int
+     */
+    public function count($searches = [], $filters = []): int;
 }

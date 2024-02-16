@@ -5,7 +5,7 @@ use App\Repositories\RepositoryInterface;
 
 interface ClientRepositoryInterface extends RepositoryInterface
 {
-    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50);
+    // public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50);
 
     public function getClientsByEventId($eventId, $searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50);
 

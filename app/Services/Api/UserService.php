@@ -21,14 +21,14 @@ class UserService extends BaseService
 
     public function getList()
     {
-        $filterMores = [
-            'role_id',
-            'status'
-        ];
+        // $filterMores = [
+        //     'role_id',
+        //     'status'
+        // ];
 
         return $this->repo->getList(
             $this->getSearch(),
-            $this->getFilters($filterMores),
+            $this->getFilters(),
             $this->attributes['orderBy'] ?? 'updated_at',
             $this->attributes['orderDesc'] ?? true,
             $this->attributes['limit'] ?? null,

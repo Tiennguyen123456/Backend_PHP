@@ -3,7 +3,6 @@ namespace App\Repositories;
 
 use App\Helpers\Helper;
 use App\Repositories\RepositoryInterface;
-use Illuminate\Support\Facades\Schema;
 
 abstract class Repository implements RepositoryInterface
 {
@@ -54,9 +53,7 @@ abstract class Repository implements RepositoryInterface
             if (is_array($status)) {
                 $query = $query->whereIn('status', $status);
             } else {
-                $query = $query->where([
-                    'status' => $status
-                ]);
+                $query = $query->where(['status' => $status]);
             }
         }
 
@@ -93,12 +90,20 @@ abstract class Repository implements RepositoryInterface
         return $query->get();
     }
 
-    public function getList($status = null, $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50)
+    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50)
     {
         $query = $this->model;
 
         if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
-            return $this->getItems($status, $orderByColumn, $orderByDesc, $limit, $paginate);
+            $query = $query->where('status', '!=', $query::STATUS_DELETED);
+        }
+
+        if (count($searches)) {
+            $query = $this->addSearchQuery($query, $searches);
+        }
+
+        if (count($filters)) {
+            $query = $this->addFilterQuery($query, $filters);
         }
 
         if ($orderByDesc) {
@@ -133,7 +138,11 @@ abstract class Repository implements RepositoryInterface
     {
         if (count($filters)) {
             foreach ($filters as $column => $value) {
-                $query = $query->where($column, $value);
+                if (is_array($value)) {
+                    $query = $query->whereIn($column, $value);
+                } else {
+                    $query = $query->where($column, $value);
+                }
             }
         }
 
@@ -203,5 +212,24 @@ abstract class Repository implements RepositoryInterface
     {
         $user = auth('api')->user();
         return $user;
+    }
+
+    public function count($searches = [], $filters = []): int
+    {
+        $query = $this->model;
+
+        if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
+            $query = $query->where('status', '!=', $query::STATUS_DELETED);
+        }
+
+        if (count($searches)) {
+            $query = $this->addSearchQuery($query, $searches);
+        }
+
+        if (count($filters)) {
+            $query = $this->addFilterQuery($query, $filters);
+        }
+
+        return $query->count();
     }
 }

@@ -2,10 +2,6 @@
 namespace App\Services;
 
 use App\Helpers\Helper;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
-use Exception;
-use ZipArchive;
 
 class BaseService
 {
@@ -38,7 +34,9 @@ class BaseService
     public function getList()
     {
         return $this->repo->getList(
-            $this->attributes['status'] ?? null,
+            $this->getSearch(),
+            $this->getFilters(),
+            // $this->attributes['status'] ?? null,
             $this->attributes['orderBy'] ?? 'updated_at',
             $this->attributes['orderDesc'] ?? true,
             $this->attributes['limit'] ?? null,
@@ -133,7 +131,7 @@ class BaseService
     /**
      * Filter WHERE in columns
      */
-    public function getFilters($filterMores = [])
+    public function getFilters()
     {
         $table = $this->repo->getModelTable();
 
@@ -144,15 +142,20 @@ class BaseService
                 }
             }
 
-            if (count($filterMores)) {
-                foreach ($filterMores as $key) {
-                    if (!empty($value = $this->attributes['filters'][$key] ?? null)) {
-                        $this->filters[$key] = $value;
-                    }
-                }
-            }
+            // if (count($filterMores)) {
+            //     foreach ($filterMores as $key) {
+            //         if (!empty($value = $this->attributes['filters'][$key] ?? null)) {
+            //             $this->filters[$key] = $value;
+            //         }
+            //     }
+            // }
         }
 
         return $this->filters;
+    }
+
+    public function count()
+    {
+        return $this->repo->count($this->getSearch(), $this->getFilters());
     }
 }
