@@ -1,8 +1,12 @@
 <?php
+
 namespace App\Services\Api;
 
+use App\Imports\ClientImport;
 use App\Repositories\Client\ClientRepository;
 use App\Services\BaseService;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class ClientService extends BaseService
 {
@@ -39,5 +43,21 @@ class ClientService extends BaseService
             $this->attributes['limit'] ?? null,
             $this->attributes['pageSize'] ?? 50
         );
+    }
+
+    public function import()
+    {
+        $eventId = $this->attributes['event_id'];
+        $filePath = $this->attributes['filePath'];
+
+        if (Storage::disk('public')->exists($filePath)) {
+            Excel::queueImport(
+                new ClientImport($eventId, $filePath),
+                Storage::disk('public')->path($filePath)
+            );
+            return true;
+        } else {
+            return false;
+        }
     }
 }

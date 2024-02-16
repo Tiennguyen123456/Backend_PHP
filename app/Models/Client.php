@@ -40,28 +40,17 @@ class Client extends BaseModel
 	protected $table = 'clients';
 
 	protected $casts = [
-		'country_id'        => 'int',
 		'event_id'          => 'int',
-		'file_collection'   => 'json',
-		'custom_fields'     => 'json',
 		'created_by'        => 'int',
 		'updated_by'        => 'int'
 	];
 
-	protected $hidden = [
-		'token'
-	];
-
 	protected $fillable = [
-		'token',
-		'country_id',
 		'event_id',
-		'event_code',
-		'qrcode',
+		'fullname',
 		'email',
 		'phone',
-		'file_collection',
-		'custom_fields',
+		'address',
 		'type',
 		'status',
 		'created_by',
