@@ -40,4 +40,9 @@ trait JobCustomEvent
         // Remove file
         FileHelper::deleteFile($filePath);
 	}
+
+    protected function onFailed($eventId, $filePath, $message = '')
+    {
+        logger()->error('JobCustomEvent::onFailed EventID: ' . $eventId . ' with message: ' . $message);
+    }
 }

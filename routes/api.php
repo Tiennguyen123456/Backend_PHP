@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\CountryController;
+use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\CompanyController;
-use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\Api\CountryController;
-use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\PermissionController;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +23,8 @@ use App\Http\Controllers\Api\PermissionController;
 |
 */
 
-Route::middleware(['guest'])->group(function() {
-    Route::get('/', function() {
+Route::middleware(['guest'])->group(function () {
+    Route::get('/', function () {
         $version = App::version();
         return response()->json(['version' => $version]);
     });
@@ -46,7 +46,7 @@ Route::middleware('role:admin')->get('/admin', function () {
 
 });
 
-Route::group(['middleware' => ['auth:sanctum']], function() {
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/test', [TestController::class, 'testRedis']);
 
     /* USER */

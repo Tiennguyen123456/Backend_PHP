@@ -57,6 +57,18 @@ class Client extends BaseModel
 		'updated_by'
 	];
 
+	protected $importColumns = [
+		'fullname',
+		'email',
+		'phone',
+		'address'
+	];
+
+	public function getImportColumns()
+	{
+		return $this->importColumns;
+	}
+
 	public function country()
 	{
 		return $this->belongsTo(Country::class);

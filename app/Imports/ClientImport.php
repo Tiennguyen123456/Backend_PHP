@@ -3,19 +3,19 @@
 namespace App\Imports;
 
 use App\Models\Client;
-use App\Services\Api\ClientService;
 use App\Traits\JobCustomEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Services\Api\ClientService;
 use Illuminate\Support\Facades\Redis;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\ImportFailed;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\RemembersRowNumber;
-use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterImport;
-use Maatwebsite\Excel\Events\ImportFailed;
 
 class ClientImport implements
     ToModel,
@@ -89,7 +89,8 @@ class ClientImport implements
     public function registerEvents(): array
     {
         return [
-            ImportFailed::class => function () {
+            ImportFailed::class => function (ImportFailed $event) {
+                $this->onFailed($this->eventId, $this->filePath, $event->e->getMessage());
                 $this->onComplete($this->eventId, $this->filePath);
             },
             AfterImport::class => function () {

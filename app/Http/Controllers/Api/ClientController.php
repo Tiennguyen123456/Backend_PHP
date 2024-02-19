@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\MessageCodeEnum;
 use App\Helpers\FileHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DefaultCollection;
@@ -25,7 +26,7 @@ class ClientController extends Controller
         if (!empty($list = $this->service->getList())) {
             return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 400);
+            return $this->responseError('', 'RESOURCE_NOT_FOUND');
         }
     }
 
@@ -35,18 +36,21 @@ class ClientController extends Controller
             $filePath = FileHelper::storeFile(auth()->user()->id, $request->file('file'));
 
             if (blank($filePath))
-                return $this->responseError(trans('_response.failed.store_file'), 400);
+                return $this->responseError('', 'FAILED_ON_STORE_FILE');
 
             $this->service->attributes['event_id'] = $eventId;
             $this->service->attributes['filePath'] = $filePath;
 
-            if ($this->service->import()) {
-                return $this->responseSuccess('', trans('_response.success.index'));
+            $result = $this->service->import();
+
+            if ($result['status'] === 'success') {
+                return $this->responseSuccess('', 'SUCCESS');
+            } else {
+                return $this->responseError('', $result['message']);
             }
         } catch (\Throwable $th) {
             logger('Error: ' . __METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_IMPORT');
         }
-
-        return $this->responseError(trans('_response.failed.400'), 400);
     }
 }
