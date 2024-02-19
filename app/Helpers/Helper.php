@@ -20,7 +20,7 @@ class Helper
         $inputLength = strlen($permittedChars);
         $randomString = '';
 
-        for($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $randomCharacter = $permittedChars[mt_rand(0, $inputLength - 1)];
             $randomString .= $randomCharacter;
         }
@@ -35,7 +35,7 @@ class Helper
         $inputLength = strlen($permittedChars);
         $randomString = '';
 
-        for($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $randomCharacter = $permittedChars[mt_rand(0, $inputLength - 1)];
             $randomString .= $randomCharacter;
         }
@@ -84,11 +84,11 @@ class Helper
             ->encoding('UTF-8');
 
 
-        $logoPath = public_path("images/frontend/".strtoupper($folder)."/logo.png");
+        $logoPath = public_path("images/frontend/" . strtoupper($folder) . "/logo.png");
 
         if (File::exists($logoPath)) {
             $qrcodeGenerate = $qrcodeGenerate->merge($logoPath, .2, true)
-                                            ->errorCorrection('Q');
+                ->errorCorrection('Q');
         }
 
         $qrcodeGenerate = $qrcodeGenerate->generate($qrcode, $tmpPath);
@@ -132,7 +132,7 @@ class Helper
         $border->insert($qr, 'center');
 
         /* Insert code text */
-        $border->text($qrcode, $border->getWidth() / 2, $border->getHeight() - 20, function($font) {
+        $border->text($qrcode, $border->getWidth() / 2, $border->getHeight() - 20, function ($font) {
             $font->file(public_path('assets/fonts/toyota-type.ttf')); // Replace with the path to your font file
             $font->size(14); // Adjust the font size as needed
             $font->color('#000000'); // Adjust the font color as needed
@@ -173,7 +173,8 @@ class Helper
         return $result;
     }
 
-    public static function removeSpaceOnStr($str, $isUpper = true, $stripVietnamese = true, $hasHyphen = false) {
+    public static function removeSpaceOnStr($str, $isUpper = true, $stripVietnamese = true, $hasHyphen = false)
+    {
         $str = trim($str);
         $newStr = '';
 
@@ -225,7 +226,8 @@ class Helper
         return date(config('app.date_only_format'), strtotime($date));
     }
 
-    public static function checkDateFormat($dateString) {
+    public static function checkDateFormat($dateString)
+    {
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
 
         if ($date === false) {
@@ -235,7 +237,8 @@ class Helper
         return $date->format('Y-m-d') === $dateString;
     }
 
-    public static function compareDateToToday($dateString) {
+    public static function compareDateToToday($dateString)
+    {
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
         $currentDate = new DateTime();
 

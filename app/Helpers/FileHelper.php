@@ -20,7 +20,7 @@ class FileHelper
 
             Storage::disk('public')->put($filePath, file_get_contents($file));
         } catch (\Throwable $th) {
-           $filePath = null;
+            $filePath = null;
         }
 
         // Return the stored file path
