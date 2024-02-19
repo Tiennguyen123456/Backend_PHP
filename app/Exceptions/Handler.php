@@ -38,7 +38,7 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $this->renderable(function(MethodNotAllowedHttpException $e, Request $request) {
+        $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'The GET method is not supported for this route. Supported methods: POST.'];
                 return $this->responseError($msgError, 405);
@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
         });
 
         /* 401 message */
-        $this->renderable(function(AuthenticationException $e, Request $request) {
+        $this->renderable(function (AuthenticationException $e, Request $request) {
             /* This is authorized by logged in users */
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'This action is unauthorized'];
@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
         });
 
         /* 403 message */
-        $this->renderable(function(UnauthorizedException $e, Request $request) {
+        $this->renderable(function (UnauthorizedException $e, Request $request) {
             /* This is authorized by roles or permisions assigned to users */
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'This action is unauthorized'];
@@ -64,7 +64,7 @@ class Handler extends ExceptionHandler
         });
 
         /* 403 message */
-        $this->renderable(function(AccessDeniedHttpException $e, Request $request) {
+        $this->renderable(function (AccessDeniedHttpException $e, Request $request) {
             /* This is authorized by request class */
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Permission Denied'];
@@ -73,7 +73,7 @@ class Handler extends ExceptionHandler
         });
 
         /* 400 message */
-        $this->renderable(function(NotFoundHttpException $e, Request $request) {
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Page Not Found'];
                 return $this->responseError($msgError, 400, 'PAGE_NOT_FOUND');
@@ -89,7 +89,7 @@ class Handler extends ExceptionHandler
         // });
 
         /* 429 message */
-        $this->renderable(function(ThrottleRequestsException $e, Request $request) {
+        $this->renderable(function (ThrottleRequestsException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Too Many Attempts'];
                 return $this->responseError($msgError, 429);
@@ -97,7 +97,7 @@ class Handler extends ExceptionHandler
         });
 
         /* 500 message */
-        $this->renderable(function(QueryException $e, Request $request) {
+        $this->renderable(function (QueryException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Internal Server Error'];
                 return $this->responseError($msgError, 500);
