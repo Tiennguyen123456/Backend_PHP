@@ -13,6 +13,6 @@ class InvalidHeaderException extends Exception
 
     public function render()
     {
-        return $this->responseError($this->msgError, 400);
+        return $this->responseError($this->msgError, 'INVALID_HEADER');
     }
 }

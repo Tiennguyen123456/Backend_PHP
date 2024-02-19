@@ -26,7 +26,7 @@ class EventController extends Controller
         if ($model = $this->service->store()) {
             return $this->responseSuccess(new BaseResource($model), trans('_response.success.store'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 400);
+            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_STORE', 400);
         }
     }
 
@@ -50,7 +50,7 @@ class EventController extends Controller
         if (!empty($list = $eventCustomFieldService->getList())) {
             return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 400);
+            return $this->responseError(trans('_response.failed.400'), 'RESOURCE_NOT_FOUND');
         }
     }
 
@@ -77,7 +77,7 @@ class EventController extends Controller
 
             return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
         } catch (\Throwable $th) {
-            return $this->responseError(trans('_response.failed.400'), 400);
+            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_STORE');
         }
     }
 
@@ -88,7 +88,7 @@ class EventController extends Controller
         if ($eventCustomFieldService->remove($id)) {
             return $this->responseSuccess(null, trans('_response.success.remove'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 400);
+            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_REMOVE');
         }
     }
 }

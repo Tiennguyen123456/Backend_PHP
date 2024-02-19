@@ -21,9 +21,7 @@ class RoleController extends Controller
         if ($model = $this->service->store()) {
             return $this->responseSuccess(new RoleResource($model), trans('_response.success.store'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError('', 'FAILED_TO_STORE');
         }
     }
 
@@ -34,9 +32,7 @@ class RoleController extends Controller
         if ($this->service->assign()) {
             return $this->responseSuccess(null, trans('_response.success.assign'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError('', 'RESOURCE_NOT_FOUND');
         }
     }
 }

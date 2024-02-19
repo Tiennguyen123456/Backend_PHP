@@ -23,9 +23,7 @@ class UserController extends Controller
         if (!empty($list = $this->service->getList())) {
             return $this->responseSuccess(new UserCollection($list), trans('_response.success.index'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError('', 'RESOURCE_NOT_FOUND');
         }
     }
 
@@ -39,9 +37,7 @@ class UserController extends Controller
         if ($model = $this->service->getDetail($id)) {
             return $this->responseSuccess(UserResource::make($model), trans('_response.success.detail'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError('', 'RESOURCE_NOT_FOUND');
         }
     }
 
@@ -53,9 +49,7 @@ class UserController extends Controller
         if ($model = $this->service->store()) {
             return $this->responseSuccess(new UserResource($model), trans('_response.success.store'));
         } else {
-            return $this->responseError([
-                'message' => trans('_response.failed.400')
-            ], 400);
+            return $this->responseError('', 'FAILED_TO_STORE');
         }
     }
 }

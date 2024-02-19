@@ -28,7 +28,7 @@ class AuthController extends Controller
         if ($result['auth']) {
             return $this->responseSuccess(LoginResource::make(auth('api')->user()), $result['msg'], 200, MessageCodeEnum::LOGIN_SUCCESS);
         } else {
-            return $this->responseError($result['msg'], 401, MessageCodeEnum::USER_NAME_OR_PASSWORD_INCORRECT);
+            return $this->responseError($result['msg'], MessageCodeEnum::USER_NAME_OR_PASSWORD_INCORRECT, 401);
         }
     }
 
@@ -38,7 +38,7 @@ class AuthController extends Controller
 
         $user = $userService->findByEmail($request->email);
         if (!$user) {
-            return $this->responseError('', 400, 'USER_NOT_FOUND');
+            return $this->responseError('', 'USER_NOT_FOUND');
         }
 
         event(new UserCreatedEvent($user));
@@ -53,13 +53,13 @@ class AuthController extends Controller
 
         $passwordReset = $passwordResetService->findByToken($token);
         if (empty($passwordReset)) {
-            return $this->responseError('Token not found', 400, 'TOKEN_NOT_FOUND');
+            return $this->responseError('Token not found', 'TOKEN_NOT_FOUND');
         }
         $passwordResetService->deleteByEmail($passwordReset->email);
 
         $user = $userService->findByEmail($passwordReset->email);
         if (!$user) {
-            return $this->responseError('', 400, 'USER_NOT_FOUND');
+            return $this->responseError('', 'USER_NOT_FOUND');
         }
 
         $user->password = Hash::make($request->password);
