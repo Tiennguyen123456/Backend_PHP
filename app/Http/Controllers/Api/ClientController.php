@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\MessageCodeEnum;
 use App\Helpers\FileHelper;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\DefaultCollection;
-use App\Http\Requests\Api\Client\ImportRequest;
-use App\Services\Api\ClientService;
 use Illuminate\Http\Request;
+use App\Enums\MessageCodeEnum;
+use App\Services\Api\ClientService;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Client\ImportRequest;
+use App\Http\Resources\Client\ClientCollection;
 
 class ClientController extends Controller
 {
@@ -23,7 +23,7 @@ class ClientController extends Controller
         $this->service->attributes['filters']['event_id'] = $eventId;
 
         if (!empty($list = $this->service->getList())) {
-            return $this->responseSuccess(new DefaultCollection($list));
+            return $this->responseSuccess(new ClientCollection($list));
         } else {
             return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }

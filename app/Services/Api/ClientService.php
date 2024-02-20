@@ -2,10 +2,10 @@
 
 namespace App\Services\Api;
 
-use App\Helpers\FileHelper;
 use App\Imports\ClientImport;
 use App\Services\BaseService;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Repositories\Client\ClientRepository;
@@ -86,5 +86,39 @@ class ClientService extends BaseService
         return [
             'status' => 'success'
         ];
+    }
+
+    public function getCountClientByEventId($eventId, $isUpdate = false)
+    {
+        $key = sprintf(config('redis.event.client.total'), $eventId);
+
+        if ($isUpdate) Cache::forget($key);
+
+        return Cache::rememberForever($key, function () use ($eventId) {
+            $filters['event_id'] = $eventId;
+
+            return $this->repo->count([], $filters);
+        });
+    }
+
+    public function getCountClientCheckinByEventId($eventId, $isUpdate = false)
+    {
+        $key = sprintf(config('redis.event.client.checkin'), $eventId);
+
+        if ($isUpdate) Cache::forget($key);
+
+        return Cache::rememberForever($key, function () use ($eventId) {
+            $filters = [
+                'event_id' => $eventId,
+                'is_checkin' => 1
+            ];
+            return $this->repo->count([], $filters);
+        });
+    }
+
+    public function updateCache($eventId)
+    {
+        $this->getCountClientByEventId($eventId, true);
+        $this->getCountClientCheckinByEventId($eventId, true);
     }
 }
