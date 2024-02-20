@@ -28,7 +28,7 @@ class UserController extends Controller
         }
     }
 
-    public function user()
+    public function self()
     {
         return $this->responseSuccess(SelfResource::make(auth()->user()), null);
     }

@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/test', [TestController::class, 'testRedis']);
 
     /* USER */
-    Route::get('/self', [UserController::class, 'user']);
+    Route::get('/self', [UserController::class, 'self']);
     Route::get('/users', [UserController::class, 'list'])->middleware('permission:user:view');
     Route::get('/user/{id}', [UserController::class, 'detail'])->middleware('permission:user:view');
     Route::post('/user/store', [UserController::class, 'store'])->middleware('permission:user:create');
