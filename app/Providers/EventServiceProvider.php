@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\UserCreatedEvent;
+use App\Events\ClientImportedEvent;
+use App\Listeners\ClientCompletedImport;
 use App\Listeners\SendMailResetPassword;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -19,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         // ],
         UserCreatedEvent::class => [
             SendMailResetPassword::class,
+        ],
+        ClientImportedEvent::class => [
+            ClientCompletedImport::class,
         ],
     ];
 

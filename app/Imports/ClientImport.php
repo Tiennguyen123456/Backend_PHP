@@ -2,8 +2,8 @@
 
 namespace App\Imports;
 
+use App\Events\ClientImportedEvent;
 use App\Models\Client;
-use App\Traits\JobCustomEvent;
 use App\Services\Api\ClientService;
 use Illuminate\Support\Facades\Redis;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -26,7 +26,7 @@ class ClientImport implements
     WithHeadingRow,
     WithEvents
 {
-    use JobCustomEvent, RemembersRowNumber;
+    use RemembersRowNumber;
 
     protected $arUnique = [];
     protected $eventId;
@@ -103,11 +103,21 @@ class ClientImport implements
     {
         return [
             ImportFailed::class => function (ImportFailed $event) {
-                $this->onFailed($this->eventId, $this->filePath, $event->e->getMessage());
-                $this->onComplete($this->eventId, $this->filePath);
+                $data = [
+                    'eventId' => $this->eventId,
+                    'filePath' => $this->filePath,
+                    'message' => $event->e->getMessage(),
+                    'isSuccess' => false
+                ];
+                event(new ClientImportedEvent($data));
             },
             AfterImport::class => function () {
-                $this->onComplete($this->eventId, $this->filePath);
+                $data = [
+                    'eventId' => $this->eventId,
+                    'filePath' => $this->filePath,
+                    'isSuccess' => true
+                ];
+                event(new ClientImportedEvent($data));
             },
         ];
     }
