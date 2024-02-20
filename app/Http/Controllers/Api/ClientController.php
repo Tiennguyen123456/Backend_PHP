@@ -48,7 +48,7 @@ class ClientController extends Controller
                 return $this->responseError('', $result['message']);
             }
         } catch (\Throwable $th) {
-            logger('Error: ' . __METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            logger()->error(__METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR);
         }
     }
