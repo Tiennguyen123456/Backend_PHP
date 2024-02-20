@@ -40,7 +40,7 @@ class ClientImport implements
         $this->clientService = new ClientService();
     }
 
-    private function setDuplicateIndex()
+    private function setDuplicateRow()
     {
         $redisKey = sprintf(config('redis.event.import.duplicate_index'), $this->eventId);
         Redis::rpush($redisKey, $this->getRowNumber());
@@ -48,32 +48,45 @@ class ClientImport implements
 
     public function model(array $row)
     {
-        $phone = $row['phone'];
+        $phone = $this->formatPhone($row['phone']);
 
         // Check duplicate in file
         if (in_array($phone, $this->arUnique)) {
-            return $this->setDuplicateIndex();
+            return $this->setDuplicateRow();
         }
         $this->arUnique[] = $phone;
 
         // Check duplicate in database
+        if ($this->checkPhoneExistsInEvent($phone)) {
+            return $this->setDuplicateRow();
+        }
+
+        return new Client([
+            'event_id' => $this->eventId,
+            'fullname' => $row['fullname'],
+            'phone' => $phone,
+            'email' => $row['email'],
+            'address' => $row['address'],
+        ]);
+    }
+
+    private function checkPhoneExistsInEvent($phone)
+    {
         $filters = [
             'event_id'  => $this->eventId,
             'phone'     => $phone,
         ];
         $this->clientService->attributes['filters'] = $filters;
 
-        if ($this->clientService->count() > 0) {
-            return $this->setDuplicateIndex();
-        }
+        return $this->clientService->count() > 0;
+    }
 
-        return new Client([
-            'event_id' => $this->eventId,
-            'fullname' => $row['fullname'],
-            'phone' => $row['phone'],
-            'email' => $row['email'],
-            'address' => $row['address'],
-        ]);
+    private function formatPhone($phone)
+    {
+        if (substr($phone, 0, 1) !== '0') {
+            return '0' . $phone;
+        }
+        return $phone;
     }
 
     public function batchSize(): int
