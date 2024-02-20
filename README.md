@@ -23,6 +23,7 @@ Follow these steps to set up the project:
    # setup config for MySQL
    php artisan key:generate
    php artisan migrate --seed
+   php artisan storage:link
 ```
 
 You should now be able to access the application at http://localhost:8000.
