@@ -72,8 +72,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     /* CUSTOM FIELDS */
     Route::get('/event/{id}/custom-fields', [EventController::class, 'listCustomField'])->middleware('permission:event:config');
-    Route::post('/event/{id}/custom-field/store', [EventController::class, 'storeCustomField'])->middleware('permission:event:config');
-    Route::delete('/event/custom-field/{id}', [EventController::class, 'removeCustomField'])->middleware('permission:event:config');
+    Route::post('/event/{id}/custom-field/store', [EventController::class, 'storeCustomField'])->middleware('permission:event:create');
+    Route::delete('/event/custom-field/{id}', [EventController::class, 'removeCustomField'])->middleware('permission:event:delete');
     /* CLIENT */
     Route::get('/event/{id}/clients', [ClientController::class, 'list'])->middleware('permission:client:view');
     Route::post('/event/{id}/client/import', [ClientController::class, 'import'])->middleware('permission:client:import');
