@@ -12,50 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement();
             $table->foreignId('company_id')
                 ->nullable(false);
-            // $table->boolean('is_default')
-            //     ->default(false)
-            //     ->nullable(false);
-            $table->string('code', 200)
-                ->nullable(false);
-            $table->string('name', 255)
-                ->nullable(false);
-            $table->string('description', 255)
-                ->nullable();
-            $table->string('logo_path', 255)
-                ->nullable();
-            $table->string('location', 255)
-                ->nullable();
-            $table->boolean('encrypt_file_link')
-                ->default(false)
-                ->nullable(false);
-            $table->date('start_time')
-                ->nullable(false);
-            $table->date('end_time')
-                ->nullable(false);
-            $table->json('main_field_templates')
-                ->nullable();
-            $table->text('email_template')
-                ->nullable();
-            $table->text('cards_template')
-                ->nullable();
-            $table->json('custom_field_templates')
-                ->nullable();
-            $table->json('languages')
-                ->nullable();
-            $table->string('contact_name', 255)
-                ->nullable();
-            $table->string('contact_email', 255)
-                ->nullable();
-            $table->string('contact_phone', 255)
-                ->nullable();
-            $table->string('note', 255)
-                ->nullable();
-            $table->string('status', 50)
-                ->default('NEW')
-                ->nullable(false);
+            $table->string('code', 200)->nullable(false);
+            $table->string('name', 255)->nullable(false);
+            $table->string('description', 255)->nullable();
+            $table->string('location', 255)->nullable();
+            $table->timestamp('start_time')->nullable(false);
+            $table->timestamp('end_time')->nullable(false);
+            $table->json('main_field_templates')->nullable();
+            $table->text('email_template')->nullable();
+            $table->text('cards_template')->nullable();
+            $table->string('note', 255)->nullable();
+            $table->string('status', 50)->default('NEW')->nullable(false);
             $table->foreignId('created_by')
                 ->nullable();
             $table->foreignId('updated_by')

@@ -40,9 +40,11 @@ class Client extends BaseModel
 	protected $table = 'clients';
 
 	protected $casts = [
-		'event_id'          => 'int',
-		'created_by'        => 'int',
-		'updated_by'        => 'int'
+		'event_id'      => 'int',
+		'created_by'    => 'int',
+		'updated_by'    => 'int',
+        'created_at'    => 'datetime:Y-m-d H:i:s',
+		'created_at'    => 'datetime:Y-m-d H:i:s',
 	];
 
 	protected $fillable = [

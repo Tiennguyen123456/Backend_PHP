@@ -78,7 +78,9 @@ class Event extends BaseModel
 		'custom_field_templates'    => 'json',
 		'languages'                 => 'json',
 		'created_by'                => 'int',
-		'updated_by'                => 'int'
+		'updated_by'                => 'int',
+        'created_at'                => 'datetime:Y-m-d H:i:s',
+		'created_at'                => 'datetime:Y-m-d H:i:s',
 	];
 
 	protected $fillable = [
