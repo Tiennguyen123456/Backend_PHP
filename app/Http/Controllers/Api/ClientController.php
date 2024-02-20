@@ -35,7 +35,7 @@ class ClientController extends Controller
             $filePath = FileHelper::storeFile(auth()->user()->id, $request->file('file'));
 
             if (blank($filePath))
-                return $this->responseError('', 'FAILED_ON_STORE_FILE');
+                return $this->responseError('', MessageCodeEnum::FILE_UPLOAD_FAILED);
 
             $this->service->attributes['event_id'] = $eventId;
             $this->service->attributes['filePath'] = $filePath;

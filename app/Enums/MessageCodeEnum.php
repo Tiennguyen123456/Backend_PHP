@@ -34,4 +34,5 @@ final class MessageCodeEnum extends Enum
     const FAILED_TO_REMOVE = 'FAILED_TO_REMOVE';
     const FAILED_TO_DELETE = 'FAILED_TO_DELETE';
     const FAILED_TO_STORE = 'FAILED_TO_STORE';
+    const FILE_UPLOAD_FAILED = 'FILE_UPLOAD_FAILED';
 }
