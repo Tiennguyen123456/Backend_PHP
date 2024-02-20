@@ -44,7 +44,7 @@ class BaseResource extends JsonResource
             $result = parent::toArray($request);
 
             if (!empty($this->attrMores)) {
-                $result = array_merge(parent::toArray($request), $this->attrMores);
+                $result = array_merge($result, $this->attrMores);
             }
 
             if (!empty($this->attrExcepts)) {
