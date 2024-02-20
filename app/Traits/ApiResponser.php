@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Enums\MessageCodeEnum;
+
 trait ApiResponser
 {
     /**
@@ -9,7 +11,7 @@ trait ApiResponser
      *
      * @return \Illuminate\Http\Response
      */
-    protected function responseSuccess($data = null, $messageCode = null, $code = 200)
+    protected function responseSuccess($data = null, $messageCode = MessageCodeEnum::SUCCESS, $code = 200)
 	{
 		return response()->json([
 			'status'        => 'success',

@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Enums\MessageCodeEnum;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -41,7 +42,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'The GET method is not supported for this route. Supported methods: POST.'];
-                return $this->responseError($msgError, 'METHOD_IS_NOT_SUPPORT', 405);
+                return $this->responseError($msgError, MessageCodeEnum::METHOD_IS_NOT_SUPPORT, 405);
             }
         });
 
@@ -50,7 +51,7 @@ class Handler extends ExceptionHandler
             /* This is authorized by logged in users */
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'This action is unauthorized'];
-                return $this->responseError($msgError, 'UNAUTHORIZED_ACTION', 401);
+                return $this->responseError($msgError, MessageCodeEnum::UNAUTHORIZED_ACTION, 401);
             }
         });
 
@@ -59,7 +60,7 @@ class Handler extends ExceptionHandler
             /* This is authorized by roles or permisions assigned to users */
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'This action is unauthorized'];
-                return $this->responseError($msgError, 'UNAUTHORIZED_ACTION', 403);
+                return $this->responseError($msgError, MessageCodeEnum::PERMISSION_DENIED, 403);
             }
         });
 
@@ -67,8 +68,8 @@ class Handler extends ExceptionHandler
         $this->renderable(function (AccessDeniedHttpException $e, Request $request) {
             /* This is authorized by request class */
             if ($request->expectsJson()) {
-                $msgError = ['message' => 'Permission Denied'];
-                return $this->responseError($msgError, 'PERMISSION_DENIED', 403);
+                $msgError = ['message' => 'Access Denied'];
+                return $this->responseError($msgError, MessageCodeEnum::ACCESS_DENIED, 403);
             }
         });
 
@@ -76,7 +77,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (NotFoundHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Page Not Found'];
-                return $this->responseError($msgError, 'PAGE_NOT_FOUND');
+                return $this->responseError($msgError, MessageCodeEnum::PAGE_NOT_FOUND);
             }
         });
 
@@ -92,7 +93,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (ThrottleRequestsException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Too Many Attempts'];
-                return $this->responseError($msgError, 'TOO_MANY_ATTEMPTS', 429);
+                return $this->responseError($msgError, MessageCodeEnum::TOO_MANY_ATTEMPTS, 429);
             }
         });
 
@@ -100,7 +101,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (QueryException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Internal Server Error'];
-                return $this->responseError($msgError, 'INTERNAL_SERVER_ERROR', 500);
+                return $this->responseError($msgError, MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
             }
         });
     }

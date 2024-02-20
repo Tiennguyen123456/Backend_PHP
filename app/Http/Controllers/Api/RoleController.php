@@ -1,11 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Enums\MessageCodeEnum;
 use App\Services\Api\RoleService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Role\AssignRequest;
-use App\Http\Requests\Api\Role\StoreRequest;
 use App\Http\Resources\Role\RoleResource;
+use App\Http\Requests\Api\Role\StoreRequest;
+use App\Http\Requests\Api\Role\AssignRequest;
 
 class RoleController extends Controller
 {
@@ -21,7 +22,7 @@ class RoleController extends Controller
         if ($model = $this->service->store()) {
             return $this->responseSuccess(new RoleResource($model), trans('_response.success.store'));
         } else {
-            return $this->responseError('', 'FAILED_TO_STORE');
+            return $this->responseError('', MessageCodeEnum::FAILED_TO_STORE);
         }
     }
 
@@ -32,7 +33,7 @@ class RoleController extends Controller
         if ($this->service->assign()) {
             return $this->responseSuccess(null, trans('_response.success.assign'));
         } else {
-            return $this->responseError('', 'RESOURCE_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 }

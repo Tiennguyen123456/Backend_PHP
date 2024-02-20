@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Enums\MessageCodeEnum;
 use App\Services\Api\PermissionService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Permission\AssignToRoleRequest;
@@ -23,7 +24,7 @@ class PermissionController extends Controller
                 trans('_response.success.index')
             );
         } else {
-            return $this->responseError('', 'RESOURCE_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
@@ -37,7 +38,7 @@ class PermissionController extends Controller
                 trans('_response.success.index')
             );
         } else {
-            return $this->responseError('', 'RESOURCE_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
@@ -48,7 +49,7 @@ class PermissionController extends Controller
         if ($this->service->assignToRole()) {
             return $this->responseSuccess(null, trans('_response.success.assign'));
         } else {
-            return $this->responseError('', 'RESOURCE_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 }

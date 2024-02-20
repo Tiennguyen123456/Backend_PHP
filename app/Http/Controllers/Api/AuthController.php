@@ -38,12 +38,12 @@ class AuthController extends Controller
 
         $user = $userService->findByEmail($request->email);
         if (!$user) {
-            return $this->responseError('', 'USER_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::USER_NOT_FOUND);
         }
 
         event(new UserCreatedEvent($user));
 
-        return $this->responseSuccess('', 'SEND_MAIL_RESET_PASSWORD_SUCCESS');
+        return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
     }
 
     public function resetPassword(ResetPasswordRequest $request, $token)
@@ -53,18 +53,18 @@ class AuthController extends Controller
 
         $passwordReset = $passwordResetService->findByToken($token);
         if (empty($passwordReset)) {
-            return $this->responseError('Token not found', 'TOKEN_NOT_FOUND');
+            return $this->responseError('Token not found', MessageCodeEnum::TOKEN_NOT_FOUND);
         }
         $passwordResetService->deleteByEmail($passwordReset->email);
 
         $user = $userService->findByEmail($passwordReset->email);
         if (!$user) {
-            return $this->responseError('', 'USER_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::USER_NOT_FOUND);
         }
 
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return $this->responseSuccess('', 'RESET_PASSWORD_SUCCESS', 200);
+        return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
     }
 }

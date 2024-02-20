@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use App\Traits\ApiResponser;
+use App\Enums\MessageCodeEnum;
 
 class InvalidHeaderException extends Exception
 {
@@ -13,6 +14,6 @@ class InvalidHeaderException extends Exception
 
     public function render()
     {
-        return $this->responseError($this->msgError, 'INVALID_HEADER');
+        return $this->responseError($this->msgError, MessageCodeEnum::INVALID_HEADER);
     }
 }

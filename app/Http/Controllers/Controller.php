@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
-use App\Http\Resources\DefaultCollection;
-use App\Http\Resources\BaseResource;
-use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
+use Illuminate\Http\Request;
+use App\Enums\MessageCodeEnum;
+use App\Http\Resources\BaseResource;
+use App\Http\Resources\DefaultCollection;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Controller extends BaseController
 {
@@ -22,9 +23,9 @@ class Controller extends BaseController
         $this->service->attributes = $request->all();
 
         if (!empty($list = $this->service->getList())) {
-            return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
+            return $this->responseSuccess(new DefaultCollection($list));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 'RESOURCE_NOT_FOUND');
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
@@ -33,9 +34,9 @@ class Controller extends BaseController
         $model = $this->service->find($id);
 
         if (!empty($model)) {
-            return $this->responseSuccess(new BaseResource($model), trans('_response.success.detail'));
+            return $this->responseSuccess(new BaseResource($model));
         } else {
-            return $this->responseError('', 'RESOURCE_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
@@ -44,7 +45,7 @@ class Controller extends BaseController
         if ($this->service->remove($id)) {
             return $this->responseSuccess(null, trans('_response.success.remove'));
         } else {
-            return $this->responseError('', 'UNABLE_TO_REMOVE_ITEM');
+            return $this->responseError('', MessageCodeEnum::FAILED_TO_REMOVE);
         }
     }
 
@@ -53,7 +54,7 @@ class Controller extends BaseController
         if ($this->service->delete($id)) {
             return $this->responseSuccess(null, trans('_response.success.delete'));
         } else {
-            return $this->responseError('', 'UNABLE_TO_DELETE_ITEM');
+            return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);
         }
     }
 }

@@ -7,7 +7,6 @@ use App\Helpers\FileHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DefaultCollection;
 use App\Http\Requests\Api\Client\ImportRequest;
-use App\Services\Api\EventService;
 use App\Services\Api\ClientService;
 use Illuminate\Http\Request;
 
@@ -24,9 +23,9 @@ class ClientController extends Controller
         $this->service->attributes['filters']['event_id'] = $eventId;
 
         if (!empty($list = $this->service->getList())) {
-            return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
+            return $this->responseSuccess(new DefaultCollection($list));
         } else {
-            return $this->responseError('', 'RESOURCE_NOT_FOUND');
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
@@ -44,13 +43,13 @@ class ClientController extends Controller
             $result = $this->service->import();
 
             if ($result['status'] === 'success') {
-                return $this->responseSuccess('', 'SUCCESS');
+                return $this->responseSuccess();
             } else {
                 return $this->responseError('', $result['message']);
             }
         } catch (\Throwable $th) {
             logger('Error: ' . __METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_IMPORT');
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR);
         }
     }
 }

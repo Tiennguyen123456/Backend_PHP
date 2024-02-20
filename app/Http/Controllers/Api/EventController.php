@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\MessageCodeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseResource;
 use App\Http\Resources\DefaultCollection;
@@ -26,7 +27,7 @@ class EventController extends Controller
         if ($model = $this->service->store()) {
             return $this->responseSuccess(new BaseResource($model), trans('_response.success.store'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_STORE', 400);
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
         }
     }
 
@@ -50,7 +51,7 @@ class EventController extends Controller
         if (!empty($list = $eventCustomFieldService->getList())) {
             return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 'RESOURCE_NOT_FOUND');
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
@@ -77,7 +78,7 @@ class EventController extends Controller
 
             return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
         } catch (\Throwable $th) {
-            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_STORE');
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
         }
     }
 
@@ -88,7 +89,7 @@ class EventController extends Controller
         if ($eventCustomFieldService->remove($id)) {
             return $this->responseSuccess(null, trans('_response.success.remove'));
         } else {
-            return $this->responseError(trans('_response.failed.400'), 'FAILED_TO_REMOVE');
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_REMOVE);
         }
     }
 }
