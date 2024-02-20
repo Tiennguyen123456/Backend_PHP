@@ -12,6 +12,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendMailResetPassword
 {
+    protected $service;
+
     /**
      * Create the event listener.
      */
