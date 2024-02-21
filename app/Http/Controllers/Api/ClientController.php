@@ -88,4 +88,33 @@ class ClientController extends Controller
             return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function deleteClient($eventId, $clientId)
+    {
+        try {
+            $arParam = [
+                'id'        => $clientId,
+                'event_id'  => $eventId,
+            ];
+
+            $validator = Validator::make($arParam, [
+                'id'        => ['required', 'integer', Rule::exists('clients')->where('event_id', $eventId)],
+                'event_id'  => ['required', 'integer', Rule::exists('events', 'id')],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->responseError($validator->errors(), MessageCodeEnum::VALIDATION_ERROR, 422);
+            }
+
+            if ($this->service->delete($clientId)) {
+                return $this->responseSuccess();
+            } else {
+                return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);
+            }
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR);
+        }
+    }
 }
