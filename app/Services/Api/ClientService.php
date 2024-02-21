@@ -88,37 +88,37 @@ class ClientService extends BaseService
         ];
     }
 
-    public function getCountClientByEventId($eventId, $isUpdate = false)
-    {
-        $key = sprintf(config('redis.event.client.total'), $eventId);
+    // public function getCountClientByEventId($eventId, $isUpdate = false)
+    // {
+    //     $key = sprintf(config('redis.event.client.total'), $eventId);
 
-        if ($isUpdate) Cache::forget($key);
+    //     if ($isUpdate) Cache::forget($key);
 
-        return Cache::rememberForever($key, function () use ($eventId) {
-            $filters['event_id'] = $eventId;
+    //     return Cache::rememberForever($key, function () use ($eventId) {
+    //         $filters['event_id'] = $eventId;
 
-            return $this->repo->count([], $filters);
-        });
-    }
+    //         return $this->repo->count([], $filters);
+    //     });
+    // }
 
-    public function getCountClientCheckinByEventId($eventId, $isUpdate = false)
-    {
-        $key = sprintf(config('redis.event.client.checkin'), $eventId);
+    // public function getCountClientCheckinByEventId($eventId, $isUpdate = false)
+    // {
+    //     $key = sprintf(config('redis.event.client.checkin'), $eventId);
 
-        if ($isUpdate) Cache::forget($key);
+    //     if ($isUpdate) Cache::forget($key);
 
-        return Cache::rememberForever($key, function () use ($eventId) {
-            $filters = [
-                'event_id' => $eventId,
-                'is_checkin' => 1
-            ];
-            return $this->repo->count([], $filters);
-        });
-    }
+    //     return Cache::rememberForever($key, function () use ($eventId) {
+    //         $filters = [
+    //             'event_id' => $eventId,
+    //             'is_checkin' => 1
+    //         ];
+    //         return $this->repo->count([], $filters);
+    //     });
+    // }
 
-    public function updateCache($eventId)
-    {
-        $this->getCountClientByEventId($eventId, true);
-        $this->getCountClientCheckinByEventId($eventId, true);
-    }
+    // public function updateCache($eventId)
+    // {
+    //     $this->getCountClientByEventId($eventId, true);
+    //     $this->getCountClientCheckinByEventId($eventId, true);
+    // }
 }
