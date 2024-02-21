@@ -27,10 +27,10 @@ class ClientController extends Controller
 
         if (!empty($list = $this->service->getList())) {
             $this->service->attributes['filters']['event_id'] = $eventId;
-            $totalClient = $this->service->count($eventId);
+            $totalClient = $this->service->count();
 
             $this->service->attributes['filters']['is_checkin'] = true;
-            $totalClientCheckin = $this->service->count($eventId);
+            $totalClientCheckin = $this->service->count();
 
             return $this->responseSuccess(new ClientCollection($list, $totalClient, $totalClientCheckin));
         } else {
