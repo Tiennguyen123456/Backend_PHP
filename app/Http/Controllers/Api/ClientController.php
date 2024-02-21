@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
 use App\Services\Api\ClientService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BaseResource;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Api\Client\ImportRequest;
+use App\Http\Requests\Api\Client\UpdateRequest;
 use App\Http\Resources\Client\ClientCollection;
 
 class ClientController extends Controller
@@ -50,6 +54,38 @@ class ClientController extends Controller
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function update(UpdateRequest $request, $eventId, $clientId)
+    {
+        try {
+            $arParam = [
+                'id'        => $clientId,
+                'event_id'  => $eventId,
+            ];
+
+            $validator = Validator::make($arParam, [
+                'id'        => ['required', 'integer', Rule::exists('clients')->where('event_id', $eventId)],
+                'event_id'  => ['required', 'integer', 'exists:events,id'],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->responseError($validator->errors(), MessageCodeEnum::VALIDATION_ERROR, 422);
+            }
+
+            $this->service->attributes = $request->all();
+            $this->service->attributes['id'] = $clientId;
+
+            if ($model = $this->service->store()) {
+                return $this->responseSuccess(new BaseResource($model));
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_UPDATE);
+            }
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR);
         }
     }
 }

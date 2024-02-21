@@ -26,6 +26,9 @@ final class MessageCodeEnum extends Enum
     const INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR';
     const METHOD_IS_NOT_SUPPORT = 'METHOD_IS_NOT_SUPPORT';
 
+    /* VALIDATION STATUS CODE */
+    const VALIDATION_ERROR = 'VALIDATION_ERROR';
+
     /* COMMON STATUS CODE */
     const SUCCESS = 'SUCCESS';
     const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
@@ -35,4 +38,5 @@ final class MessageCodeEnum extends Enum
     const FAILED_TO_DELETE = 'FAILED_TO_DELETE';
     const FAILED_TO_STORE = 'FAILED_TO_STORE';
     const FILE_UPLOAD_FAILED = 'FILE_UPLOAD_FAILED';
+    const FAILED_TO_UPDATE = 'FAILED_TO_UPDATE';
 }

@@ -77,6 +77,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     /* CLIENT */
     Route::get('/event/{id}/clients', [ClientController::class, 'list'])->middleware('permission:client:view');
     Route::post('/event/{id}/client/import', [ClientController::class, 'import'])->middleware('permission:client:import');
+    Route::post('/event/{id}/client/{clientId}', [ClientController::class, 'update'])->middleware('permission:client:update');
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);

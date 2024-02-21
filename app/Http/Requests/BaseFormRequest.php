@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\MessageCodeEnum;
 use App\Rules\TableHasColumn;
 use App\Rules\TableHasId;
 use App\Rules\UniqueCustomField;
@@ -32,7 +33,7 @@ class BaseFormRequest extends FormRequest
             $msgErrors = (new ValidationException($validator))->errors();
 
             throw new HttpResponseException(
-                $this->responseError($msgErrors, 422, 'VALIDATION_ERROR'),
+                $this->responseError($msgErrors, MessageCodeEnum::VALIDATION_ERROR, 422),
                 JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         }

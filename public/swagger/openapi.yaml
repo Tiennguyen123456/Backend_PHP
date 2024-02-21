@@ -844,6 +844,144 @@ paths:
                 $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
+  /event/{id}/clients:
+    get:
+      tags:
+        - Event Client
+      summary: "Show list client by Event ID"
+      operationId: getListClients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListClientResource"
+      security:
+        - bearerAuth: []
+  /event/{id}/client/import:
+    post:
+      tags:
+        - Event Client
+      summary: Import Client for Event
+      operationId: importClient
+      parameters:
+        - name: id
+          description: Event ID
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File Excel
+              required:
+                - file
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    example: null
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Failed"
+      security:
+        - bearerAuth: []
+  /event/{id}/client/{clientId}:
+    post:
+      tags:
+        - Event Client
+      summary: Update Client for Event
+      operationId: updateClient
+      parameters:
+        - name: id
+          description: Event ID
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: clientId
+          description: Client ID
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClientRequest"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    example: null
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/ErrorValidation"
+      security:
+        - bearerAuth: []
 components:
   schemas:
     Login:
@@ -934,84 +1072,25 @@ components:
               "last_login_at": "2024-02-05 15:01:51",
               "created_at": "2024-01-20 01:43:51",
               "updated_at": "2024-02-05 15:01:51",
-              "roles":
-                {
-                  "system-admin":
-                    [
-                      "user_role:view",
-                      "user_role:create",
-                      "user_role:assign-to-user",
-                      "user_permission:view",
-                      "user_permission:assign-to-role",
-                      "user_permission:revoke-from-role",
-                      "user:view",
-                      "user:create",
-                      "user:create-admin",
-                      "user:update",
-                      "user:update-admin",
-                      "user:delete",
-                      "system:view-history",
-                      "system:restore-default",
-                      "company:view",
-                      "company:create",
-                      "company:update",
-                      "company:assign-company",
-                      "company:delete",
-                      "event:view",
-                      "event:create",
-                      "event:update",
-                      "event:assign-company",
-                      "event:config",
-                      "event:delete",
-                      "event_asset:view",
-                      "event_asset:create",
-                      "event_asset:update",
-                      "event_asset:delete",
-                      "organizer:view",
-                      "organizer:create",
-                      "organizer:update",
-                      "organizer:import",
-                      "organizer:export",
-                      "client:view",
-                      "client:create",
-                      "client:update",
-                      "client:check-in",
-                      "client:import",
-                      "client:delete",
-                      "client:reset",
-                      "client:export",
-                      "checkin:view",
-                      "checkin:reset",
-                      "checkin:export",
-                      "export_log:view",
-                      "language:view",
-                      "language:create",
-                      "language:update",
-                      "language:define",
-                      "language:import-definition",
-                      "country:view",
-                      "country:update",
-                      "country:export",
-                      "campaign:view",
-                      "campaign:create",
-                      "campaign:update",
-                      "campaign:delete",
-                      "campaign:export",
-                      "email:view",
-                      "email:create",
-                      "email:update",
-                      "email:send",
-                      "email:delete",
-                      "label:view",
-                      "label:create",
-                      "label:update",
-                      "label:delete",
-                      "card:view",
-                      "card:create",
-                      "card:update",
-                      "card:delete",
-                    ],
-                },
+              "role": "system-admin",
+              "permissions": [
+                "user_role:view",
+                "user_role:create",
+                "user_role:assign-to-user",
+                "user_permission:view",
+                "user_permission:assign-to-role",
+                "user_permission:revoke-from-role",
+                "user:view",
+                "user:create",
+                "user:create-admin",
+                "user:update",
+                "user:update-admin",
+                "user:delete",
+                "company:view",
+                "company:create",
+                "company:update",
+                "company:delete",
+              ]
             }
     ListUser:
       properties:
@@ -1532,6 +1611,91 @@ components:
         required:
           - name
           - value
+    ListClientResource:
+      properties:
+        count:
+          type: integer
+          example: 10
+        totalClient:
+          type: integer
+          example: 10
+        totalCheckin:
+          type: integer
+          example: 3
+        collection:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    ClientResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        event_id:
+          type: integer
+        fullname:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        is_checkin:
+          type: integer
+          enum: [0,1]
+        type:
+          type: string
+        status:
+          type: string
+        created_by:
+          type: integer
+        updated_by:
+          type: integer
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+    UpdateClientRequest:
+      type: object
+      properties:
+        fullname:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        status:
+          type: string
+        is_checkin:
+          type: integer
+          enum: [0,1]
+    ErrorValidation:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        status_code:
+          type: integer
+          example: 422
+        message_code:
+          type: string
+          example: VALIDATION_ERROR
+        data:
+          type: object
+          example: {
+              "phone": [
+                  "The phone has already been taken."
+              ]
+          }
   parameters:
     pageParam:
       in: query

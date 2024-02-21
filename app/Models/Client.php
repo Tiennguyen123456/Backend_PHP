@@ -43,8 +43,10 @@ class Client extends BaseModel
 		'event_id'      => 'int',
 		'created_by'    => 'int',
 		'updated_by'    => 'int',
+        'is_checkin'    => 'int',
         'created_at'    => 'datetime:Y-m-d H:i:s',
 		'created_at'    => 'datetime:Y-m-d H:i:s',
+		'updated_at'    => 'datetime:Y-m-d H:i:s',
 	];
 
 	protected $fillable = [
@@ -53,6 +55,7 @@ class Client extends BaseModel
 		'email',
 		'phone',
 		'address',
+        'is_checkin',
 		'type',
 		'status',
 		'created_by',
