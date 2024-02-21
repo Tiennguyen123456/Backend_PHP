@@ -24,10 +24,15 @@ class ClientController extends Controller
     public function list(Request $request, $eventId)
     {
         $this->service->attributes = $request->all();
-        $this->service->attributes['filters']['event_id'] = $eventId;
 
         if (!empty($list = $this->service->getList())) {
-            return $this->responseSuccess(new ClientCollection($list));
+            $this->service->attributes['filters']['event_id'] = $eventId;
+            $totalClient = $this->service->count($eventId);
+
+            $this->service->attributes['filters']['is_checkin'] = true;
+            $totalClientCheckin = $this->service->count($eventId);
+
+            return $this->responseSuccess(new ClientCollection($list, $totalClient, $totalClientCheckin));
         } else {
             return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }

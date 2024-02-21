@@ -3,14 +3,26 @@
 namespace App\Http\Resources\Client;
 
 use Illuminate\Http\Request;
-use App\Services\Api\ClientService;
 use App\Http\Resources\BaseCollection;
 
 class ClientCollection extends BaseCollection
 {
-    private function clientService()
+    protected $totalClient;
+
+    protected $totalClientCheckin;
+
+    /**
+     * Create a new resource instance.
+     *
+     * @param  mixed  $resource
+     * @param  int  $totalClient
+     * @return void
+     */
+    public function __construct($resource, $totalClient = 0, $totalClientCheckin = 0)
     {
-        return new ClientService();
+        parent::__construct($resource);
+        $this->totalClient = $totalClient;
+        $this->totalClientCheckin = $totalClientCheckin;
     }
 
     /**
@@ -20,15 +32,10 @@ class ClientCollection extends BaseCollection
      */
     public function toArray(Request $request): array
     {
-        $eventId = $request->id;
-
-        $totalClient = $this->clientService()->getCountClientByEventId($eventId) ?? 0;
-        $totalCheckin = $this->clientService()->getCountClientCheckinByEventId($eventId) ?? 0;
-
         return [
             'count'         => $this->collection->count(),
-            'totalClient'   => $totalClient,
-            'totalCheckin'  => $totalCheckin,
+            'totalClient'   => $this->totalClient,
+            'totalCheckin'  => $this->totalClientCheckin,
             'collection'    => parent::toArray($request),
             'pagination'    => $this->getPaginateMeta(),
         ];
