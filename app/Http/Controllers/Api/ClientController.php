@@ -107,6 +107,8 @@ class ClientController extends Controller
             }
 
             if ($this->service->delete($clientId)) {
+                $this->service->updateCache($eventId);
+
                 return $this->responseSuccess();
             } else {
                 return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);

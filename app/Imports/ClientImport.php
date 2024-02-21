@@ -2,13 +2,14 @@
 
 namespace App\Imports;
 
-use App\Events\ClientImportedEvent;
 use App\Models\Client;
+use App\Helpers\FileHelper;
 use App\Services\Api\ClientService;
 use Illuminate\Support\Facades\Redis;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Events\ImportFailed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
@@ -32,18 +33,20 @@ class ClientImport implements
     protected $eventId;
     protected $filePath;
     protected $clientService;
+    protected $limitRecord = 20;
+    protected $redisDuplicateKey;
 
     public function __construct($eventId, $filePath)
     {
         $this->eventId = $eventId;
         $this->filePath = $filePath;
         $this->clientService = new ClientService();
+        $this->redisDuplicateKey = sprintf(config('redis.event.import.duplicate_index'), $eventId);
     }
 
     private function setDuplicateRow()
     {
-        $redisKey = sprintf(config('redis.event.import.duplicate_index'), $this->eventId);
-        Redis::rpush($redisKey, $this->getRowNumber());
+        Redis::rpush($this->redisDuplicateKey, $this->getRowNumber());
     }
 
     public function model(array $row)
@@ -102,23 +105,49 @@ class ClientImport implements
     public function registerEvents(): array
     {
         return [
+            BeforeImport::class => function () {
+                Redis::del($this->redisDuplicateKey);
+            },
             ImportFailed::class => function (ImportFailed $event) {
-                $data = [
-                    'eventId' => $this->eventId,
-                    'filePath' => $this->filePath,
-                    'message' => $event->e->getMessage(),
-                    'isSuccess' => false
-                ];
-                event(new ClientImportedEvent($data));
+                $this->eventImportFailed($event->e->getMessage());
+                $this->eventComplete();
             },
             AfterImport::class => function () {
-                $data = [
-                    'eventId' => $this->eventId,
-                    'filePath' => $this->filePath,
-                    'isSuccess' => true
-                ];
-                event(new ClientImportedEvent($data));
+                $this->eventComplete();
             },
         ];
+    }
+
+    private function eventComplete()
+    {
+        $eventId = $this->eventId;
+
+        logger('ImportComplete for EventID: ' . $eventId);
+
+        // Remove file
+        FileHelper::deleteFile($this->filePath);
+
+        // Get duplicate index
+        $redisKey           = $this->redisDuplicateKey;
+        $arDuplicateIndex   = Redis::lrange($redisKey, 0, $this->limitRecord);
+        $len                = Redis::llen($redisKey);
+        Redis::del($redisKey);
+
+        // Notify row error
+        if ($len > 0) {
+            $message  = 'ErrorDuplicate - ' . $len . ' rows error: ';
+            $message .= implode(', ', array_unique($arDuplicateIndex));
+            $message .= $len > $this->limitRecord ? '...' : '';
+
+            logger()->error($message);
+        }
+
+        // Update cache
+        $this->clientService->updateCache($eventId);
+    }
+
+    private function eventImportFailed($message)
+    {
+        logger()->error('ImportFailed EventID: ' . $this->eventId . ' with message: ' . $message);
     }
 }
