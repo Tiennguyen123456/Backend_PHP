@@ -15,17 +15,27 @@ class CompanySeeder extends Seeder
     public function run()
     {
         Company::create([
-            'is_default'        => true,
+            'is_default'        => false,
             'code'              => 'DEFLIVN',
             'name'              => 'Delfi Technologies',
-            'contact_email'     => 'delficomvietnam@gmail.com',
-            'contact_phone'     => '+84 948 490 070',
-            'website'           => 'https://delfi.com.vn/',
             'address'           => '38 Phan Đình Giót, phường 2, Tân Bình, HCM',
             'city'              => 'HCM',
             'limited_users'     => null,
             'limited_events'    => null,
             'limited_campaigns' => null,
         ]);
+
+        for ($i = 0; $i < 10; $i++) {
+            Company::create([
+                'is_default'        => false,
+                'code'              => 'DEFLIVN' . $i,
+                'name'              => 'Delfi Technologies ' . $i,
+                'address'           => $i . '38 Phan Đình Giót, phường 2, Tân Bình, HCM',
+                'city'              => 'HCM',
+                'limited_users'     => null,
+                'limited_events'    => null,
+                'limited_campaigns' => null,
+            ]);
+        }
     }
 }
