@@ -58,7 +58,7 @@ class ClientController extends Controller
             }
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR);
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -90,7 +90,7 @@ class ClientController extends Controller
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
 
-            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR);
+            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -121,7 +121,7 @@ class ClientController extends Controller
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
 
-            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR);
+            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 }
