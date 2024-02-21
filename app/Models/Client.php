@@ -88,4 +88,9 @@ class Client extends BaseModel
 	{
 		return $this->belongsTo(Event::class);
 	}
+
+	public function isCheckin()
+    {
+        return $this->is_checkin === 1;
+    }
 }

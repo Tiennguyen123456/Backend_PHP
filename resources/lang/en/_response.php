@@ -10,7 +10,8 @@
             'removed'   => 'Resource removed successfully',
         ],
         'failed' => [
-            '400'           => 'Resource not found',
-            'store_file'    => 'Failed to store file',
+            '400'                => 'Resource not found',
+            'store_file'         => 'Failed to store file',
+            'resource_not_found' => 'Resource not found',
         ],
     ];

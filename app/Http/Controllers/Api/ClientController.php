@@ -65,18 +65,10 @@ class ClientController extends Controller
     public function update(UpdateRequest $request, $eventId, $clientId)
     {
         try {
-            $arParam = [
-                'id'        => $clientId,
-                'event_id'  => $eventId,
-            ];
+            $client = $this->service->find($clientId);
 
-            $validator = Validator::make($arParam, [
-                'id'        => ['required', 'integer', Rule::exists('clients')->where('event_id', $eventId)],
-                'event_id'  => ['required', 'integer', 'exists:events,id'],
-            ]);
-
-            if ($validator->fails()) {
-                return $this->responseError($validator->errors(), MessageCodeEnum::VALIDATION_ERROR, 422);
+            if (!$client || $client->event_id !== $eventId) {
+                return $this->responseError(trans('_response.failed.resource_not_found'), MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
 
             $this->service->attributes = $request->all();
@@ -97,18 +89,10 @@ class ClientController extends Controller
     public function deleteClient($eventId, $clientId)
     {
         try {
-            $arParam = [
-                'id'        => $clientId,
-                'event_id'  => $eventId,
-            ];
+            $client = $this->service->find($clientId);
 
-            $validator = Validator::make($arParam, [
-                'id'        => ['required', 'integer', Rule::exists('clients')->where('event_id', $eventId)],
-                'event_id'  => ['required', 'integer', Rule::exists('events', 'id')],
-            ]);
-
-            if ($validator->fails()) {
-                return $this->responseError($validator->errors(), MessageCodeEnum::VALIDATION_ERROR, 422);
+            if (!$client || $client->event_id !== $eventId) {
+                return $this->responseError(trans('_response.failed.resource_not_found'), MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
 
             if ($this->service->delete($clientId)) {
@@ -122,4 +106,31 @@ class ClientController extends Controller
             return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
+
+    public function checkin($eventId, $clientId)
+    {
+        try {
+            $client = $this->service->find($clientId);
+
+            if (!$client || $client->event_id !== $eventId) {
+                return $this->responseError(trans('_response.failed.resource_not_found'), MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+
+            if (!$client->isCheckin()) {
+                $this->service->attributes['id'] = $clientId;
+                $this->service->attributes['is_checkin'] = true;
+
+                if (!$this->service->store()) {
+                    return $this->responseError('', MessageCodeEnum::FAILED_TO_UPDATE);
+                }
+            }
+
+            return $this->responseSuccess();
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
 }
