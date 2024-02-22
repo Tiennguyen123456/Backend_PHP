@@ -34,11 +34,11 @@ return new class extends Migration
             $table->string('city', 255)
                 ->nullable();
             $table->integer('limited_users')
-                ->nullable();
+                ->nullable()->default(0);
             $table->integer('limited_events')
-                ->nullable();
+                ->nullable()->default(0);
             $table->integer('limited_campaigns')
-                ->nullable();
+                ->nullable()->default(0);
             $table->string('status', 50)
                 ->default('NEW')
                 ->nullable(false);
