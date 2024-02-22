@@ -70,6 +70,7 @@ class ClientImport implements
             'phone' => $phone,
             'email' => $row['email'],
             'address' => $row['address'],
+            'group' => $row['group'] ?? '',
         ]);
     }
 

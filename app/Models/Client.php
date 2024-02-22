@@ -54,6 +54,7 @@ class Client extends BaseModel
 		'fullname',
 		'email',
 		'phone',
+        'group',
 		'address',
         'is_checkin',
 		'type',
