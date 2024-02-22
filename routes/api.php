@@ -32,15 +32,13 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/connect', function () {
         echo "Connected!";
     });
+});
 
-    Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('throttle:2,1')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'sendMailResetPassword']);
-    Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword']);
 });
-
-Route::get('/connect', function () {
-    echo "Connected!";
-});
+Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword']);
 
 Route::middleware('role:admin')->get('/admin', function () {
 

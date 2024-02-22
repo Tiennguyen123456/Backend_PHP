@@ -1,21 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CheckIn System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config('app.name') }}</title>
 </head>
 <body>
-    <h1>{{ $mailData['title'] }}</h1>
-    <p>{{ $mailData['body'] }}</p>
+    <h2>{{ $mailData['title'] }}</h2>
 
-    <a href="{{ $mailData['url'] }}">Link Reset</a>
+    <p>Dear User,</p>
 
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>To proceed with the password reset process, please follow the instructions below:</p>
 
-    <p>Thank you</p>
+    <ol>
+        <li>Visit the password reset page by clicking on the following link: <a href="{{ $mailData['reset_password_url'] }}">Password Reset Link</a></li>
+        <li>Once you're on the password reset page, you will be prompted to enter a new password for your account.</li>
+    </ol>
+
+    <p>If you did not initiate this password reset request or believe it was made in error, please disregard this email. Your current password will remain unchanged.</p>
+
+    <p>For security purposes, please ensure that your new password is unique and not easily guessable.</p>
+
+    <p>If you have any questions or require further assistance, please don't hesitate to contact our support team at <a href="mailto:[Your Support Email]">[Your Support Email]</a> or by replying to this email.</p>
+
+    <p>Thank you for your attention to this matter.</p>
+
+    <p>Best regards,</p>
+
+    <p><em>Note: Please avoid sharing your password with anyone and ensure to keep it confidential.</em></p>
 </body>
 </html>

@@ -35,14 +35,12 @@ class SendMailResetPassword
         ];
         $this->service->store();
 
-
         // Sendmail reset password
-        $url = config('app.fe_url') . '/reset-password/?token=' . $token;
+        $reset_password_url = config('app.reset_password_url') . '?token=' . $token;
 
         $mailData = [
-            'title' => 'Mail from ItSolutionStuff.com',
-            'body' => 'This is for testing email using smtp.',
-            'url' => $url,
+            'title'              => 'Mail from ' . config('app.name'),
+            'reset_password_url' => $reset_password_url,
         ];
 
         Mail::to($event->user->email)->send(new MailResetPassword($mailData));
