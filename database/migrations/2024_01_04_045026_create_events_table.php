@@ -13,23 +13,19 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id()->autoIncrement();
-            $table->foreignId('company_id')
-                ->nullable(false);
+            $table->foreignId('company_id')->nullable(false);
             $table->string('code', 200)->nullable(false);
             $table->string('name', 255)->nullable(false);
             $table->string('description', 255)->nullable();
             $table->string('location', 255)->nullable();
             $table->timestamp('start_time')->nullable(false);
             $table->timestamp('end_time')->nullable(false);
-            $table->json('main_field_templates')->nullable();
             $table->text('email_template')->nullable();
             $table->text('cards_template')->nullable();
             $table->string('note', 255)->nullable();
             $table->string('status', 50)->default('NEW')->nullable(false);
-            $table->foreignId('created_by')
-                ->nullable();
-            $table->foreignId('updated_by')
-                ->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
             $table->timestamps();
 
             /* INDEX */

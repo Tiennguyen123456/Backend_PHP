@@ -119,6 +119,11 @@ class ClientImport implements
         ];
     }
 
+    /**
+     * Action when import complete
+     * - Remove file excel
+     * - Notify error duplicate
+     */
     private function eventComplete()
     {
         $eventId = $this->eventId;
@@ -142,9 +147,6 @@ class ClientImport implements
 
             logger()->error($message);
         }
-
-        // Update cache
-        $this->clientService->updateCache($eventId);
     }
 
     private function eventImportFailed($message)
