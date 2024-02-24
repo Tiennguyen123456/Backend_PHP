@@ -17,8 +17,9 @@ class StoreRequest extends BaseFormRequest
         $ruleMores = [];
 
         $rules = [
-            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($this->id)],
-            'guard_name' => ['nullable', 'string', 'max:255']
+            'name'          => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($this->id)],
+            'guard_name'    => ['nullable', 'string', 'max:255'],
+            'enable'        => ['nullable', 'boolean'],
         ];
 
         return array_merge($rules, $ruleMores);
