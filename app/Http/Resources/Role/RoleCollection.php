@@ -14,6 +14,9 @@ class RoleCollection extends BaseCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'collection'    => parent::toArray($request),
+            'pagination'    => $this->getPaginateMeta(),
+        ];
     }
 }
