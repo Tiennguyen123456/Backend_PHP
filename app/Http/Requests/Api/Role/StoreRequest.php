@@ -14,17 +14,13 @@ class StoreRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('roles')->where(function ($query) {
-                    $guardName = $this->guard_name ?? 'api';
-                    return $query->where('guard_name', $guardName);
-                }),
-            ],
+        $ruleMores = [];
+
+        $rules = [
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($this->id)],
             'guard_name' => ['nullable', 'string', 'max:255']
         ];
+
+        return array_merge($rules, $ruleMores);
     }
 }

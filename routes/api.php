@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/country/fetch-global-countries', [CountryController::class, 'fetchGobalCountry']);
 
     /* ROLE */
-    Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:user_role:view');
+    Route::get('/roles', [RoleController::class, 'list'])->middleware('permission:user_role:view');
     Route::post('/role/store', [RoleController::class, 'store'])->middleware('permission:user_role:create');
     // Route::post('/role/assign', [RoleController::class, 'assign'])->middleware('permission:user_role:assign-to-user');
 

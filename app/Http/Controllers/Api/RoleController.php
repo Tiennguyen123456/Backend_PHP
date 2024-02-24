@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
 use App\Services\Api\RoleService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Role\RoleCollection;
 use App\Http\Resources\Role\RoleResource;
 use App\Http\Requests\Api\Role\StoreRequest;
 use App\Http\Requests\Api\Role\AssignRequest;
@@ -13,6 +16,17 @@ class RoleController extends Controller
     public function __construct(RoleService $service)
     {
         $this->service = $service;
+    }
+
+    public function list(Request $request)
+    {
+        $this->service->attributes = $request->all();
+
+        if (!empty($list = $this->service->getList())) {
+            return $this->responseSuccess(new RoleCollection($list), trans('_response.success.index'));
+        } else {
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+        }
     }
 
     public function store(StoreRequest $request)
