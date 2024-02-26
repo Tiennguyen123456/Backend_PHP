@@ -4,9 +4,9 @@ info:
   version: 1.0.0
 servers:
   # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/minhtanle/CheckinSystem/1.0.0
   - url: http://backendcheckin.test/api
+    description: SwaggerHub API Auto Mocking
+  - url: https://virtserver.swaggerhub.com/minhtanle/CheckinSystem/1.0.0
 tags:
   - name: Authentication
     description: Operations about authentication
@@ -186,6 +186,9 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateUser"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
       responses:
         "200":
           description: Successful
@@ -269,6 +272,9 @@ paths:
       requestBody:
         content:
           application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRole"
+          multipart/form-data:
             schema:
               $ref: "#/components/schemas/CreateRole"
       responses:
@@ -464,6 +470,16 @@ paths:
       summary: "Get list company"
       operationId: companies
       parameters:
+        - name: filters[tax_code]
+          in: query
+          description: Taxcode
+          schema:
+            type: string
+        - name: search[name]
+          in: query
+          description: Search like name
+          schema:
+            type: string
         - $ref: "#/components/parameters/pageParam"
         - $ref: "#/components/parameters/pageSizeParam"
       responses:
@@ -575,6 +591,9 @@ paths:
       requestBody:
         content:
           application/json:
+            schema:
+              $ref: "#/components/schemas/StoreCompany"
+          multipart/form-data:
             schema:
               $ref: "#/components/schemas/StoreCompany"
       responses:
@@ -883,7 +902,7 @@ paths:
     post:
       tags:
         - Event Client
-      summary: Import Client for Event
+      summary: Import Client from excel
       operationId: importClient
       parameters:
         - name: id
@@ -935,7 +954,7 @@ paths:
     post:
       tags:
         - Event Client
-      summary: Update Client for Event
+      summary: Update Client info
       operationId: updateClient
       parameters:
         - name: id
@@ -980,6 +999,38 @@ paths:
             application/json:
               schema:
                   $ref: "#/components/schemas/ErrorValidation"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Event Client
+      summary: Delete client by id
+      operationId: deleteClient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: clientId
+          description: Client ID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
 components:
@@ -1304,6 +1355,7 @@ components:
           type: integer
         status:
           type: string
+          enum: [ACTIVE,NEW,INACTIVE]
         company_id:
           type: integer
       required:
@@ -1482,11 +1534,15 @@ components:
       properties:
         id:
           type: integer
+        code:
+          type: string
+        name:
+          type: string
+        tax_code:
+          type: string
         address:
           type: string
         city:
-          type: string
-        code:
           type: string
         contact_email:
           type: string
@@ -1501,8 +1557,6 @@ components:
         limited_users:
           type: integer
           example: null
-        name:
-          type: string
         status:
           type: string
           enum: [ACTIVE,NEW,INACTIVE]
