@@ -131,4 +131,5 @@ return [
         ],
     ],
 
+    'disable' => env('MAIL_DISABLE', false),
 ];
