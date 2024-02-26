@@ -28,8 +28,8 @@ class StoreRequest extends BaseFormRequest
 
         if ($this->id) {
             $ruleMores = [
-                'username'    => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->username, 'username')],
-                'email'       => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->email, 'email')],
+                'username'    => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->id)],
+                'email'       => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->id)],
             ];
         }
 
