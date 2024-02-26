@@ -38,7 +38,7 @@ class AuthController extends Controller
 
         $user = $userService->findByEmail($request->email);
         if (!$user) {
-            return $this->responseError('', MessageCodeEnum::USER_NOT_FOUND);
+            return $this->responseError('', MessageCodeEnum::EMAIL_NOT_FOUND);
         }
 
         event(new UserCreatedEvent($user));
