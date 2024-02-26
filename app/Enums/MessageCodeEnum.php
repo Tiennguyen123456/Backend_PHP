@@ -39,4 +39,5 @@ final class MessageCodeEnum extends Enum
     const FAILED_TO_STORE = 'FAILED_TO_STORE';
     const FILE_UPLOAD_FAILED = 'FILE_UPLOAD_FAILED';
     const FAILED_TO_UPDATE = 'FAILED_TO_UPDATE';
+    const EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND';
 }

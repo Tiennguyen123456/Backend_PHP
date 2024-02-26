@@ -26,10 +26,11 @@ class StoreRequest extends BaseFormRequest
             'website'           => ['nullable', 'string', 'max:255'],
             'address'           => ['nullable', 'string', 'max:255'],
             'city'              => ['nullable', 'string', 'max:255'],
-            'limited_users'     => ['nullable', 'numeric', 'min:1'],
-            'limited_events'    => ['nullable', 'numeric', 'min:1'],
-            'limited_campaigns' => ['nullable', 'numeric', 'min:1'],
+            'limited_users'     => ['nullable', 'numeric', 'min:0'],
+            'limited_events'    => ['nullable', 'numeric', 'min:0'],
+            'limited_campaigns' => ['nullable', 'numeric', 'min:0'],
             'status'            => ['nullable', 'string', 'max:50', Rule::in(array_keys(Company::getStatuesValid()))],
+            'tax_code'          => ['nullable', 'string', 'max:50', Rule::unique('companies')->ignore($this->id)],
         ];
 
         if (empty($this->id)) {

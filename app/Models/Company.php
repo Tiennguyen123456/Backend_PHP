@@ -51,6 +51,7 @@ class Company extends BaseModel
 		'is_default',
 		'code',
 		'name',
+        'tax_code',
         'contact_email',
         'contact_phone',
         'website',

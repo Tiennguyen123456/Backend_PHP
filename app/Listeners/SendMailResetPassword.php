@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Api\PasswordResetService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendMailResetPassword
+class SendMailResetPassword implements ShouldQueue
 {
     protected $service;
 
@@ -43,6 +43,10 @@ class SendMailResetPassword
             'reset_password_url' => $reset_password_url,
         ];
 
-        Mail::to($event->user->email)->send(new MailResetPassword($mailData));
+        if (config('mail.disable')) {
+            logger()->info('Send mail reset password ' . json_encode($mailData));
+        } else {
+            Mail::to($event->user->email)->send(new MailResetPassword($mailData));
+        }
     }
 }
