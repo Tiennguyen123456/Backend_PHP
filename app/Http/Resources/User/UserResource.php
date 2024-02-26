@@ -15,9 +15,19 @@ class UserResource extends BaseResource
      */
     public function toArray(Request $request): array
     {
+        $roleData = null;
+
+        if ($role = $this->roles()->first()) {
+            $roleData = [
+                'id' => $role->id,
+                'name' => $role->name
+            ];
+        }
+
         $this->attrMores = [
             'last_login_at' => Helper::getDateTimeFormat($this->last_login_at),
-            'role'         => $this->getRoleNames()->first(),
+            'role'          => $roleData,
+            'company'       => $this->company_id ? $this->company()->first(['id', 'name']) : null
         ];
 
         $this->attrExcepts = [
