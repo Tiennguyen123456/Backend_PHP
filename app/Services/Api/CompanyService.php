@@ -39,7 +39,6 @@ class CompanyService extends BaseService
             $attrMores = [
                 'id'            => $this->attributes['id'],
                 'updated_by'    => auth()->user()->id,
-                'status'        => Company::STATUS_ACTIVE
             ];
         }
 
