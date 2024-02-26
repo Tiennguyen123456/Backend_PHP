@@ -24,10 +24,12 @@ class UserResource extends BaseResource
             ];
         }
 
+        $companyData = $this->company_id ? $this->company()->first(['id', 'name']) : null;
+
         $this->attrMores = [
             'last_login_at' => Helper::getDateTimeFormat($this->last_login_at),
             'role'          => $roleData,
-            'company'       => $this->company_id ? $this->company()->first(['id', 'name']) : null
+            'company'       => $companyData,
         ];
 
         $this->attrExcepts = [
