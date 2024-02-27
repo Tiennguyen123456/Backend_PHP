@@ -13,9 +13,32 @@ abstract class Repository implements RepositoryInterface
         $this->setModel();
     }
 
-    public function getAll()
+    public function getAll($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0)
     {
-        return $this->model->get();
+        $query = $this->model;
+
+        if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
+            $query = $query->where('status', '!=', $query::STATUS_DELETED);
+        }
+
+        if (count($searches)) {
+            $query = $this->addSearchQuery($query, $searches);
+        }
+
+        if (count($filters)) {
+            $query = $this->addFilterQuery($query, $filters);
+        }
+
+        if ($orderByDesc) {
+            $query = $query->orderBy($orderByColumn, 'desc');
+        } else {
+            $query = $query->orderBy($orderByColumn, 'asc');
+        }
+        if ($limit) {
+            $query = $query->limit($limit);
+        }
+
+        return $query->get();
     }
 
     public function setModel()
