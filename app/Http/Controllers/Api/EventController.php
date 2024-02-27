@@ -66,6 +66,22 @@ class EventController extends Controller
         }
     }
 
+    public function remove($id)
+    {
+        try {
+            if ($this->service->remove($id)) {
+                return $this->responseSuccess(trans('_response.success.remove'), MessageCodeEnum::SUCCESS);
+            } else {
+                return $this->responseError('', MessageCodeEnum::FAILED_TO_REMOVE);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+
     public function assignCompany(AssignCompanyRequest $request)
     {
         $this->service->attributes = $request->all();

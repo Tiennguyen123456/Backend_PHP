@@ -2,8 +2,10 @@
 
 namespace App\Services\Api;
 
-use App\Repositories\Event\EventRepository;
 use App\Services\BaseService;
+use App\Repositories\Event\EventRepository;
+use App\Services\Api\EventCustomFieldService;
+use Illuminate\Support\Facades\DB;
 
 class EventService extends BaseService
 {
@@ -126,5 +128,30 @@ class EventService extends BaseService
         }
 
         return [];
+    }
+
+    public function remove($id)
+    {
+        DB::beginTransaction();
+        try {
+            $this->attributes = [
+                'status' => $this->repo->getModel()::STATUS_DELETED
+            ];
+
+            if ($this->repo->update($id, $this->attributes)){
+                $eventCustomFieldService = app(EventCustomFieldService::class);
+                $eventCustomFieldService->removeByEventId($id);
+
+                DB::commit();
+
+                return true;
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return false;
+        }
     }
 }

@@ -7,7 +7,7 @@
             'assign'    => 'Model assigned successfully',
             'revoke'    => 'Resource revoked successfully',
             'delete'    => 'Resource deleted successfully',
-            'removed'   => 'Resource removed successfully',
+            'remove'    => 'Resource removed successfully',
         ],
         'failed' => [
             '400'                => 'Resource not found',

@@ -50,4 +50,9 @@ class EventCustomFieldRepository extends Repository implements EventCustomFieldR
     {
         return $this->model->updateOrCreate($filters, $attrs);
     }
+
+    public function updateWithCondition($filters, $attrs)
+    {
+        return $this->model->where($filters)->update($attrs);
+    }
 }

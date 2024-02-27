@@ -53,4 +53,12 @@ class EventCustomFieldService extends BaseService
     {
         return $this->repo->updateOrCreate($filters, $attrs);
     }
+
+    public function removeByEventId($eventId)
+    {
+        return $this->repo->updateWithCondition(
+            ['event_id' => $eventId],
+            ['status' => $this->repo->getModel()::STATUS_DELETED]
+        );
+    }
 }

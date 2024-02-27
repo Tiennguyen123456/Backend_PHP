@@ -7,7 +7,7 @@
             'assign'    => 'Đã gán thành công',
             'revoke'    => 'Đã thu hồi tài nguyên thành công',
             'delete'    => 'Đã xóa tài nguyên thành công',
-            'removed'   => 'Đã xóa tài nguyên thành công',
+            'remove'    => 'Đã xóa tài nguyên thành công',
         ],
         'failed' => [
             '400'                => 'Không tìm thấy dữ liệu',
