@@ -977,6 +977,9 @@ paths:
             type: integer
       requestBody:
         content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UpdateClientRequest"
           application/json:
             schema:
               $ref: "#/components/schemas/UpdateClientRequest"
@@ -1745,6 +1748,10 @@ components:
         is_checkin:
           type: integer
           enum: [0,1]
+      required:
+        - fullname
+        - email
+        - phone
     ErrorValidation:
       type: object
       properties:

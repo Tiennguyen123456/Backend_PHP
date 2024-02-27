@@ -1,16 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ClientController;
-use App\Http\Controllers\Api\CompanyController;
-use App\Http\Controllers\Api\CountryController;
-use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\PermissionController;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
