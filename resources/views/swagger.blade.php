@@ -27,7 +27,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])
   <script>
     window.onload = () => {
       window.ui = SwaggerUIBundle({
-        url: 'http://backendcheckin.test/swagger/openapi.yaml',
+        url: '/swagger/openapi.yaml',
         dom_id: '#swagger-ui',
         presets: [
           SwaggerUIBundle.presets.apis,
