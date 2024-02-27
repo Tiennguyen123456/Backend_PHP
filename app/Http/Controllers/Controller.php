@@ -20,41 +20,65 @@ class Controller extends BaseController
 
     public function index(Request $request)
     {
-        $this->service->attributes = $request->all();
+        try {
+            $this->service->attributes = $request->all();
 
-        if (!empty($list = $this->service->getList())) {
-            return $this->responseSuccess(new DefaultCollection($list));
-        } else {
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
+            if (!empty($list = $this->service->getList())) {
+                return $this->responseSuccess(new DefaultCollection($list));
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
     public function detail($id)
     {
-        $model = $this->service->find($id);
+        try {
+            $model = $this->service->find($id);
 
-        if (!empty($model)) {
-            return $this->responseSuccess(new BaseResource($model));
-        } else {
-            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            if (!empty($model)) {
+                return $this->responseSuccess(new BaseResource($model));
+            } else {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
     public function remove($id)
     {
-        if ($this->service->remove($id)) {
-            return $this->responseSuccess(null, trans('_response.success.remove'));
-        } else {
-            return $this->responseError('', MessageCodeEnum::FAILED_TO_REMOVE);
+        try {
+            if ($this->service->remove($id)) {
+                return $this->responseSuccess(trans('_response.success.remove'), MessageCodeEnum::SUCCESS);
+            } else {
+                return $this->responseError('', MessageCodeEnum::FAILED_TO_REMOVE);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
     public function delete($id)
     {
-        if ($this->service->delete($id)) {
-            return $this->responseSuccess(null, trans('_response.success.delete'));
-        } else {
-            return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);
+        try {
+            if ($this->service->delete($id)) {
+                return $this->responseSuccess(trans('_response.success.delete'), MessageCodeEnum::SUCCESS);
+            } else {
+                return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 }
