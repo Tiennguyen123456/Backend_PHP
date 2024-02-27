@@ -22,6 +22,9 @@ paths:
       operationId: login
       requestBody:
         content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Login"
           application/json:
             schema:
               $ref: "#/components/schemas/Login"
@@ -656,6 +659,9 @@ paths:
       description: "Create : not send ID <br><b>Update : post data with ID</b>"
       requestBody:
         content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/StoreEvent"
           application/json:
             schema:
               $ref: "#/components/schemas/StoreEvent"
@@ -1044,7 +1050,11 @@ components:
           example: sysadmin@delfi.vn
         password:
           type: string
+          minLength: 6
           example: sysadmin@
+      required:
+        - email
+        - password
     LoginSuccess:
       type: object
       properties:
@@ -1063,7 +1073,7 @@ components:
               "name": "System Admin",
               "email": "sysadmin@delfi.vn",
               "type": "SYSTEM_ADMIN",
-              "access_token": "18|whktRQmrURWof7wC6uaXwvz1XGsCF1V2840r2pMR2841301e",
+              "access_token": "1|whktRQmrURWof7wC6uaXwvz1XGsCF1V2840r2pMR2841301e",
               "token_type": "Bearer",
             }
     UnauthorizedError:
