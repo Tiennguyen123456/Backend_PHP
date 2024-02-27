@@ -647,7 +647,7 @@ paths:
                     type: string
                     example: null
                   data:
-                    $ref: "#/components/schemas/ListCompany"
+                    $ref: "#/components/schemas/ListEvent"
       security:
         - bearerAuth: []
   /event/store:
@@ -1488,6 +1488,14 @@ components:
             $ref: "#/components/schemas/CompanyResource"
         pagination:
           $ref: "#/components/schemas/Pagination"
+    ListEvent:
+      properties:
+        collection:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
     ListEventCustomField:
       properties:
         collection:
@@ -1618,12 +1626,16 @@ components:
         id:
           type: integer
           example: 1
+        company_id:
+          type: integer
         code:
           type: string
         name:
           type: string
-        company_id:
-          type: integer
+        description:
+          type: string
+        location:
+          type: string
         start_time:
           type: string
           format: date
@@ -1632,9 +1644,9 @@ components:
           type: string
           format: date
           example: '2023-12-31 22:00:00'
-        description:
+        email_content:
           type: string
-        location:
+        cards_content:
           type: string
         status:
           type: string
