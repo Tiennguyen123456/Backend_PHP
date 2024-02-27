@@ -11,6 +11,7 @@
         ],
         'failed' => [
             '400'                => 'Không tìm thấy dữ liệu',
+            '500'                => 'Lỗi máy chủ nội bộ',
             'store_file'         => 'Không thể lưu trữ tập tin',
             'resource_not_found' => 'Không tìm thấy dữ liệu',
         ],

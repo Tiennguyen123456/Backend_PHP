@@ -11,6 +11,7 @@
         ],
         'failed' => [
             '400'                => 'Resource not found',
+            '500'                => 'Internal server error',
             'store_file'         => 'Failed to store file',
             'resource_not_found' => 'Resource not found',
         ],

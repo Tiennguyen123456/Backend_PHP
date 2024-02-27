@@ -101,7 +101,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (QueryException $e, Request $request) {
             if ($request->expectsJson()) {
                 $msgError = ['message' => 'Internal Server Error'];
-                return $this->responseError($msgError, MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+                return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
             }
         });
     }
