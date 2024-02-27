@@ -8,10 +8,8 @@ use App\Enums\MessageCodeEnum;
 use App\Services\Api\ClientService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseResource;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Api\Client\StoreRequest;
 use App\Http\Requests\Api\Client\ImportRequest;
-use App\Http\Requests\Api\Client\UpdateRequest;
 use App\Http\Resources\Client\ClientCollection;
 
 class ClientController extends Controller
@@ -38,6 +36,23 @@ class ClientController extends Controller
         }
     }
 
+    public function store(StoreRequest $request, $eventId)
+    {
+        try {
+            $this->service->attributes = $request->all();
+            $this->service->attributes['event_id'] = $eventId;
+
+            if ($model = $this->service->store()) {
+                return $this->responseSuccess(new BaseResource($model), trans('_response.success.store'));
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+            }
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
     public function import(ImportRequest $request, $eventId)
     {
         try {
@@ -59,30 +74,6 @@ class ClientController extends Controller
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
-        }
-    }
-
-    public function update(UpdateRequest $request, $eventId, $clientId)
-    {
-        try {
-            $client = $this->service->find($clientId);
-
-            if (!$client || $client->event_id !== $eventId) {
-                return $this->responseError(trans('_response.failed.resource_not_found'), MessageCodeEnum::RESOURCE_NOT_FOUND);
-            }
-
-            $this->service->attributes = $request->all();
-            $this->service->attributes['id'] = $clientId;
-
-            if ($model = $this->service->store()) {
-                return $this->responseSuccess(new BaseResource($model));
-            } else {
-                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_UPDATE);
-            }
-        } catch (\Throwable $th) {
-            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-
-            return $this->responseError('', MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 

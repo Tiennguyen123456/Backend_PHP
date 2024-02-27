@@ -5,7 +5,6 @@ namespace App\Services\Api;
 use App\Imports\ClientImport;
 use App\Services\BaseService;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Repositories\Client\ClientRepository;
@@ -88,37 +87,42 @@ class ClientService extends BaseService
         ];
     }
 
-    // public function getCountClientByEventId($eventId, $isUpdate = false)
-    // {
-    //     $key = sprintf(config('redis.event.client.total'), $eventId);
+    public function store()
+    {
+        $attrs = [
+            'phone'         => $this->attributes['phone'],
+            'email'         => $this->attributes['email'] ?? null,
+            'group'         => $this->attributes['group'] ?? null,
+            'fullname'      => $this->attributes['fullname'] ?? null,
+            'address'       => $this->attributes['address'] ?? null,
+            'type'          => $this->attributes['type'] ?? null,
+            'status'        => $this->attributes['status'] ?? null,
+            'is_checkin'    => $this->attributes['is_checkin'] ?? null,
+        ];
 
-    //     if ($isUpdate) Cache::forget($key);
+        if (!isset($this->attributes['id'])) {
+            $attrMores = [
+                'created_by'    => auth()->user()->id,
+                'updated_by'    => auth()->user()->id
+            ];
+        } else {
+            $attrMores = [
+                'id'            => $this->attributes['id'],
+                'updated_by'    => auth()->user()->id,
+            ];
+        }
 
-    //     return Cache::rememberForever($key, function () use ($eventId) {
-    //         $filters['event_id'] = $eventId;
+        return $this->storeAs($attrs, $attrMores);
+    }
 
-    //         return $this->repo->count([], $filters);
-    //     });
-    // }
-
-    // public function getCountClientCheckinByEventId($eventId, $isUpdate = false)
-    // {
-    //     $key = sprintf(config('redis.event.client.checkin'), $eventId);
-
-    //     if ($isUpdate) Cache::forget($key);
-
-    //     return Cache::rememberForever($key, function () use ($eventId) {
-    //         $filters = [
-    //             'event_id' => $eventId,
-    //             'is_checkin' => 1
-    //         ];
-    //         return $this->repo->count([], $filters);
-    //     });
-    // }
-
-    // public function updateCache($eventId)
-    // {
-    //     $this->getCountClientByEventId($eventId, true);
-    //     $this->getCountClientCheckinByEventId($eventId, true);
-    // }
+    public function getAll()
+    {
+        return $this->repo->getAll(
+            $this->getSearch(),
+            $this->getFilters(),
+            $this->attributes['orderBy'] ?? 'updated_at',
+            $this->attributes['orderDesc'] ?? true,
+            $this->attributes['limit'] ?? 0
+        );
+    }
 }

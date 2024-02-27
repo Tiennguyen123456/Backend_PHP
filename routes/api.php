@@ -75,7 +75,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     /* CLIENT */
     Route::get('/event/{id}/clients', [ClientController::class, 'list'])->middleware('permission:client:view');
     Route::post('/event/{id}/client/import', [ClientController::class, 'import'])->middleware('permission:client:import');
-    Route::post('/event/{id}/client/{clientId}', [ClientController::class, 'update'])->middleware('permission:client:update');
+    Route::post('/event/{id}/client', [ClientController::class, 'store'])->middleware('permission:client:create');
     Route::post('/event/{id}/client/{clientId}/checkin', [ClientController::class, 'checkin'])->middleware('permission:client:update');
     Route::delete('/event/{id}/client/{clientId}', [ClientController::class, 'deleteClient'])->middleware('permission:client:delete');
 
