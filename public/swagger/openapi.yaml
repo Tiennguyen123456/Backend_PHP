@@ -1629,6 +1629,10 @@ components:
           type: string
           format: date
           example: '2023-12-31 22:00:00'
+        description:
+          type: string
+        location:
+          type: string
         status:
           type: string
           enum: [ACTIVE,NEW,INACTIVE,DONE,CANCEL]
