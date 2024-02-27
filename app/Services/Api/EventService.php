@@ -24,22 +24,22 @@ class EventService extends BaseService
         ];
 
         if (!isset($this->attributes['id'])) {
-
             $attrMores = [
                 'company_id'            => $this->attributes['company_id'],
                 'code'                  => $this->attributes['code'],
                 'created_by'            => auth()->user()->id,
                 'updated_by'            => auth()->user()->id,
             ];
+
+            return $this->repo->create(array_merge($attrs, $attrMores));
         } else {
             $attrMores = [
                 'id'            => $this->attributes['id'],
                 'updated_by'    => auth()->user()->id,
-                'status'        => $this->attributes['status']
             ];
-        }
 
-        return $this->storeAs($attrs, $attrMores);
+            return $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));
+        }
     }
 
     public function assignCompany()
