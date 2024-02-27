@@ -21,7 +21,7 @@ class StoreRequest extends BaseFormRequest
             'code'              => ['required', 'string', 'max:50'],
             'name'              => ['required', 'string', 'max:255'],
             'start_time'        => ['required', 'date'],
-            'end_time'          => ['required', 'date'],
+            'end_time'          => ['required', 'date', 'after:start_time'],
             'company_id'        => ['required', 'numeric', $this->tableHasId('companies')],
             'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(Event::getStatuesValid()))],
             'description'       => ['nullable', 'string', 'max:255'],

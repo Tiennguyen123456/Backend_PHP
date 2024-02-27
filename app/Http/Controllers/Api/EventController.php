@@ -8,10 +8,10 @@ use App\Services\Api\EventService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DefaultCollection;
 use App\Http\Requests\Api\Event\StoreRequest;
-use App\Http\Resources\Event\EventCollection;
 use App\Services\Api\EventCustomFieldService;
 use App\Http\Requests\Api\Event\AssignCompanyRequest;
 use App\Http\Requests\Api\Event\StoreCustomFieldRequest;
+use App\Http\Resources\Event\EventResource;
 
 class EventController extends Controller
 {
@@ -26,7 +26,7 @@ class EventController extends Controller
             $this->service->attributes = $request->all();
 
             if ($model = $this->service->store()) {
-                return $this->responseSuccess(new BaseResource($model), trans('_response.success.store'));
+                return $this->responseSuccess(new EventResource($model), trans('_response.success.store'));
             } else {
                 return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
             }

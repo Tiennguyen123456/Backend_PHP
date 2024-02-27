@@ -9,10 +9,6 @@ use Illuminate\Http\Request;
 
 class EventResource extends BaseResource
 {
-    public function client()
-    {
-        return new ClientService();
-    }
     /**
      * Transform the resource into an array.
      *
@@ -25,7 +21,8 @@ class EventResource extends BaseResource
         ];
 
         $this->attrMores = [
-
+            'cards_template' => $this->cards_template,
+            'email_template' => $this->email_template,
         ];
 
         $this->attrExcepts = [
