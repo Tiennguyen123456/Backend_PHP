@@ -16,8 +16,9 @@ class StoreCustomFieldRequest extends BaseFormRequest
         $ruleMores = [];
 
         $rules = [
-            '*.name'      => ['required', 'string'],
-            '*.value'     => ['required', 'string'],
+            '*.name'        => ['required', 'string'],
+            '*.value'       => ['required', 'string'],
+            '*.description' => ['required', 'string'],
         ];
 
         return array_merge($rules, $ruleMores);

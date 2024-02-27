@@ -31,7 +31,7 @@ class StoreRequest extends BaseFormRequest
 
         if (!empty($this->id)) {
             $ruleMores = [
-                'id'    => ['required', 'numeric', $this->tableHasId('events')],
+                'id'    => ['numeric', $this->tableHasId('events')],
             ];
         }
 

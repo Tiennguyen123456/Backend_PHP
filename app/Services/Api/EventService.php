@@ -21,6 +21,8 @@ class EventService extends BaseService
             'description'       => $this->attributes['description'] ?? null,
             'location'          => $this->attributes['location'] ?? null,
             'status'            => $this->attributes['status'] ?? null,
+            'email_content'     => $this->attributes['email_content'] ?? null,
+            'cards_content'     => $this->attributes['cards_content'] ?? null,
         ];
 
         if (!isset($this->attributes['id'])) {

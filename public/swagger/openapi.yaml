@@ -1606,13 +1606,19 @@ components:
           example: '2023-12-31 22:00:00'
         company_id:
           type: integer
-        description:
-          type: string
-        location:
-          type: string
         status:
           type: string
           enum: [ACTIVE,NEW,INACTIVE,DONE,CANCEL]
+        description:
+          type: string
+        email_content:
+          type: string
+          description: Content for send mail
+        cards_content:
+          type: string
+          description: Content for send card
+        location:
+          type: string
       required:
         - name
         - code
@@ -1661,6 +1667,24 @@ components:
         updated_at:
           type: string
           example: "2024-01-20 01:43:46"
+        main_fields:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+        custom_fields:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
     EventCustomFieldResource:
       type: object
       properties:
@@ -1691,9 +1715,12 @@ components:
             type: string
           value:
             type: string
+          description:
+            type: string
         required:
           - name
           - value
+          - description
     ListClientResource:
       properties:
         count:

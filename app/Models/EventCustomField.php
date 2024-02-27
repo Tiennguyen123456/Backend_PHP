@@ -11,15 +11,16 @@ class EventCustomField extends BaseModel
 		'code',
 		'name',
         'value',
+		'description',
 		'status',
 		'created_by',
 		'updated_by'
 	];
 
     protected $casts = [
-        'event_id' => 'integer',
-        'created_by' => 'integer',
-        'updated_by' => 'integer',
+        'event_id' => 'int',
+        'created_by' => 'int',
+        'updated_by' => 'int',
 		'created_at' => 'datetime:Y-m-d H:i:s',
 		'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
