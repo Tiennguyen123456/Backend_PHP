@@ -879,6 +879,7 @@ paths:
         - name: id
           in: path
           required: true
+          description: Event id
           schema:
             type: integer
         - $ref: "#/components/parameters/pageParam"
@@ -902,6 +903,40 @@ paths:
                     example: null
                   data:
                     $ref: "#/components/schemas/ListClientResource"
+      security:
+        - bearerAuth: []
+  /event/{id}/client/summary:
+    get:
+      tags:
+        - Event Client
+      summary: "Get information of client use for create campaign"
+      operationId: getClientInfo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Event id
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ClientSummaryResource"
       security:
         - bearerAuth: []
   /event/{id}/client/import:
@@ -1810,6 +1845,22 @@ components:
                   "The phone has already been taken."
               ]
           }
+    ClientSummaryResource:
+      properties:
+        totalClient:
+          type: integer
+          example: 10
+        totalCheckin:
+          type: integer
+          example: 3
+        groups:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+              total:
+                type: integer
   parameters:
     pageParam:
       in: query

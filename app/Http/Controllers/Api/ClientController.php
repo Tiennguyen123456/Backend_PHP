@@ -124,4 +124,17 @@ class ClientController extends Controller
         }
     }
 
+    public function summary($eventId)
+    {
+        try {
+            $this->service->attributes['event_id'] = $eventId;
+            $result = $this->service->summary();
+
+            return $this->responseSuccess($result);
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
 }

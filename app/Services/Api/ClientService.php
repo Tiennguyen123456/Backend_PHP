@@ -125,4 +125,29 @@ class ClientService extends BaseService
             $this->attributes['limit'] ?? 0
         );
     }
+
+    public function summary()
+    {
+        $this->attributes['filters']['event_id'] = $this->attributes['event_id'];
+
+        $result = $this->repo->getSummary($this->getSearch(), $this->getFilters());
+
+        // Get total client
+        $total = 0;
+        foreach ($result as $value) {
+            $total += $value->total;
+        }
+
+        $this->attributes['filters'] = [
+            'event_id' => $this->attributes['event_id'],
+            'is_checkin' => true,
+        ];
+        $totalClientCheckin = $this->count();
+
+        return [
+            'totalClient' => $total,
+            'totalCheckin' => $totalClientCheckin,
+            'groups' => $result
+        ];
+    }
 }
