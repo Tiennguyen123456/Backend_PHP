@@ -117,8 +117,10 @@ abstract class Repository implements RepositoryInterface
     {
         $query = $this->model;
 
+        $query = $this->addFilterCompanyQuery($query);
+
         if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
-            $query = $query->where('status', '!=', $query::STATUS_DELETED);
+            $query = $query->where('status', '!=', $this->model::STATUS_DELETED);
         }
 
         if (count($searches)) {
@@ -166,6 +168,19 @@ abstract class Repository implements RepositoryInterface
                 } else {
                     $query = $query->where($column, $value);
                 }
+            }
+        }
+
+        return $query;
+    }
+
+    public function addFilterCompanyQuery($query)
+    {
+        $user = $this->user();
+
+        if (!$user->is_admin) {
+            if (Helper::tableHasColumn($this->getModelTable(), 'company_id')) {
+                $query = $query->where('company_id', $user->company_id);
             }
         }
 

@@ -9,4 +9,15 @@ class CompanyRepository extends Repository implements CompanyRepositoryInterface
     {
         return \App\Models\Company::class;
     }
+
+    public function addFilterCompanyQuery($query)
+    {
+        $user = $this->user();
+
+        if (!$user->is_admin) {
+            $query = $query->where('id', $user->company_id);
+        }
+
+        return $query;
+    }
 }
