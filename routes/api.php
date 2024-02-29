@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CountryController;
+use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\PermissionController;
 
 /*
@@ -79,6 +80,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/event/{id}/client', [ClientController::class, 'store'])->middleware('permission:client:create');
     Route::post('/event/{id}/client/{clientId}/checkin', [ClientController::class, 'checkin'])->middleware('permission:client:update');
     Route::delete('/event/{id}/client/{clientId}', [ClientController::class, 'deleteClient'])->middleware('permission:client:delete');
+
+    /* CAMPAIGN */
+    Route::get('/campaigns', [CampaignController::class, 'index'])->middleware('permission:campaign:view');
+    Route::post('/campaign/store', [CampaignController::class, 'store'])->middleware('permission:campaign:create');
+    Route::post('/campaign/{id}/updateMailContent', [CampaignController::class, 'updateMailContent'])->middleware('permission:campaign:create');
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);
