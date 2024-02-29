@@ -17,7 +17,7 @@ class StoreRequest extends BaseFormRequest
     {
         $ruleMores = [];
         $rules = [
-            'id'                => ['nullable', 'numeric', 'exists:users,id'],
+            'id'                => ['nullable', 'numeric', $this->tableHasId('users')],
             'role_id'           => ['nullable', 'numeric', $this->tableHasId('roles')],
             'name'              => ['required', 'string', 'max:255'],
             'username'          => ['required', 'string', 'max:255', Rule::unique('users')],
