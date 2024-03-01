@@ -31,6 +31,7 @@ class EventResource extends BaseResource
             'cards_content' => $this->cards_content,
             'main_fields' => $arMainField,
             'custom_fields' => $arCustomField,
+            'company' => $this->company()->first(['id', 'name']),
         ];
 
         return $this->finalizeResult($request);
