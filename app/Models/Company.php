@@ -43,7 +43,9 @@ class Company extends BaseModel
 		'limited_events'    => 'int',
 		'limited_campaigns' => 'int',
 		'created_by'        => 'int',
-		'updated_by'        => 'int'
+		'updated_by'        => 'int',
+        'created_at'    => 'datetime:Y-m-d H:i:s',
+		'updated_at'    => 'datetime:Y-m-d H:i:s',
 	];
 
 	protected $fillable = [

@@ -24,6 +24,16 @@ class Campaign extends BaseModel
         self::STATUS_DELETED    => 'Deleted',
     ];
 
+    protected $casts = [
+        'event_id'      => 'int',
+        'company_id '   => 'int',
+        'run_time'      => 'datetime:Y-m-d H:i:s',
+		'created_by'    => 'int',
+		'updated_by'    => 'int',
+        'created_at'    => 'datetime:Y-m-d H:i:s',
+		'updated_at'    => 'datetime:Y-m-d H:i:s',
+	];
+
     protected $fillable = [
         'name',
         'company_id',
