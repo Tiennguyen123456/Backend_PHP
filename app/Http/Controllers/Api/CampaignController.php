@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
 use App\Services\Api\EventService;
 use App\Http\Controllers\Controller;
 use App\Services\Api\CampaignService;
 use App\Http\Resources\Company\CompanyResource;
 use App\Http\Requests\Api\Campaign\StoreRequest;
+use App\Http\Resources\Campaign\CampaignCollection;
 
 class CampaignController extends Controller
 {
@@ -16,6 +18,21 @@ class CampaignController extends Controller
     {
         $this->service = $service;
         $this->eventService = $eventService;
+    }
+
+    public function list(Request $request)
+    {
+        try {
+            $this->service->attributes = $request->all();
+
+            if (!empty($list = $this->service->getList())) {
+                return $this->responseSuccess(new CampaignCollection($list));
+            } else {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function store(StoreRequest $request)

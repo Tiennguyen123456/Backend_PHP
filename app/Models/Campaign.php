@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Event;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Campaign extends BaseModel
@@ -49,4 +51,14 @@ class Campaign extends BaseModel
         'created_by',
         'updated_by',
     ];
+
+    public function event()
+	{
+		return $this->belongsTo(Event::class);
+	}
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

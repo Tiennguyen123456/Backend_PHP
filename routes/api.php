@@ -82,7 +82,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/event/{id}/client/{clientId}', [ClientController::class, 'deleteClient'])->middleware('permission:client:delete');
 
     /* CAMPAIGN */
-    Route::get('/campaigns', [CampaignController::class, 'index'])->middleware('permission:campaign:view');
+    Route::get('/campaigns', [CampaignController::class, 'list'])->middleware('permission:campaign:view');
     Route::post('/campaign/store', [CampaignController::class, 'store'])->middleware('permission:campaign:create');
     Route::post('/campaign/{id}/updateMailContent', [CampaignController::class, 'updateMailContent'])->middleware('permission:campaign:create');
 
