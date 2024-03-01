@@ -32,6 +32,8 @@ class EventCollection extends BaseCollection
         return $this->collection->map(function ($event) {
             $data = $event->resource->toArray();
 
+            $data['company'] = $event->company()->first(['id', 'name']);
+
             foreach ($this->hiddenColumns as $column) {
                 unset($data[$column]);
             }
