@@ -9,6 +9,7 @@ use App\Services\Api\CampaignService;
 use App\Http\Resources\Company\CompanyResource;
 use App\Http\Requests\Api\Campaign\StoreRequest;
 use App\Http\Resources\Campaign\CampaignCollection;
+use App\Http\Resources\Campaign\CampaignResource;
 
 class CampaignController extends Controller
 {
@@ -61,6 +62,17 @@ class CampaignController extends Controller
             logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
 
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function detail($id)
+    {
+        $model = $this->service->find($id);
+
+        if (!empty($model)) {
+            return $this->responseSuccess(new CampaignResource($model));
+        } else {
+            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
         }
     }
 
