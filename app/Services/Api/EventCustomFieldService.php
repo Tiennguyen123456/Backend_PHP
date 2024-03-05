@@ -18,20 +18,24 @@ class EventCustomFieldService extends BaseService
         $arData = $this->attributes['data'];
 
         foreach ($arData as $field) {
-            $this->updateOrCreate(
-                [
-                    'event_id' => $eventId,
-                    'name' => $field['name']
-                ],
-                [
-                    'event_id'      => $eventId,
-                    'name'          => $field['name'],
-                    'value'         => $field['value'],
-                    'description'   => $field['description'],
-                    'created_by'    => auth()->user()->id,
-                    'updated_by'    => auth()->user()->id,
-                ]
-            );
+            if (isset($field['id'])) {
+                $this->repo->update($field['id'], $field);
+            } else {
+                $this->updateOrCreate(
+                    [
+                        'event_id' => $eventId,
+                        'name' => $field['name']
+                    ],
+                    [
+                        'event_id'      => $eventId,
+                        'name'          => $field['name'],
+                        'value'         => $field['value'],
+                        'description'   => $field['description'],
+                        'created_by'    => auth()->user()->id,
+                        'updated_by'    => auth()->user()->id,
+                    ]
+                );
+            }
         }
 
         return true;
