@@ -44,4 +44,5 @@ final class MessageCodeEnum extends Enum
     /* EVENT STATUS CODE */
     const EMAIL_CONTENT_IS_EMPTY = 'EMAIL_CONTENT_IS_EMPTY'; // Nội dung email rỗng
     const CAMPAIGN_NOT_FOUND = 'CAMPAIGN_NOT_FOUND'; // Không tìm thấy chiến dịch
+    const FAILED_ACTION = 'FAILED_ACTION'; // Thực hiện thất bại
 }

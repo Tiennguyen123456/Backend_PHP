@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Api;
 
+use App\Jobs\RunCampaignJob;
 use App\Services\BaseService;
 use App\Repositories\Campaign\CampaignRepository;
 
@@ -52,5 +53,91 @@ class CampaignService extends BaseService
             $model->update($this->attributes);
             return $model;
         }
+    }
+
+    public function handleAction()
+    {
+        $id = $this->attributes['id'];
+        $action = $this->attributes['action'];
+
+        $model = $this->repo->find($id);
+
+        if (empty($model)) return false;
+
+        switch ($action) {
+            case 'START':
+                return $this->runCampaign($model);
+
+            case 'PAUSE':
+                return $this->pauseCampaign($model);
+
+            case 'STOP':
+                return $this->stopCampaign($model);
+        }
+    }
+
+    private function runCampaign($model)
+    {
+        $emailContent = $model->mail_content;
+
+        $pattern = '/\{\{([^}]*)\}\}/';
+
+        // Find all matches of variables in the text
+        preg_match_all($pattern, $emailContent, $matches);
+
+        // Extract variables from matches
+        $variables = $matches[1];
+
+        // Output extracted variables
+        dd($variables);
+
+        if ($model->status != $model::STATUS_NEW && $model->status != $model::STATUS_PAUSED) {
+            return [
+                'success' => false,
+                'message' => 'CAMPAIGN_IS_NOT_NEW_OR_PAUSED',
+            ];
+        }
+
+
+        $model->update([
+            'status' => $model::STATUS_RUNNING
+        ]);
+
+        // Call Job Run Campaign
+        // RunCampaignJob::dispatch($model->id);
+
+        return ['success' => true];
+    }
+
+    private function pauseCampaign($model)
+    {
+        if ($model->status != $model::STATUS_RUNNING) {
+            return [
+                'success' => false,
+                'message' => 'CAMPAIGN_IS_NOT_RUNNING',
+            ];
+        }
+
+        $model->update([
+            'status' => $model::STATUS_PAUSED
+        ]);
+
+        return ['success' => true];
+    }
+
+    private function stopCampaign($model)
+    {
+        if ($model->status == $model::STATUS_STOPPED) {
+            return [
+                'success' => false,
+                'message' => 'CAMPAIGN_IS_ALREADY_STOPPED',
+            ];
+        }
+
+        $model->update([
+            'status' => $model::STATUS_STOPPED
+        ]);
+
+        return ['success' => true];
     }
 }

@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Services\Api\CampaignService;
 use App\Http\Resources\Company\CompanyResource;
 use App\Http\Requests\Api\Campaign\StoreRequest;
+use App\Http\Requests\Api\Campaign\UpdateRequest;
 use App\Http\Resources\Campaign\CampaignCollection;
+use App\Http\Resources\Campaign\CampaignResource;
 
 class CampaignController extends Controller
 {
@@ -84,6 +86,27 @@ class CampaignController extends Controller
                 return $this->responseSuccess();
             } else {
                 return $this->responseError('', MessageCodeEnum::FAILED_TO_UPDATE);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function handleAction(UpdateRequest $request)
+    {
+        try {
+            $this->service->attributes = $request->all();
+
+            if ($result = $this->service->handleAction()) {
+                if (is_array($result) && $result['success'] === false) {
+                    return $this->responseError('', $result['message']);
+                }
+
+                return $this->responseSuccess();
+            } else {
+                return $this->responseError('', MessageCodeEnum::FAILED_ACTION);
             }
         } catch (\Throwable $th) {
             logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());

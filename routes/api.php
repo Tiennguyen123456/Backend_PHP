@@ -85,6 +85,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/campaigns', [CampaignController::class, 'list'])->middleware('permission:campaign:view');
     Route::post('/campaign/store', [CampaignController::class, 'store'])->middleware('permission:campaign:create');
     Route::post('/campaign/{id}/updateMailContent', [CampaignController::class, 'updateMailContent'])->middleware('permission:campaign:create');
+    Route::post('/campaign/{id}/action', [CampaignController::class, 'handleAction'])->middleware('permission:campaign:create');
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);

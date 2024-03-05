@@ -154,4 +154,16 @@ class EventService extends BaseService
             return false;
         }
     }
+
+    public function generateVariables($id)
+    {
+        $model = $this->repo->find($id);
+        return [
+            'EVENT_NAME'        => $model->name,
+            'EVENT_START_TIME'  => $model->start_time,
+            'EVENT_END_TIME'    => $model->end_time,
+            'EVENT_LOCATION'    => $model->location,
+            'EVENT_DESCRIPTION' => $model->description,
+        ];
+    }
 }
