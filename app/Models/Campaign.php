@@ -10,6 +10,7 @@ class Campaign extends BaseModel
 {
     use HasFactory;
 
+    // Status
     const STATUS_NEW        = 'NEW';
     const STATUS_RUNNING    = 'RUNNING';
     const STATUS_PAUSED     = 'PAUSED';
@@ -24,6 +25,17 @@ class Campaign extends BaseModel
         self::STATUS_STOPPED    => 'Stopped',
         self::STATUS_FINISHED   => 'Finished',
         self::STATUS_DELETED    => 'Deleted',
+    ];
+
+    // Action
+    const ACTION_STOP  = 'STOP';
+    const ACTION_START = 'START';
+    const ACTION_PAUSE = 'PAUSE';
+
+    const ACTIONS_VALID = [
+        self::ACTION_STOP    => 'Stop',
+        self::ACTION_START   => 'Start',
+        self::ACTION_PAUSE   => 'Pause',
     ];
 
     protected $casts = [
@@ -60,5 +72,10 @@ class Campaign extends BaseModel
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    static public function getActions()
+    {
+        return self::ACTIONS_VALID;
     }
 }
