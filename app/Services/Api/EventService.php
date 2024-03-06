@@ -159,6 +159,7 @@ class EventService extends BaseService
     {
         $model = $this->repo->find($id);
         return [
+            'EVENT_CODE'        => $model->code,
             'EVENT_NAME'        => $model->name,
             'EVENT_START_TIME'  => $model->start_time,
             'EVENT_END_TIME'    => $model->end_time,

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Api\Event;
 
+use App\Models\Event;
 use App\Http\Requests\BaseFormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCustomFieldRequest extends BaseFormRequest
 {
@@ -16,7 +18,7 @@ class StoreCustomFieldRequest extends BaseFormRequest
         $ruleMores = [];
 
         $rules = [
-            '*.name'        => ['required', 'string'],
+            '*.name'        => ['required', 'string', Rule::notIn(array_keys(Event::MAIN_FIELDS))],
             '*.value'       => ['required', 'string'],
             '*.description' => ['required', 'string'],
         ];

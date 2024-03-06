@@ -56,24 +56,28 @@ class Event extends BaseModel
 
     /* CONST */
 
-    const MAIN_FIELD_EVENT_CODE         = 'code';
-    const MAIN_FIELD_EVENT_NAME         = 'name';
-    const MAIN_FIELD_EVENT_START_TIME   = 'start_time';
-    const MAIN_FIELD_EVENT_END_TIME     = 'end_time';
-    const MAIN_FIELD_QRCODE             = 'qrcode';
-    const MAIN_FIELD_CLIENT_FULLNAME    = 'client_fullname';
-    const MAIN_FIELD_CLIENT_EMAIL       = 'client_email';
-    const MAIN_FIELD_CLIENT_PHONE       = 'client_phone';
+    const MAIN_FIELD_EVENT_CODE         = 'EVENT_CODE';
+    const MAIN_FIELD_EVENT_NAME         = 'EVENT_NAME';
+    const MAIN_FIELD_EVENT_START_TIME   = 'EVENT_START_TIME';
+    const MAIN_FIELD_EVENT_END_TIME     = 'EVENT_END_TIME';
+    const MAIN_FIELD_EVENT_LOCATION     = 'EVENT_LOCATION';
+    const MAIN_FIELD_EVENT_DESCRIPTION  = 'EVENT_DESCRIPTION';
+    const MAIN_FIELD_CLIENT_QRCODE      = 'CLIENT_QRCODE';
+    const MAIN_FIELD_CLIENT_FULLNAME    = 'CLIENT_FULLNAME';
+    const MAIN_FIELD_CLIENT_EMAIL       = 'CLIENT_EMAIL';
+    const MAIN_FIELD_CLIENT_PHONE       = 'CLIENT_PHONE';
 
     const MAIN_FIELDS = [
         self::MAIN_FIELD_EVENT_CODE         => 'Event Code',
         self::MAIN_FIELD_EVENT_NAME         => 'Event Name',
         self::MAIN_FIELD_EVENT_START_TIME   => 'Start Time',
         self::MAIN_FIELD_EVENT_END_TIME     => 'End Time',
-        self::MAIN_FIELD_QRCODE         => 'QR code',
+        self::MAIN_FIELD_EVENT_LOCATION     => 'Location',
+        self::MAIN_FIELD_EVENT_DESCRIPTION  => 'Description',
+        self::MAIN_FIELD_CLIENT_QRCODE      => 'QR code',
         self::MAIN_FIELD_CLIENT_FULLNAME    => 'Client Name',
-        self::MAIN_FIELD_CLIENT_EMAIL   => 'Client Email',
-        self::MAIN_FIELD_CLIENT_PHONE   => 'Client Phone number',
+        self::MAIN_FIELD_CLIENT_EMAIL       => 'Client Email',
+        self::MAIN_FIELD_CLIENT_PHONE       => 'Client Phone number',
     ];
 
 	protected $casts = [
