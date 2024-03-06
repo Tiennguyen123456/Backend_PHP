@@ -7,8 +7,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class Site
@@ -83,4 +84,13 @@ class BaseModel extends Model
     // {
     //     return LogOptions::defaults();
     // }
+
+    public function scopeWithStatus($query)
+    {
+        $table = $this->getTable();
+
+        if (Helper::tableHasColumn($table, 'status')) {
+            return $query->where('status', '!=', self::STATUS_DELETED);
+        }
+    }
 }

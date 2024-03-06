@@ -24,7 +24,7 @@ class UserResource extends BaseResource
             ];
         }
 
-        $companyData = $this->company_id ? $this->company()->first(['id', 'name']) : null;
+        $companyData = $this->company_id ? $this->company()->withStatus()->first(['id', 'name']) : null;
 
         $this->attrMores = [
             'last_login_at' => Helper::getDateTimeFormat($this->last_login_at),

@@ -15,7 +15,7 @@ class EventResource extends BaseResource
 
     public function toArray(Request $request): array
     {
-        $arCustomField = $this->custom_fields()->get(['id', 'name', 'value', 'description']);
+        $arCustomField = $this->custom_fields()->withStatus()->get(['id', 'name', 'value', 'description']);
 
         $arMainField = [];
 
@@ -31,7 +31,7 @@ class EventResource extends BaseResource
             'cards_content' => $this->cards_content,
             'main_fields' => $arMainField,
             'custom_fields' => $arCustomField,
-            'company' => $this->company()->first(['id', 'name']),
+            'company' => $this->company()->withStatus()->first(['id', 'name']),
         ];
 
         return $this->finalizeResult($request);

@@ -19,8 +19,8 @@ class CampaignResource extends BaseResource
         ];
 
         $this->attrMores = [
-            'company'       => $this->company()->first(['id', 'name']),
-            'event'         => $this->event()->first(['id', 'name']),
+            'company'       => $this->company()->withStatus()->first(['id', 'name']),
+            'event'         => $this->event()->withStatus()->first(['id', 'name']),
             'filter_client' => unserialize($this->filter_client),
         ];
 
