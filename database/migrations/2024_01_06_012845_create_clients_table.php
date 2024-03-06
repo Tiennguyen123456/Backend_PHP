@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->nullable(false);
+            $table->string('fullname', 100)->nullable(false);
             $table->string('email', 100)->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('address', 255)->nullable();
