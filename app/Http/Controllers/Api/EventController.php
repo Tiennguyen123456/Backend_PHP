@@ -55,7 +55,7 @@ class EventController extends Controller
         }
     }
 
-    public function detail($id)
+    public function detail(int $id)
     {
         $model = $this->service->find($id);
 
@@ -66,7 +66,7 @@ class EventController extends Controller
         }
     }
 
-    public function remove($id)
+    public function remove(int $id)
     {
         try {
             if ($this->service->remove($id)) {
@@ -93,7 +93,7 @@ class EventController extends Controller
         }
     }
 
-    public function listCustomField(Request $request, $eventId)
+    public function listCustomField(Request $request, int $eventId)
     {
         $eventCustomFieldService = app(EventCustomFieldService::class);
         $eventCustomFieldService->attributes = $request->all();
@@ -106,7 +106,7 @@ class EventController extends Controller
         }
     }
 
-    public function storeCustomField(StoreCustomFieldRequest $request, $eventId)
+    public function storeCustomField(StoreCustomFieldRequest $request, int $eventId)
     {
         $eventCustomFieldService = app(EventCustomFieldService::class);
 
@@ -125,7 +125,7 @@ class EventController extends Controller
         }
     }
 
-    public function removeCustomField($id)
+    public function removeCustomField(int $id)
     {
         $eventCustomFieldService = app(EventCustomFieldService::class);
 

@@ -28,7 +28,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function getListFromRole($roleId)
+    public function getListFromRole(int $roleId)
     {
         $permissions = $this->service->getListFromRole($roleId);
 

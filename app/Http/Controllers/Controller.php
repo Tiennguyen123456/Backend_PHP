@@ -35,7 +35,7 @@ class Controller extends BaseController
         }
     }
 
-    public function detail($id)
+    public function detail(int $id)
     {
         try {
             $model = $this->service->find($id);
@@ -52,7 +52,7 @@ class Controller extends BaseController
         }
     }
 
-    public function remove($id)
+    public function remove(int $id)
     {
         try {
             if ($this->service->remove($id)) {
@@ -67,7 +67,7 @@ class Controller extends BaseController
         }
     }
 
-    public function delete($id)
+    public function delete(int $id)
     {
         try {
             if ($this->service->delete($id)) {

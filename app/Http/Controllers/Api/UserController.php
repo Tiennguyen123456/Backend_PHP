@@ -33,7 +33,7 @@ class UserController extends Controller
         return $this->responseSuccess(SelfResource::make(auth()->user()), null);
     }
 
-    public function detail($id)
+    public function detail(int $id)
     {
         if ($model = $this->service->getDetail($id)) {
             return $this->responseSuccess(UserResource::make($model), trans('_response.success.detail'));

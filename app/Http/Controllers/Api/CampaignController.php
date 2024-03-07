@@ -66,7 +66,7 @@ class CampaignController extends Controller
         }
     }
 
-    public function detail($id)
+    public function detail(int $id)
     {
         $model = $this->service->find($id);
 
@@ -77,7 +77,7 @@ class CampaignController extends Controller
         }
     }
 
-    public function updateMailContent($id)
+    public function updateMailContent(int $id)
     {
         try {
             $campaign = $this->service->find($id);

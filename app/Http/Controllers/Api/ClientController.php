@@ -19,7 +19,7 @@ class ClientController extends Controller
         $this->service = $service;
     }
 
-    public function list(Request $request, $eventId)
+    public function list(Request $request, int $eventId)
     {
         $this->service->attributes = $request->all();
 
@@ -36,7 +36,7 @@ class ClientController extends Controller
         }
     }
 
-    public function store(StoreRequest $request, $eventId)
+    public function store(StoreRequest $request, int $eventId)
     {
         try {
             $this->service->attributes = $request->all();
@@ -53,7 +53,7 @@ class ClientController extends Controller
         }
     }
 
-    public function import(ImportRequest $request, $eventId)
+    public function import(ImportRequest $request, int $eventId)
     {
         try {
             $filePath = FileHelper::storeFile(auth()->user()->id, $request->file('file'));
@@ -77,7 +77,7 @@ class ClientController extends Controller
         }
     }
 
-    public function deleteClient($eventId, $clientId)
+    public function deleteClient(int $eventId, int $clientId)
     {
         try {
             $client = $this->service->find($clientId);
@@ -98,7 +98,7 @@ class ClientController extends Controller
         }
     }
 
-    public function checkin($eventId, $clientId)
+    public function checkin(int $eventId, int $clientId)
     {
         try {
             $client = $this->service->find($clientId);
@@ -124,7 +124,7 @@ class ClientController extends Controller
         }
     }
 
-    public function summary($eventId)
+    public function summary(int $eventId)
     {
         try {
             $this->service->attributes['event_id'] = $eventId;
