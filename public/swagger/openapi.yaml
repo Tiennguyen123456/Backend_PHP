@@ -1039,6 +1039,52 @@ paths:
                   $ref: "#/components/schemas/ErrorValidation"
       security:
         - bearerAuth: []
+  /event/{id}/client/{clientId}/checkin:
+    post:
+      tags:
+        - Event Client
+      summary: Update Client Checkin
+      operationId: updateClientCheckin
+      parameters:
+        - name: id
+          description: Event ID
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: clientId
+          description: Client ID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    example: null
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/ErrorValidation"
+      security:
+        - bearerAuth: []
   /event/{id}/client/{clientId}:
     delete:
       tags:
