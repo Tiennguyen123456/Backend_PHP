@@ -991,7 +991,7 @@ paths:
                 $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
-  /event/{id}/client/{clientId}:
+  /event/{id}/client/store:
     post:
       tags:
         - Event Client
@@ -1000,12 +1000,6 @@ paths:
       parameters:
         - name: id
           description: Event ID
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: clientId
-          description: Client ID
           in: path
           required: true
           schema:
@@ -1045,6 +1039,7 @@ paths:
                   $ref: "#/components/schemas/ErrorValidation"
       security:
         - bearerAuth: []
+  /event/{id}/client/{clientId}:
     delete:
       tags:
         - Event Client
@@ -1075,6 +1070,72 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Failed"
+      security:
+        - bearerAuth: []
+  /campaigns:
+    get:
+      tags:
+        - Campaign
+      summary: "Show list campaign"
+      operationId: getListCampaign
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListCampaignCollection"
+      security:
+        - bearerAuth: []
+  /campaign/store:
+    post:
+      tags:
+        - Campaign
+      summary: Create or Update Campaign
+      operationId: updateOrCreateCampaign
+      description: "Create : not send ID <br><b>Update : post data with ID</b>"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/StoreCampaign"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreCampaign"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/EventResource"
       security:
         - bearerAuth: []
 components:
@@ -1861,6 +1922,106 @@ components:
                 type: string
               total:
                 type: integer
+    ListCampaignCollection:
+      properties:
+        collection:
+          type: array
+          items:
+            $ref: "#/components/schemas/CampaignResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    CampaignResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        event_id:
+          type: integer
+        campaign_id:
+          type: integer
+        run_time:
+          type: string
+          example: 2024-03-01 10:37:00
+        filter_client:
+          type: string
+          example: "a:1:{s:5:\"group\";s:3:\"VIP\";}"
+        status:
+          type: string
+        mail_content:
+          type: string
+        mail_subject:
+          type: string
+        sender_email:
+          type: string
+        sender_name:
+          type: string
+        description:
+          type: string
+        created_by:
+          type: integer
+        updated_by:
+          type: integer
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        company:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        event:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+    StoreCampaign:
+      type: object
+      description: "ID for update, if not ID for create"
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        company_id:
+          type: integer
+        event_id:
+          type: integer
+        run_time:
+          type: string
+          format: date
+          example: '2023-12-31 10:00:00'
+        filter_client:
+          type: array
+          items:
+            properties:
+              group:
+                type: string
+        status:
+          type: string
+          enum: [NEW, RUNNING, PAUSED, STOPPED, FINISHED]
+        mail_subject:
+          type: string
+          description: Mail Subject
+        description:
+          type: string
+      required:
+        - name
+        - company_id
+        - event_id
+        - run_time
+        - filter_client
+        - status
+        - mail_subject
   parameters:
     pageParam:
       in: query
