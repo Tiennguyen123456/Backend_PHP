@@ -11,7 +11,14 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
         return \App\Models\Client::class;
     }
 
-    public function getClientsByEventId($eventId, $searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50)
+    public function getClientsByEventId($eventId,
+                                        $searches = [],
+                                        $filters = [],
+                                        $orderByColumn = 'updated_at',
+                                        $orderByDesc = true,
+                                        $limit = 0,
+                                        $paginate = 50,
+                                        $page)
     {
         $query = $this->model->where('status', '!=', $this->model::STATUS_DELETED)
                             ->where('event_id', '=', $eventId);
@@ -63,7 +70,7 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
         }
 
         if ($paginate > 0) {
-            return $query->paginate($paginate);
+            return $query->forPage($page, $paginate)->get();
         }
 
         return $query->get();

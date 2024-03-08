@@ -78,19 +78,6 @@ class CampaignService extends BaseService
 
     private function runCampaign($model)
     {
-        $emailContent = $model->mail_content;
-
-        $pattern = '/\{\{([^}]*)\}\}/';
-
-        // Find all matches of variables in the text
-        preg_match_all($pattern, $emailContent, $matches);
-
-        // Extract variables from matches
-        $variables = $matches[1];
-
-        // Output extracted variables
-        dd($variables);
-
         if ($model->status != $model::STATUS_NEW && $model->status != $model::STATUS_PAUSED) {
             return [
                 'success' => false,
@@ -104,7 +91,7 @@ class CampaignService extends BaseService
         ]);
 
         // Call Job Run Campaign
-        // RunCampaignJob::dispatch($model->id);
+        RunCampaignJob::dispatch($model->id);
 
         return ['success' => true];
     }
@@ -139,5 +126,14 @@ class CampaignService extends BaseService
         ]);
 
         return ['success' => true];
+    }
+
+    public function replaceVariables(string $content, array $variables)
+    {
+        foreach ($variables as $key => $value) {
+            $content = str_replace('{{'.$key.'}}', $value, $content);
+        }
+
+        return $content;
     }
 }

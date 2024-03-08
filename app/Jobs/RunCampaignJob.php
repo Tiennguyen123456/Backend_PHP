@@ -2,16 +2,19 @@
 
 namespace App\Jobs;
 
+use App\Mail\MailCampaign;
 use App\Models\Campaign;
 use Illuminate\Bus\Queueable;
+use App\Services\Api\EventService;
 use App\Services\Api\ClientService;
 use App\Services\Api\CampaignService;
-use App\Services\Api\EventService;
 use Illuminate\Queue\SerializesModels;
+use App\Services\Api\LogSendMailService;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Redis;
 
 class RunCampaignJob implements ShouldQueue
 {
@@ -25,6 +28,8 @@ class RunCampaignJob implements ShouldQueue
 
     protected $eventService;
 
+    protected $logSendMailService;
+
     /**
      * Create a new job instance.
      */
@@ -34,6 +39,7 @@ class RunCampaignJob implements ShouldQueue
         $this->clientService = new ClientService();
         $this->campaignService = new CampaignService();
         $this->eventService = new EventService();
+        $this->logSendMailService = new LogSendMailService();
     }
 
     /**
@@ -42,42 +48,113 @@ class RunCampaignJob implements ShouldQueue
     public function handle(): void
     {
         logger('run campaign');
+
         $campaignId = $this->id;
 
         $campaign = $this->campaignService->find($campaignId);
-
         if (empty($campaign)) {
             logger('Campaign not found');
             return;
         }
-        if ($campaign->status != $campaign::STATUS_NEW && $campaign->status != $campaign::STATUS_PAUSED) {
-            logger('CAMPAIGN_IS_NOT_NEW_OR_PAUSED');
+        if ($campaign->status != $campaign::STATUS_RUNNING) {
+            logger('CAMPAIGN_IS_NOT_RUNNING');
             return;
         }
 
-        // Get client list
-        $this->clientService->attributes['filters'] = unserialize($campaign->filter_client);
+        $redisCompaignClient = "campaign:$campaignId:clients";
 
-        $clients = $this->clientService->getClientsByEventId($campaign->event_id);
+        // Email send
+        $this->handleHistoryEmail($campaignId);
 
-        if (empty($clients)) {
-            logger('No client found');
-            $campaign->update(['status' => $campaign::STATUS_FINISHED]);
-            return;
-        }
+        // Load client
+        $this->getClient($campaignId, $campaign->event_id);
 
-        // Generate all variables
+        // Event data
         $eventVariables = $this->eventService->generateVariables($campaign->event_id);
 
-        $emailContent = $campaign->mail_content;
+        do {
+            $client = Redis::rpop($redisCompaignClient);
 
-        // Send mail
-        // foreach ($clients as $client) {
-        //     $clientVariables = $this->clientService->getVariables($client->id);
+            if (!blank($client)) {
+                $clientVariables = $this->clientService->generateVariables(json_decode($client, true));
 
-        //     $variables = array_merge($eventVariables, $clientVariables);
+                $arVariables = array_merge($eventVariables, $clientVariables);
 
-        //     $mailContent = $this->campaignService->replaceVariables($emailContent, $variables);
-        // }
+                // Replace variable on mail content
+                $mailContent = $this->campaignService->replaceVariables($campaign->mail_content, $arVariables);
+
+                // Send mail
+                $mailData = [
+                    'subject' => $campaign->mail_subject,
+                    'content' => $mailContent,
+                ];
+                Mail::to($clientVariables['CLIENT_EMAIL'])->send(new MailCampaign($mailData));
+
+                // Save log
+                $this->logSendMailService->attributes = [
+                    'campaign_id' => $campaign->id,
+                    'client_id' => $client->id,
+                    'email' => $client->email,
+                    'subject' => $campaign->mail_subject,
+                    'content' => $mailContent,
+                    'status' => 'success',
+                    'error' => '',
+                    'sent_at' => now(),
+                ];
+                $this->logSendMailService->store();
+            }
+        } while ( !blank($client) );
+    }
+
+    private function handleHistoryEmail($campaignId) : void
+    {
+        $redisKeyMailSend = "campaign:$campaignId:email:send";
+
+        $page = 1;
+
+        $this->logSendMailService->attributes['filters']['campaign_id'] = $campaignId;
+        $this->logSendMailService->attributes['orderBy'] = 'id';
+        $this->logSendMailService->attributes['orderDesc'] = false;
+
+        do {
+            $this->logSendMailService->attributes['page'] = $page++;
+
+            $result = $this->logSendMailService->getList();
+
+            foreach ($result as $log) {
+                Redis::sadd($redisKeyMailSend, $log->email);
+            }
+        } while ( !blank($result) );
+    }
+
+    private function getClient($campaignId, $eventId)
+    {
+        try {
+            $redisKeyMailSend = "campaign:$campaignId:email:send";
+            $redisKeyClients = "campaign:$campaignId:clients";
+
+            $page = 1;
+            $count = 0;
+
+            $this->service->attributes['orderBy'] = 'id';
+            $this->service->attributes['orderDesc'] = false;
+
+            do {
+                $this->service->attributes['page'] = $page++;
+
+                $result = $this->service->getClientsByEventId($eventId);
+
+                foreach ($result as $client) {
+                    $email = $client->email;
+
+                    if (!empty($email) && !Redis::sismember($redisKeyMailSend, $email)) {
+                        $count++;
+                        Redis::lpush($redisKeyClients, json_encode($client));
+                    }
+                }
+            } while ( !blank($result) );
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+        }
     }
 }

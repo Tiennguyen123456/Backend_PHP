@@ -155,16 +155,21 @@ class EventService extends BaseService
         }
     }
 
-    public function generateVariables($id)
+    public function generateVariables($id): array
     {
         $model = $this->repo->find($id);
+
+        if (blank($model)) return [];
+
+        $model = $model->toArray();
+
         return [
-            'EVENT_CODE'        => $model->code,
-            'EVENT_NAME'        => $model->name,
-            'EVENT_START_TIME'  => $model->start_time,
-            'EVENT_END_TIME'    => $model->end_time,
-            'EVENT_LOCATION'    => $model->location,
-            'EVENT_DESCRIPTION' => $model->description,
+            'EVENT_CODE'        => $model['code'],
+            'EVENT_NAME'        => $model['name'],
+            'EVENT_START_TIME'  => $model['start_time'],
+            'EVENT_END_TIME'    => $model['end_time'],
+            'EVENT_LOCATION'    => $model['location'],
+            'EVENT_DESCRIPTION' => $model['description'],
         ];
     }
 }

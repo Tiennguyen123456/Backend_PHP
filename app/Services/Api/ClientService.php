@@ -42,7 +42,8 @@ class ClientService extends BaseService
             $this->attributes['orderBy'] ?? 'updated_at',
             $this->attributes['orderDesc'] ?? true,
             $this->attributes['limit'] ?? null,
-            $this->attributes['pageSize'] ?? 50
+            $this->attributes['pageSize'] ?? 50,
+            $this->attributes['page'] ?? 1
         );
     }
 
@@ -160,6 +161,16 @@ class ClientService extends BaseService
             'totalClient' => $total,
             'totalCheckin' => $totalClientCheckin,
             'groups' => $result
+        ];
+    }
+
+    public function generateVariables(array $client)
+    {
+        return [
+            'CLIENT_NAME' => $client['fullname'],
+            'CLIENT_EMAIL' => $client['email'],
+            'CLIENT_PHONE' => $client['phone'],
+            'CLIENT_ADDRESS' => $client['address'],
         ];
     }
 }
