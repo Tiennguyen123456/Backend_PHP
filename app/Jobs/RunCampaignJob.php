@@ -40,6 +40,9 @@ class RunCampaignJob implements ShouldQueue
         $this->campaignService = new CampaignService();
         $this->eventService = new EventService();
         $this->logSendMailService = new LogSendMailService();
+
+        $this->redisCampaignClients = sprintf(config('redis.campaign.clients'), $id);
+        $this->redisCampaignMailSent = sprintf(config('redis.campaign.mail_sents'), $id);
     }
 
     /**
@@ -61,8 +64,6 @@ class RunCampaignJob implements ShouldQueue
             return;
         }
 
-        $redisCompaignClient = "campaign:$campaignId:clients";
-
         // Email send
         $this->handleHistoryEmail($campaignId);
 
@@ -73,7 +74,7 @@ class RunCampaignJob implements ShouldQueue
         $eventVariables = $this->eventService->generateVariables($campaign->event_id);
 
         do {
-            $client = Redis::rpop($redisCompaignClient);
+            $client = Redis::rpop($this->redisCampaignClients);
 
             if (!blank($client)) {
                 $clientVariables = $this->clientService->generateVariables(json_decode($client, true));
@@ -102,14 +103,14 @@ class RunCampaignJob implements ShouldQueue
                     'sent_at' => now(),
                 ];
                 $this->logSendMailService->store();
+
+                // Sleep
             }
         } while ( !blank($client) );
     }
 
     private function handleHistoryEmail($campaignId) : void
     {
-        $redisKeyMailSend = "campaign:$campaignId:email:send";
-
         $page = 1;
 
         $this->logSendMailService->attributes['filters']['campaign_id'] = $campaignId;
@@ -122,17 +123,14 @@ class RunCampaignJob implements ShouldQueue
             $result = $this->logSendMailService->getList();
 
             foreach ($result as $log) {
-                Redis::sadd($redisKeyMailSend, $log->email);
+                Redis::sadd($this->redisCampaignMailSent, $log->email);
             }
         } while ( !blank($result) );
     }
 
-    private function getClient($campaignId, $eventId)
+    private function getClient($eventId)
     {
         try {
-            $redisKeyMailSend = "campaign:$campaignId:email:send";
-            $redisKeyClients = "campaign:$campaignId:clients";
-
             $page = 1;
             $count = 0;
 
@@ -147,9 +145,9 @@ class RunCampaignJob implements ShouldQueue
                 foreach ($result as $client) {
                     $email = $client->email;
 
-                    if (!empty($email) && !Redis::sismember($redisKeyMailSend, $email)) {
+                    if (!empty($email) && !Redis::sismember($this->redisCampaignMailSent, $email)) {
                         $count++;
-                        Redis::lpush($redisKeyClients, json_encode($client));
+                        Redis::lpush($this->redisCampaignClients, json_encode($client));
                     }
                 }
             } while ( !blank($result) );
