@@ -20,7 +20,7 @@ class StoreCustomFieldRequest extends BaseFormRequest
         $rules = [
             '*.name'        => ['required', 'string', Rule::notIn(array_keys(Event::MAIN_FIELDS))],
             '*.value'       => ['required', 'string'],
-            '*.description' => ['required', 'string'],
+            '*.description' => ['nullable', 'string'],
         ];
 
         return array_merge($rules, $ruleMores);
