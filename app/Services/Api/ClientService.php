@@ -115,6 +115,18 @@ class ClientService extends BaseService
         return $this->storeAs($attrs, $attrMores);
     }
 
+    public function checkin()
+    {
+        $model = $this->repo->find($this->attributes['id']);
+
+        if (!empty($model)) {
+            $model->update($this->attributes);
+            return $model;
+        }
+
+        return false;
+    }
+
     public function getAll()
     {
         return $this->repo->getAll(

@@ -111,7 +111,7 @@ class ClientController extends Controller
                 $this->service->attributes['id'] = $clientId;
                 $this->service->attributes['is_checkin'] = true;
 
-                if (!$this->service->store()) {
+                if (!$this->service->checkin()) {
                     return $this->responseError('', MessageCodeEnum::FAILED_TO_UPDATE);
                 }
             }
