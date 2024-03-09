@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Mail\CampaignMail;
 use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
-use App\Services\Api\EventService;
 use App\Services\Api\ClientService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseResource;
-use Illuminate\Support\Facades\Mail;
-use App\Services\Api\CampaignService;
-use Illuminate\Support\Facades\Redis;
 use App\Http\Requests\Api\Client\StoreRequest;
 use App\Http\Requests\Api\Client\ImportRequest;
 use App\Http\Resources\Client\ClientCollection;
