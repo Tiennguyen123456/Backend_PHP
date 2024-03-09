@@ -22,49 +22,67 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $this->service->attributes = $request->all();
-        $result = $this->service->authenticate();
+        try {
+            $this->service->attributes = $request->all();
+            $result = $this->service->authenticate();
 
-        if ($result['auth']) {
-            return $this->responseSuccess(LoginResource::make(auth('api')->user()), $result['msg'], 200, MessageCodeEnum::LOGIN_SUCCESS);
-        } else {
-            return $this->responseError($result['msg'], MessageCodeEnum::USER_NAME_OR_PASSWORD_INCORRECT, 401);
+            if ($result['auth']) {
+                return $this->responseSuccess(LoginResource::make(auth('api')->user()), $result['msg'], 200, MessageCodeEnum::LOGIN_SUCCESS);
+            } else {
+                return $this->responseError($result['msg'], MessageCodeEnum::USER_NAME_OR_PASSWORD_INCORRECT, 401);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
     public function sendMailResetPassword(SendMailResetPasswordRequest $request)
     {
-        $userService = app(UserService::class);
+        try {
+            $userService = app(UserService::class);
 
-        $user = $userService->findByEmail($request->email);
-        if (!$user) {
-            return $this->responseError('', MessageCodeEnum::EMAIL_NOT_FOUND);
+            $user = $userService->findByEmail($request->email);
+            if (!$user) {
+                return $this->responseError('', MessageCodeEnum::EMAIL_NOT_FOUND);
+            }
+
+            event(new UserCreatedEvent($user));
+
+            return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
-
-        event(new UserCreatedEvent($user));
-
-        return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
     }
 
     public function resetPassword(ResetPasswordRequest $request, $token)
     {
-        $userService          = app(UserService::class);
-        $passwordResetService = app(PasswordResetService::class);
+        try {
+            $userService          = app(UserService::class);
+            $passwordResetService = app(PasswordResetService::class);
 
-        $passwordReset = $passwordResetService->findByToken($token);
-        if (empty($passwordReset)) {
-            return $this->responseError('Token not found', MessageCodeEnum::TOKEN_NOT_FOUND);
+            $passwordReset = $passwordResetService->findByToken($token);
+            if (empty($passwordReset)) {
+                return $this->responseError('Token not found', MessageCodeEnum::TOKEN_NOT_FOUND);
+            }
+            $passwordResetService->deleteByEmail($passwordReset->email);
+
+            $user = $userService->findByEmail($passwordReset->email);
+            if (!$user) {
+                return $this->responseError('', MessageCodeEnum::USER_NOT_FOUND);
+            }
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
-        $passwordResetService->deleteByEmail($passwordReset->email);
-
-        $user = $userService->findByEmail($passwordReset->email);
-        if (!$user) {
-            return $this->responseError('', MessageCodeEnum::USER_NOT_FOUND);
-        }
-
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
     }
 }

@@ -33,7 +33,9 @@ class CampaignController extends Controller
                 return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
         } catch (\Throwable $th) {
-            throw $th;
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -68,12 +70,18 @@ class CampaignController extends Controller
 
     public function detail(int $id)
     {
-        $model = $this->service->find($id);
+        try {
+            $model = $this->service->find($id);
 
-        if (!empty($model)) {
-            return $this->responseSuccess(new CampaignResource($model));
-        } else {
-            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            if (!empty($model)) {
+                return $this->responseSuccess(new CampaignResource($model));
+            } else {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
