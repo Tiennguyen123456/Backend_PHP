@@ -16,7 +16,7 @@ class CampaignService extends BaseService
     {
         $attrs = [
             'name'              => $this->attributes['name'],
-            'run_time'          => $this->attributes['run_time'],
+            'run_time'          => $this->attributes['run_time'] ?? null,
             'status'            => $this->attributes['status'],
             'mail_subject'      => $this->attributes['mail_subject'],
             'sender_email'      => $this->attributes['sender_email'] ?? null,
