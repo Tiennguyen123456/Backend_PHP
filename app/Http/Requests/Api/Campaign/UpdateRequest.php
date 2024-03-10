@@ -29,6 +29,7 @@ class UpdateRequest extends BaseFormRequest
     {
         $this->merge([
             'id' => $this->id,
+            'action' => strtoupper($this->action),
         ]);
     }
 }
