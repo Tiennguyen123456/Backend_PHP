@@ -45,4 +45,8 @@ final class MessageCodeEnum extends Enum
     const EMAIL_CONTENT_IS_EMPTY = 'EMAIL_CONTENT_IS_EMPTY'; // Nội dung email rỗng
     const CAMPAIGN_NOT_FOUND = 'CAMPAIGN_NOT_FOUND'; // Không tìm thấy chiến dịch
     const FAILED_ACTION = 'FAILED_ACTION'; // Thực hiện thất bại
+    const CAMPAIGN_HAS_NO_CLIENT = 'CAMPAIGN_HAS_NO_CLIENT';
+    const CAMPAIGN_IS_NOT_NEW_OR_PAUSED = 'CAMPAIGN_IS_NOT_NEW_OR_PAUSED';
+    const CAMPAIGN_IS_NOT_RUNNING = 'CAMPAIGN_IS_NOT_RUNNING';
+    const CAMPAIGN_IS_ALREADY_STOPPED = 'CAMPAIGN_IS_ALREADY_STOPPED';
 }

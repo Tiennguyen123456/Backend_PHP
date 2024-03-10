@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Api;
 
+use App\Enums\MessageCodeEnum;
 use App\Jobs\RunCampaignJob;
 use App\Services\BaseService;
 use App\Repositories\Campaign\CampaignRepository;
@@ -81,10 +82,21 @@ class CampaignService extends BaseService
         if ($model->status != $model::STATUS_NEW && $model->status != $model::STATUS_PAUSED) {
             return [
                 'success' => false,
-                'message' => 'CAMPAIGN_IS_NOT_NEW_OR_PAUSED',
+                'message' => MessageCodeEnum::CAMPAIGN_IS_NOT_NEW_OR_PAUSED,
             ];
         }
 
+        // Check if Campaign has no client
+        $clientService = new ClientService();
+        $clientService->attributes['filters'] = unserialize($model->filter_client);
+        $clientService->attributes['filters']['event_id'] = $model->event_id;
+
+        if ($clientService->count() == 0) {
+            return [
+                'success' => false,
+                'message' => MessageCodeEnum::CAMPAIGN_HAS_NO_CLIENT,
+            ];
+        }
 
         $model->update([
             'status' => $model::STATUS_RUNNING
@@ -101,7 +113,7 @@ class CampaignService extends BaseService
         if ($model->status != $model::STATUS_RUNNING) {
             return [
                 'success' => false,
-                'message' => 'CAMPAIGN_IS_NOT_RUNNING',
+                'message' => MessageCodeEnum::CAMPAIGN_IS_NOT_RUNNING,
             ];
         }
 
@@ -117,7 +129,7 @@ class CampaignService extends BaseService
         if ($model->status == $model::STATUS_STOPPED) {
             return [
                 'success' => false,
-                'message' => 'CAMPAIGN_IS_ALREADY_STOPPED',
+                'message' => MessageCodeEnum::CAMPAIGN_IS_ALREADY_STOPPED,
             ];
         }
 
