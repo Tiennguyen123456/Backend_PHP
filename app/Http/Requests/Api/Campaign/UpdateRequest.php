@@ -28,7 +28,7 @@ class UpdateRequest extends BaseFormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'id' => $this->id,
+            'id' => (int) $this->id,
             'action' => strtoupper($this->action),
         ]);
     }
