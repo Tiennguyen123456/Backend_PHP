@@ -22,9 +22,9 @@ class ClientController extends Controller
     public function list(Request $request, int $eventId)
     {
         $this->service->attributes = $request->all();
+        $this->service->attributes['filters']['event_id'] = $eventId;
 
         if (!empty($list = $this->service->getList())) {
-            $this->service->attributes['filters']['event_id'] = $eventId;
             $totalClient = $this->service->count();
 
             $this->service->attributes['filters']['is_checkin'] = true;
