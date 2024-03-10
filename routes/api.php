@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CampaignController;
+use App\Http\Controllers\Api\LogSendEmailController;
 use App\Http\Controllers\Api\PermissionController;
 
 /*
@@ -87,6 +88,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/campaign/store', [CampaignController::class, 'store'])->middleware('permission:campaign:create');
     Route::post('/campaign/{id}/updateMailContent', [CampaignController::class, 'updateMailContent'])->middleware('permission:campaign:create');
     Route::post('/campaign/{id}/action', [CampaignController::class, 'handleAction'])->middleware('permission:campaign:create');
+    
+    /* LOG SEND EMAIL*/ 
+    Route::get('/campaign/{id}/log-send-email', [LogSendEmailController::class, 'list']);
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);

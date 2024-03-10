@@ -7,6 +7,7 @@ servers:
   - url: http://backendcheckin.test/api
     description: SwaggerHub API Auto Mocking
   - url: https://virtserver.swaggerhub.com/minhtanle/CheckinSystem/1.0.0
+  - url: http://checkin-v2.local/api
 tags:
   - name: Authentication
     description: Operations about authentication
@@ -1036,7 +1037,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/ErrorValidation"
+                $ref: "#/components/schemas/ErrorValidation"
       security:
         - bearerAuth: []
   /event/{id}/client/{clientId}/checkin:
@@ -1082,7 +1083,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/ErrorValidation"
+                $ref: "#/components/schemas/ErrorValidation"
       security:
         - bearerAuth: []
   /event/{id}/client/{clientId}:
@@ -1184,6 +1185,42 @@ paths:
                     $ref: "#/components/schemas/EventResource"
       security:
         - bearerAuth: []
+  /campaign/{id}/log-send-email:
+    get:
+      tags:
+        - Campaign
+      summary: "Show list log send mail by Campaign ID"
+      operationId: getListLogSendMail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Campaign id
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListLogSendEmailResource"
+      security:
+        - bearerAuth: []
 components:
   schemas:
     Login:
@@ -1279,24 +1316,25 @@ components:
               "created_at": "2024-01-20 01:43:51",
               "updated_at": "2024-02-05 15:01:51",
               "role": "system-admin",
-              "permissions": [
-                "user_role:view",
-                "user_role:create",
-                "user_role:assign-to-user",
-                "user_permission:view",
-                "user_permission:assign-to-role",
-                "user_permission:revoke-from-role",
-                "user:view",
-                "user:create",
-                "user:create-admin",
-                "user:update",
-                "user:update-admin",
-                "user:delete",
-                "company:view",
-                "company:create",
-                "company:update",
-                "company:delete",
-              ]
+              "permissions":
+                [
+                  "user_role:view",
+                  "user_role:create",
+                  "user_role:assign-to-user",
+                  "user_permission:view",
+                  "user_permission:assign-to-role",
+                  "user_permission:revoke-from-role",
+                  "user:view",
+                  "user:create",
+                  "user:create-admin",
+                  "user:update",
+                  "user:update-admin",
+                  "user:delete",
+                  "company:view",
+                  "company:create",
+                  "company:update",
+                  "company:delete",
+                ],
             }
     ListUser:
       properties:
@@ -1510,7 +1548,7 @@ components:
           type: integer
         status:
           type: string
-          enum: [ACTIVE,NEW,INACTIVE]
+          enum: [ACTIVE, NEW, INACTIVE]
         company_id:
           type: integer
       required:
@@ -1647,50 +1685,50 @@ components:
         pagination:
           $ref: "#/components/schemas/Pagination"
     CompanyResource:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 1
-          parent_id:
-            type: string
-            example: null
-          is_default:
-            type: boolean
-            example: false
-          code:
-            type: integer
-            example: "ABCD"
-          name:
-            type: string
-          contact_email:
-            type: string
-          contact_phone:
-            type: string
-          website:
-            type: string
-          address:
-            type: string
-          city:
-            type: string
-          limited_users:
-            type: string
-            example: null
-          limited_events:
-            type: string
-            example: null
-          limited_campaigns:
-            type: string
-            example: null
-          status:
-            type: string
-            enum: [NEW,ACTIVE,INACTIVE]
-          created_at:
-            type: string
-            example: "2024-01-20 01:43:46"
-          updated_at:
-            type: string
-            example: "2024-01-20 01:43:46"
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        parent_id:
+          type: string
+          example: null
+        is_default:
+          type: boolean
+          example: false
+        code:
+          type: integer
+          example: "ABCD"
+        name:
+          type: string
+        contact_email:
+          type: string
+        contact_phone:
+          type: string
+        website:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        limited_users:
+          type: string
+          example: null
+        limited_events:
+          type: string
+          example: null
+        limited_campaigns:
+          type: string
+          example: null
+        status:
+          type: string
+          enum: [NEW, ACTIVE, INACTIVE]
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
     StoreCompany:
       type: object
       description: "ID for update user, if not ID for create new user"
@@ -1722,7 +1760,7 @@ components:
           example: null
         status:
           type: string
-          enum: [ACTIVE,NEW,INACTIVE]
+          enum: [ACTIVE, NEW, INACTIVE]
         website:
           type: string
       required:
@@ -1741,16 +1779,16 @@ components:
         start_time:
           type: string
           format: date
-          example: '2023-12-31 10:00:00'
+          example: "2023-12-31 10:00:00"
         end_time:
           type: string
           format: date
-          example: '2023-12-31 22:00:00'
+          example: "2023-12-31 22:00:00"
         company_id:
           type: integer
         status:
           type: string
-          enum: [ACTIVE,NEW,INACTIVE,DONE,CANCEL]
+          enum: [ACTIVE, NEW, INACTIVE, DONE, CANCEL]
         description:
           type: string
         email_content:
@@ -1787,18 +1825,18 @@ components:
         start_time:
           type: string
           format: date
-          example: '2023-12-31 10:00:00'
+          example: "2023-12-31 10:00:00"
         end_time:
           type: string
           format: date
-          example: '2023-12-31 22:00:00'
+          example: "2023-12-31 22:00:00"
         email_content:
           type: string
         cards_content:
           type: string
         status:
           type: string
-          enum: [ACTIVE,NEW,INACTIVE,DONE,CANCEL]
+          enum: [ACTIVE, NEW, INACTIVE, DONE, CANCEL]
         created_by:
           type: integer
         updated_by:
@@ -1898,7 +1936,7 @@ components:
           type: string
         is_checkin:
           type: integer
-          enum: [0,1]
+          enum: [0, 1]
         type:
           type: string
         status:
@@ -1928,7 +1966,7 @@ components:
           type: string
         is_checkin:
           type: integer
-          enum: [0,1]
+          enum: [0, 1]
       required:
         - fullname
         - email
@@ -1947,11 +1985,7 @@ components:
           example: VALIDATION_ERROR
         data:
           type: object
-          example: {
-              "phone": [
-                  "The phone has already been taken."
-              ]
-          }
+          example: { "phone": ["The phone has already been taken."] }
     ClientSummaryResource:
       properties:
         totalClient:
@@ -1991,7 +2025,7 @@ components:
           example: 2024-03-01 10:37:00
         filter_client:
           type: string
-          example: "a:1:{s:5:\"group\";s:3:\"VIP\";}"
+          example: 'a:1:{s:5:"group";s:3:"VIP";}'
         status:
           type: string
         mail_content:
@@ -2045,7 +2079,7 @@ components:
         run_time:
           type: string
           format: date
-          example: '2023-12-31 10:00:00'
+          example: "2023-12-31 10:00:00"
         filter_client:
           type: array
           items:
@@ -2068,6 +2102,46 @@ components:
         - filter_client
         - status
         - mail_subject
+    ListLogSendEmailResource:
+      properties:
+        collection:
+          type: array
+          items:
+            $ref: "#/components/schemas/LogSendEmailResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    LogSendEmailResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        campaign_id:
+          type: integer
+        client_id:
+          type: integer
+        client:
+          type: object
+          properties:
+            id:
+              type: integer
+            fullname:
+              type: string
+        email:
+          type: string
+        status:
+          type: string
+        error:
+          type: string
+        sent_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
   parameters:
     pageParam:
       in: query
