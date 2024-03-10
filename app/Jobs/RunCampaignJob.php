@@ -3,24 +3,27 @@
 namespace App\Jobs;
 
 use App\Mail\MailCampaign;
-use App\Models\Campaign;
 use Illuminate\Bus\Queueable;
 use App\Services\Api\EventService;
 use App\Services\Api\ClientService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Services\Api\CampaignService;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Queue\SerializesModels;
 use App\Services\Api\LogSendMailService;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Support\Facades\Redis;
 
 class RunCampaignJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $id;
+
+    private $userId;
 
     protected $clientService;
 
@@ -30,18 +33,23 @@ class RunCampaignJob implements ShouldQueue
 
     protected $logSendMailService;
 
+    protected $redisCampaignClients;
+
+    protected $redisCampaignMailSent;
+
     /**
      * Create a new job instance.
      */
-    public function __construct($id)
+    public function __construct($id, $userId)
     {
         $this->id = $id;
-        $this->clientService = new ClientService();
-        $this->campaignService = new CampaignService();
-        $this->eventService = new EventService();
-        $this->logSendMailService = new LogSendMailService();
+        $this->userId = $userId;
+        $this->eventService         = new EventService();
+        $this->clientService        = new ClientService();
+        $this->campaignService      = new CampaignService();
+        $this->logSendMailService   = new LogSendMailService();
 
-        $this->redisCampaignClients = sprintf(config('redis.campaign.clients'), $id);
+        $this->redisCampaignClients  = sprintf(config('redis.campaign.clients'), $id);
         $this->redisCampaignMailSent = sprintf(config('redis.campaign.mail_sents'), $id);
     }
 
@@ -51,6 +59,8 @@ class RunCampaignJob implements ShouldQueue
     public function handle(): void
     {
         logger('run campaign');
+
+        Auth::loginUsingId($this->userId);
 
         $campaignId = $this->id;
 
@@ -65,10 +75,16 @@ class RunCampaignJob implements ShouldQueue
         }
 
         // Email send
-        $this->handleHistoryEmail($campaignId);
+        if (!$this->getMailSent($campaignId)) {
+            logger('Error: getMailSent');
+            return;
+        }
 
         // Load client
-        $this->getClient($campaignId, $campaign->event_id);
+        if (!$this->getClient($campaign->event_id)) {
+            logger('Error: getClient');
+            return;
+        }
 
         // Event data
         $eventVariables = $this->eventService->generateVariables($campaign->event_id);
@@ -92,40 +108,49 @@ class RunCampaignJob implements ShouldQueue
                 Mail::to($clientVariables['CLIENT_EMAIL'])->send(new MailCampaign($mailData));
 
                 // Save log
-                $this->logSendMailService->attributes = [
-                    'campaign_id' => $campaign->id,
-                    'client_id' => $client->id,
-                    'email' => $client->email,
-                    'subject' => $campaign->mail_subject,
-                    'content' => $mailContent,
-                    'status' => 'success',
-                    'error' => '',
-                    'sent_at' => now(),
-                ];
-                $this->logSendMailService->store();
+                // $this->logSendMailService->attributes = [
+                //     'campaign_id' => $campaign->id,
+                //     'client_id' => $client->id,
+                //     'email' => $client->email,
+                //     'subject' => $campaign->mail_subject,
+                //     'content' => $mailContent,
+                //     'status' => 'success',
+                //     'error' => '',
+                //     'sent_at' => now(),
+                // ];
+
+                // $this->logSendMailService->store();
 
                 // Sleep
             }
         } while ( !blank($client) );
     }
 
-    private function handleHistoryEmail($campaignId) : void
+    private function getMailSent($campaignId)
     {
-        $page = 1;
+        try {
+            $page = 1;
 
-        $this->logSendMailService->attributes['filters']['campaign_id'] = $campaignId;
-        $this->logSendMailService->attributes['orderBy'] = 'id';
-        $this->logSendMailService->attributes['orderDesc'] = false;
+            $this->logSendMailService->attributes['filters']['campaign_id'] = $campaignId;
+            $this->logSendMailService->attributes['orderBy'] = 'id';
+            $this->logSendMailService->attributes['orderDesc'] = false;
 
-        do {
-            $this->logSendMailService->attributes['page'] = $page++;
+            do {
+                $this->logSendMailService->attributes['page'] = $page++;
 
-            $result = $this->logSendMailService->getList();
+                $result = $this->logSendMailService->getList();
 
-            foreach ($result as $log) {
-                Redis::sadd($this->redisCampaignMailSent, $log->email);
-            }
-        } while ( !blank($result) );
+                foreach ($result as $log) {
+                    Redis::sadd($this->redisCampaignMailSent, $log->email);
+                }
+            } while ( !blank($result) );
+
+            return true;
+
+        } catch (\Throwable $th) {
+            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return false;
+        }
     }
 
     private function getClient($eventId)
@@ -134,13 +159,13 @@ class RunCampaignJob implements ShouldQueue
             $page = 1;
             $count = 0;
 
-            $this->service->attributes['orderBy'] = 'id';
-            $this->service->attributes['orderDesc'] = false;
+            $this->clientService->attributes['orderBy'] = 'id';
+            $this->clientService->attributes['orderDesc'] = false;
 
             do {
-                $this->service->attributes['page'] = $page++;
+                $this->clientService->attributes['page'] = $page++;
 
-                $result = $this->service->getClientsByEventId($eventId);
+                $result = $this->clientService->getClientsByEventId($eventId);
 
                 foreach ($result as $client) {
                     $email = $client->email;
@@ -151,8 +176,13 @@ class RunCampaignJob implements ShouldQueue
                     }
                 }
             } while ( !blank($result) );
+
+            return $count > 0;
+
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return false;
         }
     }
 }

@@ -103,7 +103,7 @@ class CampaignService extends BaseService
         ]);
 
         // Call Job Run Campaign
-        RunCampaignJob::dispatch($model->id);
+        RunCampaignJob::dispatch($model->id, auth()->id());
 
         return ['success' => true];
     }
