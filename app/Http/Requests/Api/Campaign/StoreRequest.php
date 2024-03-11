@@ -22,7 +22,7 @@ class StoreRequest extends BaseFormRequest
             'company_id'        => ['required', 'numeric', $this->tableHasId('companies')],
             'event_id'          => ['required', 'numeric', $this->tableHasId('events')],
             'run_time'          => ['nullable', 'date', 'after:now'],
-            'filter_client'     => ['required', 'array'],
+            'filter_client'     => ['nullable', 'array'],
             'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(Campaign::getStatuesValid()))],
             // 'mail_content'      => ['required', 'string'],
             'mail_subject'      => ['required', 'string', 'max:100'],
