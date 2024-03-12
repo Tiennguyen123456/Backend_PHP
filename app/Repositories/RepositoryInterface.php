@@ -23,7 +23,7 @@ interface RepositoryInterface
 
     public function getItems($status = null, $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 0);
 
-    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50);
+    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50, $page = 1);
 
     public function addSearchQuery($query, $searches = []);
 

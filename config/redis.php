@@ -11,7 +11,8 @@ return [
         ]
     ],
     'campaign' => [
-        'clients' => 'campaign:%s:clients',
-        'mail_sents' => 'campaign:%s:mail_sents',
+        'clients'       => 'campaign:%s:clients',
+        'mail_sents'    => 'campaign:%s:mail_sents',
+        'status'        => 'campaign:%s:status',
     ],
 ];

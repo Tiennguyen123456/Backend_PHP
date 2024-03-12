@@ -16,6 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Throwable;
 
 class RunCampaignJob implements ShouldQueue
 {
@@ -37,6 +38,8 @@ class RunCampaignJob implements ShouldQueue
 
     protected $redisCampaignMailSent;
 
+    protected $redisCampaignStatus;
+
     /**
      * Create a new job instance.
      */
@@ -51,6 +54,7 @@ class RunCampaignJob implements ShouldQueue
 
         $this->redisCampaignClients  = sprintf(config('redis.campaign.clients'), $id);
         $this->redisCampaignMailSent = sprintf(config('redis.campaign.mail_sents'), $id);
+        $this->redisCampaignStatus = sprintf(config('redis.campaign.status'), $id);
     }
 
     /**
@@ -74,15 +78,23 @@ class RunCampaignJob implements ShouldQueue
             return;
         }
 
+        Redis::set($this->redisCampaignStatus, $campaign::STATUS_RUNNING);
+
         // Email send
         if (!$this->getMailSent($campaignId)) {
-            logger('Error: getMailSent');
+            logger("ERROR in get mail sent. Campaign Pause.");
+            $campaign->status = $campaign::STATUS_PAUSED;
+
+            $this->stop($campaign);
             return;
         }
 
         // Load client
         if (!$this->getClient($campaign->event_id)) {
-            logger('Error: getClient');
+            logger("No client to send mail. Campaign stopped.");
+            $campaign->status = $campaign::STATUS_FINISHED;
+
+            $this->stop($campaign);
             return;
         }
 
@@ -92,11 +104,19 @@ class RunCampaignJob implements ShouldQueue
         do {
             $client = Redis::rpop($this->redisCampaignClients);
 
+            logger('rpop client');
+
             if (!blank($client)) {
-                $clientVariables = $this->clientService->generateVariables(json_decode($client, true));
+                if (Redis::get($this->redisCampaignStatus) != $campaign::STATUS_RUNNING) {
+                    logger('CAMPAIGN_IS_NOT_RUNNING');
+                    return;
+                }
+
+                $arClient = json_decode($client, true);
+
+                $clientVariables = $this->clientService->generateVariables($arClient);
 
                 $arVariables = array_merge($eventVariables, $clientVariables);
-
                 // Replace variable on mail content
                 $mailContent = $this->campaignService->replaceVariables($campaign->mail_content, $arVariables);
 
@@ -105,25 +125,37 @@ class RunCampaignJob implements ShouldQueue
                     'subject' => $campaign->mail_subject,
                     'content' => $mailContent,
                 ];
-                Mail::to($clientVariables['CLIENT_EMAIL'])->send(new MailCampaign($mailData));
+
+                try {
+                    Mail::to($clientVariables['CLIENT_EMAIL'])->send(new MailCampaign($mailData));
+                    $status = 'SUCCESS';
+                } catch (\Throwable $th) {
+                    $status = 'FAILED';
+                    logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+                }
 
                 // Save log
-                // $this->logSendMailService->attributes = [
-                //     'campaign_id' => $campaign->id,
-                //     'client_id' => $client->id,
-                //     'email' => $client->email,
-                //     'subject' => $campaign->mail_subject,
-                //     'content' => $mailContent,
-                //     'status' => 'success',
-                //     'error' => '',
-                //     'sent_at' => now(),
-                // ];
+                $this->logSendMailService->attributes = [
+                    'campaign_id' => $campaign->id,
+                    'client_id' => $arClient['id'],
+                    'email' => $arClient['email'],
+                    'subject' => $campaign->mail_subject,
+                    'content' => $mailContent,
+                    'status' => $status,
+                    'error' => '',
+                    'sent_at' => now(),
+                ];
 
-                // $this->logSendMailService->store();
+                $this->logSendMailService->store();
 
                 // Sleep
+                sleep(1);
             }
         } while ( !blank($client) );
+
+        $campaign->status = $campaign::STATUS_FINISHED;
+        $this->stop($campaign);
+        return;
     }
 
     private function getMailSent($campaignId)
@@ -184,5 +216,20 @@ class RunCampaignJob implements ShouldQueue
 
             return false;
         }
+    }
+
+    public function failed(Throwable $exception)
+    {
+        logger($exception);
+    }
+
+    public function stop($campaign)
+    {
+        Redis::del($this->redisCampaignStatus);
+        Redis::del($this->redisCampaignMailSent);
+        Redis::del($this->redisCampaignClients);
+
+        $campaign->status = $campaign::STATUS_FINISHED;
+        $campaign->save();
     }
 }

@@ -113,8 +113,15 @@ abstract class Repository implements RepositoryInterface
         return $query->get();
     }
 
-    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50)
-    {
+    public function getList(
+        $searches = [],
+        $filters = [],
+        $orderByColumn = 'updated_at',
+        $orderByDesc = true,
+        $limit = 0,
+        $paginate = 50,
+        $page = 1
+    ) {
         $query = $this->model;
 
         $query = $this->addFilterCompanyQuery($query);
@@ -142,7 +149,7 @@ abstract class Repository implements RepositoryInterface
         }
 
         if ($paginate) {
-            return $query->paginate($paginate);
+            return $query->paginate($paginate, ['*'], 'page', $page);
         }
 
         return $query->get();

@@ -10,8 +10,14 @@ class UserRepository extends Repository implements UserRepositoryInterface
         return \App\Models\User::class;
     }
 
-    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50)
-    {
+    public function getList($searches = [],
+        $filters = [],
+        $orderByColumn = 'updated_at',
+        $orderByDesc = true,
+        $limit = 0,
+        $paginate = 50,
+        $page = 1
+    ) {
         $query = $this->model->where([
             ['status', '!=', $this->model::STATUS_DELETED],
             ['type', '!=', $this->model::TYPE_SYSTEM_ADMIN]

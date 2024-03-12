@@ -1,9 +1,10 @@
 <?php
 namespace App\Services\Api;
 
-use App\Enums\MessageCodeEnum;
 use App\Jobs\RunCampaignJob;
 use App\Services\BaseService;
+use App\Enums\MessageCodeEnum;
+use Illuminate\Support\Facades\Redis;
 use App\Repositories\Campaign\CampaignRepository;
 
 class CampaignService extends BaseService
@@ -121,6 +122,8 @@ class CampaignService extends BaseService
             'status' => $model::STATUS_PAUSED
         ]);
 
+        Redis::del(sprintf(config('redis.campaign.status'), $model->id));
+
         return ['success' => true];
     }
 
@@ -136,6 +139,8 @@ class CampaignService extends BaseService
         $model->update([
             'status' => $model::STATUS_STOPPED
         ]);
+
+        Redis::del(sprintf(config('redis.campaign.status'), $model->id));
 
         return ['success' => true];
     }
