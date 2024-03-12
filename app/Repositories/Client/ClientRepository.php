@@ -24,6 +24,7 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
                             ->where('event_id', '=', $eventId);
 
         $query = $this->addSearchQuery($query, $searches);
+        $query = $this->addFilterQuery($query, $filters);
 
         if (count($filters)) {
             if (isset($filters['status'])) {
@@ -44,18 +45,6 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
                         'type' => $filters['type']
                     ]);
                 }
-            }
-
-            if (isset($filters['country_id'])) {
-                $query = $query->where('country_id', $filters['country_id']);
-            }
-
-            if (isset($filters['start_time'])) {
-                $query = $query->whereDate('created_at', '>=', $filters['start_time']);
-            }
-
-            if (isset($filters['to_date'])) {
-                $query = $query->whereDate('created_at', '<=', $filters['to_date']);
             }
         }
 

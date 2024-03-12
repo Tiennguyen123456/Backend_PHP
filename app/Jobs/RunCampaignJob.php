@@ -90,7 +90,7 @@ class RunCampaignJob implements ShouldQueue
         }
 
         // Load client
-        if (!$this->getClient($campaign->event_id)) {
+        if (!$this->getClient($campaign)) {
             logger("No client to send mail. Campaign stopped.");
             $campaign->status = $campaign::STATUS_FINISHED;
 
@@ -103,8 +103,6 @@ class RunCampaignJob implements ShouldQueue
 
         do {
             $client = Redis::rpop($this->redisCampaignClients);
-
-            logger('rpop client');
 
             if (!blank($client)) {
                 if (Redis::get($this->redisCampaignStatus) != $campaign::STATUS_RUNNING) {
@@ -185,14 +183,18 @@ class RunCampaignJob implements ShouldQueue
         }
     }
 
-    private function getClient($eventId)
+    private function getClient($campaign)
     {
         try {
+            $eventId = $campaign->event_id;
+            $filters = unserialize($campaign->filter_client);
+
             $page = 1;
             $count = 0;
 
             $this->clientService->attributes['orderBy'] = 'id';
             $this->clientService->attributes['orderDesc'] = false;
+            $this->clientService->attributes['filters'] = $filters;
 
             do {
                 $this->clientService->attributes['page'] = $page++;
