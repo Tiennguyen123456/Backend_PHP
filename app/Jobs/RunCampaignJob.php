@@ -87,7 +87,7 @@ class RunCampaignJob implements ShouldQueue
             $campaign->status = $campaign::STATUS_PAUSED;
             $campaign->save();
 
-            $this->stop($campaign);
+            $this->clearRedis($campaign);
             return;
         }
 
@@ -98,7 +98,7 @@ class RunCampaignJob implements ShouldQueue
             $campaign->status = $campaign::STATUS_FINISHED;
             $campaign->save();
 
-            $this->stop($campaign);
+            $this->clearRedis($campaign);
             return;
         }
 
@@ -159,7 +159,7 @@ class RunCampaignJob implements ShouldQueue
 
         if ($isPaused) {
             // Campaign is paused by User
-            $this->stop($campaign);
+            $this->clearRedis($campaign);
             return;
         }
 
@@ -167,7 +167,7 @@ class RunCampaignJob implements ShouldQueue
         $campaign->status = $campaign::STATUS_FINISHED;
         $campaign->save();
 
-        $this->stop($campaign);
+        $this->clearRedis($campaign);
         return;
     }
 
@@ -254,7 +254,7 @@ class RunCampaignJob implements ShouldQueue
         logger($exception);
     }
 
-    public function stop()
+    public function clearRedis()
     {
         Redis::del($this->redisCampaignStatus);
         Redis::del($this->redisCampaignMailSent);
