@@ -172,6 +172,45 @@ class ClientService extends BaseService
             'CLIENT_EMAIL' => $client['email'],
             'CLIENT_PHONE' => $client['phone'],
             'CLIENT_ADDRESS' => $client['address'],
+            'CLIENT_QR_CODE' => $this->encodeQrData($client),
         ];
+    }
+
+    public function encodeQrData(array $client)
+    {
+        $arData = [
+            md5($client['id'] . $client['event_id'] . $client['phone']),
+            $client['id'],
+            rand(10, 99),
+            $client['event_id'],
+            rand(10, 99),
+            strrev($client['phone']),
+            rand(10, 99),
+        ];
+
+        return implode(';', $arData);
+    }
+
+    public function decodeQrData(string $data)
+    {
+        $arData = explode(';', $data);
+
+        if (count($arData) != 7) {
+            return false;
+        }
+
+        $client = [
+            'secret' => $arData[0],
+            'id' => (int) $arData[1],
+            'event_id' => (int) $arData[3],
+            'phone' => strrev($arData[5]),
+        ];
+        $secret = md5($client['id'] . $client['event_id'] . $client['phone']);
+
+        if (strcmp($secret, $client['secret']) != 0) {
+            return false;
+        }
+
+        return $client;
     }
 }

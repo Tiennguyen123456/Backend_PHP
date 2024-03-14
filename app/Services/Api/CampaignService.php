@@ -4,6 +4,7 @@ namespace App\Services\Api;
 use App\Jobs\RunCampaignJob;
 use App\Services\BaseService;
 use App\Enums\MessageCodeEnum;
+use App\Helpers\Helper;
 use Illuminate\Support\Facades\Redis;
 use App\Repositories\Campaign\CampaignRepository;
 
@@ -148,6 +149,9 @@ class CampaignService extends BaseService
     public function replaceVariables(string $content, array $variables)
     {
         foreach ($variables as $key => $value) {
+            if ($key === 'CLIENT_QR_CODE') {
+                Helper::generateQrCode($value);
+            }
             $content = str_replace('{{'.$key.'}}', $value, $content);
         }
 
