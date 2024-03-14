@@ -83,7 +83,9 @@ class RunCampaignJob implements ShouldQueue
         // Email send
         if (!$this->getMailSent($campaignId)) {
             logger("ERROR in get mail sent. Campaign Pause.");
+
             $campaign->status = $campaign::STATUS_PAUSED;
+            $campaign->save();
 
             $this->stop($campaign);
             return;
@@ -92,7 +94,9 @@ class RunCampaignJob implements ShouldQueue
         // Load client
         if (!$this->getClient($campaign)) {
             logger("No client to send mail. Campaign stopped.");
+
             $campaign->status = $campaign::STATUS_FINISHED;
+            $campaign->save();
 
             $this->stop($campaign);
             return;
@@ -101,13 +105,15 @@ class RunCampaignJob implements ShouldQueue
         // Event data
         $eventVariables = $this->eventService->generateVariables($campaign->event_id);
 
+        $isPaused = false;
         do {
             $client = Redis::rpop($this->redisCampaignClients);
 
             if (!blank($client)) {
                 if (Redis::get($this->redisCampaignStatus) != $campaign::STATUS_RUNNING) {
                     logger('CAMPAIGN_IS_NOT_RUNNING');
-                    return;
+                    $isPaused = true;
+                    break;
                 }
 
                 $arClient = json_decode($client, true);
@@ -151,7 +157,16 @@ class RunCampaignJob implements ShouldQueue
             }
         } while ( !blank($client) );
 
+        if ($isPaused) {
+            // Campaign is paused by User
+            $this->stop($campaign);
+            return;
+        }
+
+        // Campaign finished
         $campaign->status = $campaign::STATUS_FINISHED;
+        $campaign->save();
+
         $this->stop($campaign);
         return;
     }
@@ -168,7 +183,14 @@ class RunCampaignJob implements ShouldQueue
             do {
                 $this->logSendMailService->attributes['page'] = $page++;
 
-                $result = $this->logSendMailService->getList();
+                try {
+                    $result = $this->logSendMailService->getList();
+                    if (empty($result)) {
+                        break;
+                    }
+                } catch (\Throwable $th) {
+                    break;
+                }
 
                 foreach ($result as $log) {
                     Redis::sadd($this->redisCampaignMailSent, $log->email);
@@ -199,7 +221,14 @@ class RunCampaignJob implements ShouldQueue
             do {
                 $this->clientService->attributes['page'] = $page++;
 
-                $result = $this->clientService->getClientsByEventId($eventId);
+                try {
+                    $result = $this->clientService->getClientsByEventId($eventId);
+                    if (empty($result)) {
+                        break;
+                    }
+                } catch (\Throwable $th) {
+                    break;
+                }
 
                 foreach ($result as $client) {
                     $email = $client->email;
@@ -225,13 +254,10 @@ class RunCampaignJob implements ShouldQueue
         logger($exception);
     }
 
-    public function stop($campaign)
+    public function stop()
     {
         Redis::del($this->redisCampaignStatus);
         Redis::del($this->redisCampaignMailSent);
         Redis::del($this->redisCampaignClients);
-
-        $campaign->status = $campaign::STATUS_FINISHED;
-        $campaign->save();
     }
 }
