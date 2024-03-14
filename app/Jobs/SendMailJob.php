@@ -12,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Throwable;
 
 class SendMailJob implements ShouldQueue
 {
@@ -21,18 +22,18 @@ class SendMailJob implements ShouldQueue
 
     protected $mailData;
 
-    protected $logData;
+    protected $mailLogData;
 
     protected $logSendMailService;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($email, $mailData, $logData)
+    public function __construct($email, $mailData, $mailLogData)
     {
-        $this->email = $email;
+        $this->email    = $email;
         $this->mailData = $mailData;
-        $this->logData = $logData;
+        $this->mailLogData  = $mailLogData;
         $this->logSendMailService = new LogSendMailService();
     }
 
@@ -41,6 +42,8 @@ class SendMailJob implements ShouldQueue
      */
     public function handle(): void
     {
+        logger('Start job send mail');
+
         $email = $this->email;
 
         $result = Mail::to($email)->send(new MailCampaign($this->mailData));
@@ -51,8 +54,18 @@ class SendMailJob implements ShouldQueue
             $status = MessageCodeEnum::ERROR;
         }
 
-        $this->logSendMailService->attributes = $this->logData;
+        $this->logSendMailService->attributes = $this->mailLogData;
         $this->logSendMailService->attributes['status'] = $status;
+        $this->logSendMailService->store();
+    }
+
+    /**
+     * The job failed to process.
+     */
+    public function failed(Throwable $exception): void
+    {
+        $this->logSendMailService->attributes = $this->mailLogData;
+        $this->logSendMailService->attributes['status'] = MessageCodeEnum::ERROR;
         $this->logSendMailService->store();
     }
 }
