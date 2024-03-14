@@ -130,27 +130,42 @@ class RunCampaignJob implements ShouldQueue
                     'content' => $mailContent,
                 ];
 
-                try {
-                    Mail::to($clientVariables['CLIENT_EMAIL'])->send(new MailCampaign($mailData));
-                    $status = 'SUCCESS';
-                } catch (\Throwable $th) {
-                    $status = 'FAILED';
-                    logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-                }
-
-                // Save log
-                $this->logSendMailService->attributes = [
+                $storeData = [
                     'campaign_id' => $campaign->id,
                     'client_id' => $arClient['id'],
                     'email' => $arClient['email'],
                     'subject' => $campaign->mail_subject,
                     'content' => $mailContent,
-                    'status' => $status,
+                    'status' => 'SENDING',
                     'error' => '',
                     'sent_at' => now(),
                 ];
+                $this->logSendMailService->attributes = $storeData;
 
-                $this->logSendMailService->store();
+                $logData = $this->logSendMailService->store();
+
+                dispatch(new SendMailJob($arClient['email'], $mailData, $logData));
+
+                // try {
+                //     Mail::to($clientVariables['CLIENT_EMAIL'])->send(new MailCampaign($mailData));
+                //     $status = 'SUCCESS';
+                // } catch (\Throwable $th) {
+                //     $status = 'FAILED';
+                //     logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+                // }
+
+                // Save log
+                // $this->logSendMailService->attributes = [
+                //     'campaign_id' => $campaign->id,
+                //     'client_id' => $arClient['id'],
+                //     'email' => $arClient['email'],
+                //     'subject' => $campaign->mail_subject,
+                //     'content' => $mailContent,
+                //     'status' => $status,
+                //     'error' => '',
+                //     'sent_at' => now(),
+                // ];
+
 
                 // Sleep
                 sleep(1);

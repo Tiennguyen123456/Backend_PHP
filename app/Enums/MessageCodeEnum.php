@@ -31,6 +31,7 @@ final class MessageCodeEnum extends Enum
 
     /* COMMON STATUS CODE */
     const SUCCESS = 'SUCCESS';
+    const ERROR = 'ERROR';
     const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND'; // Không tìm thấy resource
     const USER_NOT_FOUND = 'USER_NOT_FOUND'; // Không tìm thấy user
     const TOKEN_NOT_FOUND = 'TOKEN_NOT_FOUND'; // Không tìm thấy token
