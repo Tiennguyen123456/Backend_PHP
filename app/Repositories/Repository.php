@@ -17,6 +17,8 @@ abstract class Repository implements RepositoryInterface
     {
         $query = $this->model;
 
+        $query = $this->addFilterCompanyQuery($query);
+
         if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
             $query = $query->where('status', '!=', $query::STATUS_DELETED);
         }
@@ -71,6 +73,8 @@ abstract class Repository implements RepositoryInterface
             ['id', '=', $id],
             ['status', '!=', $this->model::STATUS_DELETED],
         ]);
+
+        $query = $this->addFilterCompanyQuery($query);
 
         if (!empty($status)) {
             if (is_array($status)) {
@@ -199,7 +203,10 @@ abstract class Repository implements RepositoryInterface
         if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
             return $this->getItem($id, $status);
         } else {
-            return $this->model->where([
+            $query = $this->model;
+            $query = $this->addFilterCompanyQuery($query);
+
+            return $query->where([
                 'id' => $id
             ])->first();
         }

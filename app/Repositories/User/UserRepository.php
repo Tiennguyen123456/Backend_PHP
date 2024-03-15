@@ -23,6 +23,8 @@ class UserRepository extends Repository implements UserRepositoryInterface
             ['type', '!=', $this->model::TYPE_SYSTEM_ADMIN]
         ]);
 
+        $query = $this->addFilterCompanyQuery($query);
+
         if ($orderByDesc) {
             $query = $query->orderBy($orderByColumn, 'desc');
         } else {
@@ -98,6 +100,8 @@ class UserRepository extends Repository implements UserRepositoryInterface
             ['status', '!=', $this->model::STATUS_DELETED],
             ['type', '!=', $this->model::TYPE_SYSTEM_ADMIN]
         ]);
+
+        $query = $this->addFilterCompanyQuery($query);
 
         if (!empty($status)) {
             if (is_array($status)) {
