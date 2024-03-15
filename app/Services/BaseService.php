@@ -120,7 +120,7 @@ class BaseService
 
         if (isset($this->attributes['search']) && count($this->attributes['search'])) {
             foreach ($this->attributes['search'] as $key => $value) {
-                if (Helper::tableHasColumn($table, $key) && !empty($value)) {
+                if (Helper::tableHasColumn($table, $key) && !blank($value)) {
                     $this->searches[$key] = $value;
                 }
             }
@@ -138,7 +138,7 @@ class BaseService
 
         if (isset($this->attributes['filters']) && count($this->attributes['filters'])) {
             foreach ($this->attributes['filters'] as $key => $value) {
-                if (Helper::tableHasColumn($table, $key) && !empty($value)) {
+                if (Helper::tableHasColumn($table, $key) && !blank($value)) {
                     $this->filters[$key] = $value;
                 }
             }
