@@ -16,7 +16,15 @@ class EventCustomFieldRepository extends Repository implements EventCustomFieldR
         return $this->model->where('event_id', $eventId)->get();
     }
 
-    public function getList($searches = [], $filters = [], $orderByColumn = 'updated_at', $orderByDesc = true, $limit = 0, $paginate = 50)
+    public function getList(
+        $searches = [],
+        $filters = [],
+        $orderByColumn = 'updated_at',
+        $orderByDesc = true,
+        $limit = 0,
+        $paginate = 50,
+        $page = 1
+    )
     {
         $query = $this->model->where('status', '!=', $this->model::STATUS_DELETED);
 
