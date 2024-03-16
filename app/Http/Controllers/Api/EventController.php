@@ -129,7 +129,7 @@ class EventController extends Controller
     {
         $eventCustomFieldService = app(EventCustomFieldService::class);
 
-        if ($eventCustomFieldService->remove($id)) {
+        if ($eventCustomFieldService->delete($id)) {
             return $this->responseSuccess(null, trans('_response.success.remove'));
         } else {
             return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_REMOVE);
