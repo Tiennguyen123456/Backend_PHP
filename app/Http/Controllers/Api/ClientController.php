@@ -141,9 +141,9 @@ class ClientController extends Controller
     public function sample()
     {
         try {
-            $filePath = url('storage/samples/Sample_Import_Client.xlsx');
+            $filePath = public_path('storage/samples/Sample_Import_Client.xlsx');
 
-            return $this->responseSuccess($filePath);
+            return response()->download($filePath, 'Sample_Import_Client.xlsx');
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
 
