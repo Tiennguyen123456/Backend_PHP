@@ -51,8 +51,8 @@ class BaseFormRequest extends FormRequest
         return new TableHasColumn($tableName);
     }
 
-    protected function uniqueCustomField($eventId)
+    protected function uniqueCustomField($eventId, $id = null)
     {
-        return new UniqueCustomField($eventId);
+        return new UniqueCustomField($eventId, $id);
     }
 }

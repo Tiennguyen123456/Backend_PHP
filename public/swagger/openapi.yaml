@@ -1888,9 +1888,10 @@ components:
           type: string
           example: "2024-01-20 01:43:46"
     StoreEventCustomField:
-      type: array
-      items:
         properties:
+          id:
+            type: integer
+            description: "ID for update, if not ID for create"
           name:
             type: string
           value:
@@ -1900,7 +1901,6 @@ components:
         required:
           - name
           - value
-          - description
     ListClientResource:
       properties:
         count:

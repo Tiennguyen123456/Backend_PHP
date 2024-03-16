@@ -14,31 +14,27 @@ class EventCustomFieldService extends BaseService
 
     public function store()
     {
-        $eventId = $this->attributes['event_id'];
-        $arData = $this->attributes['data'];
+        $attrs = [
+            'event_id'  => $this->attributes['event_id'],
+            'name'  => $this->attributes['name'],
+            'value'  => $this->attributes['value'],
+            'description'  => $this->attributes['description'] ?? null,
+        ];
 
-        foreach ($arData as $field) {
-            if (isset($field['id'])) {
-                $this->repo->update($field['id'], $field);
-            } else {
-                $this->updateOrCreate(
-                    [
-                        'event_id' => $eventId,
-                        'name' => $field['name']
-                    ],
-                    [
-                        'event_id'      => $eventId,
-                        'name'          => $field['name'],
-                        'value'         => $field['value'],
-                        'description'   => $field['description'],
-                        'created_by'    => auth()->user()->id,
-                        'updated_by'    => auth()->user()->id,
-                    ]
-                );
-            }
+        if (!isset($this->attributes['id'])) {
+            $attrMores = [
+                'created_by'    => auth()->user()->id,
+                'updated_by'    => auth()->user()->id,
+                'event_id'      => $this->attributes['event_id']
+            ];
+        } else {
+            $attrMores = [
+                'id'            => $this->attributes['id'],
+                'updated_by'    => auth()->user()->id,
+            ];
         }
 
-        return true;
+        return $this->storeAs($attrs, $attrMores);
     }
 
     public function getList()

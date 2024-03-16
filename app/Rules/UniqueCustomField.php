@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class UniqueCustomField implements Rule
 {
+    protected $id;
+
     protected $eventId;
 
-    public function __construct($eventId)
+    public function __construct($id, $eventId)
     {
+        $this->id = $id;
         $this->eventId = $eventId;
     }
 
@@ -24,6 +27,10 @@ class UniqueCustomField implements Rule
 
         if (Helper::tableHasColumn('event_custom_fields', 'status')) {
             $query = $query->where('status', '!=', BaseModel::STATUS_DELETED);
+        }
+
+        if (!blank($this->id)) {
+            $query = $query->where('id', '!=', $this->id);
         }
 
         return !$query->exists();

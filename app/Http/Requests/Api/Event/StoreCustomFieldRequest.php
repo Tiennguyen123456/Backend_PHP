@@ -18,11 +18,26 @@ class StoreCustomFieldRequest extends BaseFormRequest
         $ruleMores = [];
 
         $rules = [
-            '*.name'        => ['required', 'string', Rule::notIn(array_keys(Event::MAIN_FIELDS))],
-            '*.value'       => ['required', 'string'],
-            '*.description' => ['nullable', 'string'],
+            'name'        => ['required', 'string', Rule::notIn(array_keys(Event::MAIN_FIELDS)), $this->uniqueCustomField($this->event_id)],
+            'value'       => ['required', 'string'],
+            'description' => ['nullable', 'string'],
+            'event_id'    => ['numeric', $this->tableHasId('events')],
         ];
 
+        if (!empty($this->id)) {
+            $ruleMores = [
+                'name'  => ['required', 'string', Rule::notIn(array_keys(Event::MAIN_FIELDS)), $this->uniqueCustomField($this->event_id, $this->id)],
+                'id'    => ['numeric', $this->tableHasId('event_custom_fields')],
+            ];
+        }
+
         return array_merge($rules, $ruleMores);
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'event_id' => (int) $this->route('id')
+        ]);
     }
 }

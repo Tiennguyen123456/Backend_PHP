@@ -32,8 +32,7 @@ class EventController extends Controller
                 return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
         } catch (\Throwable $th) {
-            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
@@ -49,8 +48,7 @@ class EventController extends Controller
                 return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
             }
         } catch (\Throwable $th) {
-           logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-
+           logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
@@ -75,8 +73,7 @@ class EventController extends Controller
                 return $this->responseError('', MessageCodeEnum::FAILED_TO_REMOVE);
             }
         } catch (\Throwable $th) {
-            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
@@ -95,44 +92,53 @@ class EventController extends Controller
 
     public function listCustomField(Request $request, int $eventId)
     {
-        $eventCustomFieldService = app(EventCustomFieldService::class);
-        $eventCustomFieldService->attributes = $request->all();
-        $eventCustomFieldService->attributes['filters']['event_id'] = $eventId;
+        try {
+            $service = app(EventCustomFieldService::class);
+            $service->attributes = $request->all();
+            $service->attributes['filters']['event_id'] = $eventId;
 
-        if (!empty($list = $eventCustomFieldService->getList())) {
-            return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
-        } else {
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
+            if (!empty($list = $service->getList())) {
+                return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
         }
     }
 
     public function storeCustomField(StoreCustomFieldRequest $request, int $eventId)
     {
-        $eventCustomFieldService = app(EventCustomFieldService::class);
-
         try {
-            $eventCustomFieldService->attributes['data'] = $request->all();
-            $eventCustomFieldService->attributes['event_id'] = $eventId;
+            $service = app(EventCustomFieldService::class);
+            $service->attributes = $request->all();
+            $service->attributes['event_id'] = $eventId;
 
-            $eventCustomFieldService->store();
-
-            $eventCustomFieldService->attributes['filters']['event_id'] = $eventId;
-            $list = $eventCustomFieldService->getList();
-
-            return $this->responseSuccess(new DefaultCollection($list), trans('_response.success.index'));
+            if ($service->store()) {
+                return $this->responseSuccess();
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
         } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
         }
     }
 
     public function removeCustomField(int $id)
     {
-        $eventCustomFieldService = app(EventCustomFieldService::class);
+        try {
+            $service = app(EventCustomFieldService::class);
 
-        if ($eventCustomFieldService->delete($id)) {
-            return $this->responseSuccess(null, trans('_response.success.remove'));
-        } else {
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_REMOVE);
+            if ($service->delete($id)) {
+                return $this->responseSuccess(null, trans('_response.success.remove'));
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_REMOVE);
+            }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
         }
     }
 }
