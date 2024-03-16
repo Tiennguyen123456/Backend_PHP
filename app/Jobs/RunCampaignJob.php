@@ -132,7 +132,7 @@ class RunCampaignJob implements ShouldQueue
             $arVariables = array_merge($arEventVariables, $arClientVariables);
 
             // Replace variable on mail content
-            $mailContent = $this->campaignService->replaceVariables($campaign->mail_content, $arVariables);
+            $mailContent = $this->campaignService->replaceVariables($arEventVariables['email_content'], $arVariables);
 
             // Data for send mail
             $mailData = [

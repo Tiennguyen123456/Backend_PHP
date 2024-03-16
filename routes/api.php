@@ -42,9 +42,7 @@ Route::middleware('throttle:2,1')->group(function () {
 });
 Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword']);
 
-Route::middleware('role:admin')->get('/admin', function () {
-
-});
+Route::get('/event/client/import-sample', [ClientController::class, 'sample']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/test', [TestController::class, 'testRedis']);
@@ -79,17 +77,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/event/{id}/client/summary', [ClientController::class, 'summary'])->middleware('permission:client:view');
     Route::post('/event/{id}/client/import', [ClientController::class, 'import'])->middleware('permission:client:import');
     Route::post('/event/{id}/client/store', [ClientController::class, 'store'])->middleware('permission:client:create');
-    Route::post('/event/{id}/client/{clientId}/checkin', [ClientController::class, 'checkin'])->middleware('permission:client:update');
+    Route::post('/event/{id}/client/{clientId}/checkin', [ClientController::class, 'checkin'])->middleware('permission:client:check-in');
     Route::delete('/event/{id}/client/{clientId}', [ClientController::class, 'deleteClient'])->middleware('permission:client:delete');
 
     /* CAMPAIGN */
     Route::get('/campaigns', [CampaignController::class, 'list'])->middleware('permission:campaign:view');
     Route::get('/campaign/{id}', [CampaignController::class, 'detail'])->middleware('permission:campaign:view');
     Route::post('/campaign/store', [CampaignController::class, 'store'])->middleware('permission:campaign:create');
-    Route::post('/campaign/{id}/updateMailContent', [CampaignController::class, 'updateMailContent'])->middleware('permission:campaign:create');
+    // Route::post('/campaign/{id}/updateMailContent', [CampaignController::class, 'updateMailContent'])->middleware('permission:campaign:create');
     Route::post('/campaign/{id}/action', [CampaignController::class, 'handleAction'])->middleware('permission:campaign:create');
-    
-    /* LOG SEND EMAIL*/ 
+
+    /* LOG SEND EMAIL*/
     Route::get('/campaign/{id}/log-send-email', [LogSendEmailController::class, 'list']);
 
     /* COUNTRY */

@@ -170,6 +170,7 @@ class EventService extends BaseService
             'EVENT_END_TIME'    => $model['end_time'],
             'EVENT_LOCATION'    => $model['location'],
             'EVENT_DESCRIPTION' => $model['description'],
+            'email_content'     => $model['email_content'],
         ];
     }
 }

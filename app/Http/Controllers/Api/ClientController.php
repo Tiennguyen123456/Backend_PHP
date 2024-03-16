@@ -137,4 +137,17 @@ class ClientController extends Controller
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
+
+    public function sample()
+    {
+        try {
+            $filePath = url('storage/samples/Sample_Import_Client.xlsx');
+
+            return $this->responseSuccess($filePath);
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
 }
