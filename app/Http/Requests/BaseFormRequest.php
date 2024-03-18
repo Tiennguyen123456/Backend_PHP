@@ -6,7 +6,6 @@ use App\Rules\TableHasId;
 use App\Traits\ApiResponser;
 use App\Rules\TableHasColumn;
 use App\Enums\MessageCodeEnum;
-use App\Traits\SanitizedRequest;
 use App\Rules\UniqueCustomField;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,7 +15,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BaseFormRequest extends FormRequest
 {
-    use ApiResponser, SanitizedRequest;
+    use ApiResponser;
 
     /**
      * Determine if the user is authorized to make this request.

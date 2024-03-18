@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Api\User;
 
-use App\Http\Requests\BaseFormRequest;
-use Illuminate\Validation\Rule;
 use App\Models\User;
+use Illuminate\Validation\Rule;
+use App\Traits\SanitizedRequest;
+use App\Http\Requests\BaseFormRequest;
 
 class StoreRequest extends BaseFormRequest
 {
+    use SanitizedRequest;
     /**
      * Get the validation rules that apply to the request.
      *
