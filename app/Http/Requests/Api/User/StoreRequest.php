@@ -22,6 +22,7 @@ class StoreRequest extends BaseFormRequest
             'name'              => ['required', 'string', 'max:255'],
             'username'          => ['required', 'string', 'max:255', Rule::unique('users')],
             'email'             => ['required', 'string', 'max:255', Rule::unique('users')],
+            'password'          => ['nullable', 'string', 'min:8', 'max:255'],
             'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(User::getStatuesValid()))],
             'company_id'        => ['nullable', 'numeric', $this->tableHasId('companies')],
         ];

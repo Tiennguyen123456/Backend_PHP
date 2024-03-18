@@ -1540,6 +1540,9 @@ components:
           type: integer
         email:
           type: string
+        password:
+          type: string
+          description: "Password for create new user"
         name:
           type: string
         username:

@@ -2,20 +2,21 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\MessageCodeEnum;
-use App\Rules\TableHasColumn;
 use App\Rules\TableHasId;
+use App\Traits\ApiResponser;
+use App\Rules\TableHasColumn;
+use App\Enums\MessageCodeEnum;
+use App\Traits\SanitizedRequest;
 use App\Rules\UniqueCustomField;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
-use App\Traits\ApiResponser;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BaseFormRequest extends FormRequest
 {
-    use ApiResponser;
+    use ApiResponser, SanitizedRequest;
 
     /**
      * Determine if the user is authorized to make this request.

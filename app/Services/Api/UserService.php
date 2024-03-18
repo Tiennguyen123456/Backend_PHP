@@ -53,7 +53,6 @@ class UserService extends BaseService
             'name'              => $this->attributes['name'],
             'username'          => $this->attributes['username'],
             'email'             => $this->attributes['email'],
-            'password'          => Hash::make(Str::random(20)),
             'status'            => $this->attributes['status'] ?? null,
             'role_id'           => $this->attributes['role_id'] ?? null,
             'company_id'        => $this->attributes['company_id'] ?? null,
@@ -64,6 +63,7 @@ class UserService extends BaseService
 
         if (!isset($this->attributes['id'])) {
             $attrMores = [
+                'password'      => Hash::make(Str::random(20)),
                 'created_by'    => auth()->user()->id,
                 'updated_by'    => auth()->user()->id
             ];
@@ -78,6 +78,10 @@ class UserService extends BaseService
                 'updated_by'    => auth()->user()->id,
             ];
 
+            if (!blank($this->attributes['password'])) {
+                $attrMores['password'] = Hash::make($this->attributes['password']);
+            }
+            dd($attrMores);
             $user = $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));
             if ($user)
                 $user->syncRoles([$role->name]);
