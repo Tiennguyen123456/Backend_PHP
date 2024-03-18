@@ -173,4 +173,10 @@ class EventService extends BaseService
             'email_content'     => $model['email_content'],
         ];
     }
+
+    public function listMainField()
+    {
+        $modal = $this->repo->getModel();
+        return $modal::getMainFields();
+    }
 }

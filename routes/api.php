@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     /* EVENT */
     Route::get('/events', [EventController::class, 'list'])->middleware('permission:event:view');
+    Route::get('/event/main-fields', [EventController::class, 'listMainField'])->middleware('permission:event:config');
     Route::get('/event/{id}', [EventController::class, 'detail'])->middleware('permission:event:view');
     Route::post('/event/store', [EventController::class, 'store'])->middleware('permission:event:create');
     // Route::post('/event/assign-company', [EventController::class, 'assignCompany'])->middleware('permission:event:assign-company');

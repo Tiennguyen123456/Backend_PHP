@@ -765,6 +765,43 @@ paths:
                 $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
+  /event/main-fields:
+    get:
+      tags:
+        - Event
+      summary: "Show list Basic Filed of event"
+      operationId: getListMainField
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      EVENT_CODE:
+                        type: string
+                        example: Event 2024
+                      EVENT_NAME:
+                        type: string
+                        example: Event 2024
+                      EVENT_START_TIME:
+                        type: string
+                        example: "2024-01-20 01:43:46"
+      security:
+        - bearerAuth: []
   /event/{id}/custom-fields:
     get:
       tags:

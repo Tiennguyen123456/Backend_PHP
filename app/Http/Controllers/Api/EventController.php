@@ -141,4 +141,18 @@ class EventController extends Controller
             return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
         }
     }
+
+    public function listMainField()
+    {
+        try {
+            if ($data = $this->service->listMainField()) {
+                return $this->responseSuccess($data);
+            } else {
+                return $this->responseError();
+            }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+        }
+    }
 }
