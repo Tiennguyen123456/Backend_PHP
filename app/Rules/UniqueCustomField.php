@@ -13,7 +13,7 @@ class UniqueCustomField implements Rule
 
     protected $eventId;
 
-    public function __construct($id, $eventId)
+    public function __construct($eventId, $id = null)
     {
         $this->id = $id;
         $this->eventId = $eventId;
