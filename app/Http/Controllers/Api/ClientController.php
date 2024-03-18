@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
+use App\Helpers\Helper;
 use App\Services\Api\ClientService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseResource;
@@ -148,6 +149,24 @@ class ClientController extends Controller
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
 
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function generateQrCode(Request $request)
+    {
+        try {
+            $clientId = $request->get('client_id');
+            $client = $this->service->find($clientId);
+
+            if (!$client) {
+                return $this->responseError(MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+            $qrData = $this->service->encodeQrData($client->toArray());
+
+            return Helper::generateQrCode($qrData);
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
