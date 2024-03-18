@@ -81,7 +81,7 @@ class UserService extends BaseService
             if (!blank($this->attributes['password'])) {
                 $attrMores['password'] = Hash::make($this->attributes['password']);
             }
-            dd($attrMores);
+
             $user = $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));
             if ($user)
                 $user->syncRoles([$role->name]);
