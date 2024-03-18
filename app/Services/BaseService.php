@@ -132,7 +132,7 @@ class BaseService
     /**
      * Filter WHERE in columns
      */
-    public function getFilters()
+    public function getFilters($filterMores = [])
     {
         $table = $this->repo->getModelTable();
 
@@ -143,13 +143,13 @@ class BaseService
                 }
             }
 
-            // if (count($filterMores)) {
-            //     foreach ($filterMores as $key) {
-            //         if (!empty($value = $this->attributes['filters'][$key] ?? null)) {
-            //             $this->filters[$key] = $value;
-            //         }
-            //     }
-            // }
+            if (count($filterMores)) {
+                foreach ($filterMores as $key) {
+                    if (!empty($value = $this->attributes['filters'][$key] ?? null)) {
+                        $this->filters[$key] = $value;
+                    }
+                }
+            }
         }
 
         return $this->filters;
