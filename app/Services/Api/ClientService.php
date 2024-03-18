@@ -142,7 +142,7 @@ class ClientService extends BaseService
 
     public function summary()
     {
-        $this->attributes['filters']['event_id'] = $this->attributes['event_id'];
+        $eventId = $this->attributes['filters']['event_id'];
 
         $result = $this->repo->getSummary($this->getSearch(), $this->getFilters());
 
@@ -152,8 +152,24 @@ class ClientService extends BaseService
             $total += $value->total;
         }
 
+        if (isset($this->attributes['filters']['is_checkin'])) {
+            if (boolval($this->attributes['filters']['is_checkin'])) {
+                return [
+                    'totalClient' => $total,
+                    'totalCheckin' => $total,
+                    'groups' => $result
+                ];
+            } else {
+                return [
+                    'totalClient' => $total,
+                    'totalCheckin' => 0,
+                    'groups' => $result
+                ];
+            }
+        }
+
         $this->attributes['filters'] = [
-            'event_id' => $this->attributes['event_id'],
+            'event_id' => $eventId,
             'is_checkin' => true,
         ];
         $totalClientCheckin = $this->count();

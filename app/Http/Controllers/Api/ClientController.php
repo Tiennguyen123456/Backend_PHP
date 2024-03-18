@@ -25,10 +25,9 @@ class ClientController extends Controller
         $this->service->attributes['filters']['event_id'] = $eventId;
 
         if (!empty($list = $this->service->getList())) {
-            $totalClient = $this->service->count();
-
-            $this->service->attributes['filters']['is_checkin'] = true;
-            $totalClientCheckin = $this->service->count();
+            $summary = $this->service->summary();
+            $totalClient = $summary['totalClient'];
+            $totalClientCheckin = $summary['totalCheckin'];
 
             return $this->responseSuccess(new ClientCollection($list, $totalClient, $totalClientCheckin));
         } else {
@@ -124,10 +123,12 @@ class ClientController extends Controller
         }
     }
 
-    public function summary(int $eventId)
+    public function summary(Request $request, int $eventId)
     {
         try {
-            $this->service->attributes['event_id'] = $eventId;
+            $this->service->attributes = $request->all();
+            $this->service->attributes['filters']['event_id'] = $eventId;
+
             $result = $this->service->summary();
 
             return $this->responseSuccess($result);
