@@ -51,7 +51,6 @@ class Helper
             return $filePath;
         } catch (\Throwable $th) {
             logger($th->getMessage());
-
             return null;
         }
     }

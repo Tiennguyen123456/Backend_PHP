@@ -46,7 +46,14 @@ class SendMailJob implements ShouldQueue
 
         $email = $this->email;
 
-        $result = Mail::to($email)->send(new MailCampaign($this->mailData));
+        try {
+            $result = Mail::to($email)->send(new MailCampaign($this->mailData));
+            $error = NULL;
+        } catch (\Throwable $th) {
+            logger($error);
+            $result = false;
+            $error = $th->getMessage();
+        }
 
         if ($result) {
             $status = MessageCodeEnum::SUCCESS;
@@ -56,6 +63,7 @@ class SendMailJob implements ShouldQueue
 
         $this->logSendMailService->attributes = $this->mailLogData;
         $this->logSendMailService->attributes['status'] = $status;
+        $this->logSendMailService->attributes['error'] = $error;
         $this->logSendMailService->store();
     }
 

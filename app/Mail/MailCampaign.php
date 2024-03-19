@@ -64,9 +64,6 @@ class MailCampaign extends Mailable
                     ->as('qr_code_image')
                     ->withMime('image/png');
 
-                // Remove the image file after attaching
-                unlink($qrFile);
-
                 $attachments[] = $attachment;
             }
         }
