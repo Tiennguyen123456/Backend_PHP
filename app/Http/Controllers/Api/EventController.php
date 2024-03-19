@@ -11,7 +11,6 @@ use App\Http\Resources\Event\EventResource;
 use App\Http\Requests\Api\Event\StoreRequest;
 use App\Http\Resources\Event\EventCollection;
 use App\Services\Api\EventCustomFieldService;
-use App\Http\Requests\Api\Event\AssignCompanyRequest;
 use App\Http\Requests\Api\Event\StoreCustomFieldRequest;
 
 class EventController extends Controller
@@ -55,12 +54,17 @@ class EventController extends Controller
 
     public function detail(int $id)
     {
-        $model = $this->service->find($id);
+        try {
+            $model = $this->service->find($id);
 
-        if (!empty($model)) {
-            return $this->responseSuccess(new EventResource($model));
-        } else {
-            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            if (!empty($model)) {
+                return $this->responseSuccess(new EventResource($model));
+            } else {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -78,18 +82,6 @@ class EventController extends Controller
         }
     }
 
-
-    public function assignCompany(AssignCompanyRequest $request)
-    {
-        $this->service->attributes = $request->all();
-
-        if ($this->service->assignCompany()) {
-            return $this->responseSuccess(null, trans('_response.success.assign'));
-        } else {
-            return $this->responseError(trans('_response.failed.400'), 400);
-        }
-    }
-
     public function listCustomField(Request $request, int $eventId)
     {
         try {
@@ -104,7 +96,7 @@ class EventController extends Controller
             }
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -122,7 +114,7 @@ class EventController extends Controller
             }
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -138,7 +130,7 @@ class EventController extends Controller
             }
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
@@ -152,7 +144,7 @@ class EventController extends Controller
             }
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
-            return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 }
