@@ -74,12 +74,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/event/{id}/custom-field/store', [EventController::class, 'storeCustomField'])->middleware('permission:event:create');
     Route::delete('/event/custom-field/{id}', [EventController::class, 'removeCustomField'])->middleware('permission:event:delete');
     /* CLIENT */
+    Route::get('/generate-client-qrcode', [ClientController::class, 'generateQrCode'])->middleware('permission:event:view'); // for testing
     Route::get('/event/{id}/clients', [ClientController::class, 'list'])->middleware('permission:client:view');
     Route::get('/event/{id}/client/summary', [ClientController::class, 'summary'])->middleware('permission:client:view');
-    Route::get('/generate-client-qrcode', [ClientController::class, 'generateQrCode'])->middleware('permission:event:view'); // for testing
     Route::post('/event/{id}/client/import', [ClientController::class, 'import'])->middleware('permission:client:import');
     Route::post('/event/{id}/client/store', [ClientController::class, 'store'])->middleware('permission:client:create');
     Route::post('/event/{id}/client/{clientId}/checkin', [ClientController::class, 'checkin'])->middleware('permission:client:check-in');
+    Route::get('/event/{id}/client/{clientId}/getQrData', [ClientController::class, 'getQrData'])->middleware('permission:client:view');
     Route::delete('/event/{id}/client/{clientId}', [ClientController::class, 'deleteClient'])->middleware('permission:client:delete');
 
     /* CAMPAIGN */

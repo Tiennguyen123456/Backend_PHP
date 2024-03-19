@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
-use App\Helpers\Helper;
 use App\Services\Api\ClientService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BaseResource;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\Api\Client\StoreRequest;
 use App\Http\Requests\Api\Client\ImportRequest;
 use App\Http\Resources\Client\ClientCollection;
@@ -164,7 +165,23 @@ class ClientController extends Controller
             }
             $qrData = $this->service->encodeQrData($client->toArray());
 
-            return Helper::generateQrCode($qrData);
+            return QrCode::generate($qrData);
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function getQrData(int $eventId, int $clientId)
+    {
+        try {
+            $client = $this->service->find($clientId);
+            if (!$client || $client->event_id !== $eventId) {
+                return $this->responseError(MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+            $encryptData = $this->service->encodeQrData($client->toArray());
+
+            return $this->responseSuccess($encryptData);
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
