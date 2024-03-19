@@ -6,18 +6,23 @@ use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
 use App\Services\Api\EventService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Event\QrCheckinRequest;
 use App\Http\Resources\DefaultCollection;
 use App\Http\Resources\Event\EventResource;
 use App\Http\Requests\Api\Event\StoreRequest;
 use App\Http\Resources\Event\EventCollection;
 use App\Services\Api\EventCustomFieldService;
 use App\Http\Requests\Api\Event\StoreCustomFieldRequest;
+use App\Services\Api\ClientService;
 
 class EventController extends Controller
 {
-    public function __construct(EventService $service)
+    protected $clientService;
+
+    public function __construct(EventService $service, ClientService $clientService)
     {
         $this->service = $service;
+        $this->clientService = $clientService;
     }
 
     public function list(Request $request)
@@ -142,6 +147,35 @@ class EventController extends Controller
             } else {
                 return $this->responseError();
             }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function qrCheckin(QrCheckinRequest $request)
+    {
+        try {
+            $qrData = $this->clientService->decodeQrData($request->get('code'));
+
+            if (!$qrData) {
+                return $this->responseError('', MessageCodeEnum::QR_CODE_INVALID);
+            }
+
+            $client = $this->clientService->find($qrData['id']);
+            if (!$client) {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+
+            if (!$client->is_checkin) {
+                $client->is_checkin = true;
+                $client->checkin_at = now();
+                $client->save();
+            } else {
+                return $this->responseSuccess('', MessageCodeEnum::CLIENT_HAVE_ALDREADY_CHECKIN);
+            }
+
+            return $this->responseSuccess();
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);

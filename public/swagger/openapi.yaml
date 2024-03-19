@@ -802,6 +802,45 @@ paths:
                         example: "2024-01-20 01:43:46"
       security:
         - bearerAuth: []
+  /event/qr-checkin:
+    post:
+      tags:
+        - Event
+      summary: Checkin by QR code
+      operationId: qrCheckin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/QrCheckinRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QrCheckinRequest"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    enum:
+                      - QR_CODE_INVALID
+                      - RESOURCE_NOT_FOUND
+                      - CLIENT_HAVE_ALDREADY_CHECKIN
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
   /event/{id}/custom-fields:
     get:
       tags:
@@ -2182,6 +2221,13 @@ components:
         updated_at:
           type: string
           example: "2024-01-20 01:43:46"
+    QrCheckinRequest:
+      properties:
+        code:
+          type: string
+          description: "ID for update, if not ID for create"
+      required:
+        - code
   parameters:
     pageParam:
       in: query
