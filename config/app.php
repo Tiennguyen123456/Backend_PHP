@@ -199,7 +199,7 @@ return [
      */
 
     'qr_code' => [
-        'path' => 'tmp/qr_code/',
+        'dir' => 'tmp/qr_code/',
     ],
     'campaign' => [
         'cid_qr_code_image' => 'cid:qr_code_image',

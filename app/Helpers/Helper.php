@@ -44,7 +44,11 @@ class Helper
     public static function generateQrCode($data)
     {
         try {
-            $filePath = config('app.qr_code.path') . Str::random(10) . '.png';
+            $qrDir = config('app.qr_code.dir');
+
+            File::ensureDirectoryExists($qrDir, 0777, true, true);
+
+            $filePath = $qrDir . Str::random(10) . '.png';
 
             QrCode::format('png')->generate($data, storage_path($filePath));
 
