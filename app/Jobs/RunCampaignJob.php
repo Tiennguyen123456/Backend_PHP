@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Enums\MessageCodeEnum;
+use Throwable;
+use App\Helpers\Helper;
 use Illuminate\Bus\Queueable;
+use App\Enums\MessageCodeEnum;
 use App\Services\Api\EventService;
 use App\Services\Api\ClientService;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Throwable;
 
 class RunCampaignJob implements ShouldQueue
 {
@@ -134,10 +135,19 @@ class RunCampaignJob implements ShouldQueue
             // Replace variable on mail content
             $mailContent = $this->campaignService->replaceVariables($arEventVariables['email_content'], $arVariables);
 
+            // Generate QR code
+            $qrCodePath = Helper::generateQrCode($arClientVariables['CLIENT_QR_CODE']);
+
+            if (blank($qrCodePath)) {
+                logger('Error: Generate QR code failed.' . $arClient['email']);
+                continue;
+            }
+
             // Data for send mail
             $mailData = [
                 'subject' => $campaign->mail_subject,
                 'content' => $mailContent,
+                'qrCodePath' => $qrCodePath,
             ];
 
             // Store log mail

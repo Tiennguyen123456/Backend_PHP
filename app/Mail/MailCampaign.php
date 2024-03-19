@@ -3,11 +3,12 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MailCampaign extends Mailable
 {
@@ -50,6 +51,26 @@ class MailCampaign extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $attachments = [];
+
+        $qrCodePath = $this->data['qrCodePath'] ?? null;
+
+        if (!blank($qrCodePath)) {
+            $qrFile = storage_path($qrCodePath);
+
+            if (file_exists($qrFile)) {
+                // Define the attachment with a content ID
+                $attachment = Attachment::fromPath($qrFile)
+                    ->as('qr_code_image')
+                    ->withMime('image/png');
+
+                // Remove the image file after attaching
+                unlink($qrFile);
+
+                $attachments[] = $attachment;
+            }
+        }
+
+        return $attachments;
     }
 }

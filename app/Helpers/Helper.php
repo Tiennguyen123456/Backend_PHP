@@ -43,6 +43,16 @@ class Helper
 
     public static function generateQrCode($data)
     {
-        return QrCode::generate($data);
+        try {
+            $filePath = config('app.qr_code.path') . Str::random(10) . '.png';
+
+            QrCode::format('png')->generate($data, storage_path($filePath));
+
+            return $filePath;
+        } catch (\Throwable $th) {
+            logger($th->getMessage());
+
+            return null;
+        }
     }
 }

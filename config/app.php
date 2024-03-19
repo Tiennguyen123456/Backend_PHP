@@ -193,4 +193,15 @@ return [
         'Redis' => Illuminate\Support\Facades\Redis::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ])->toArray(),
+
+    /**
+     * Custom config
+     */
+
+    'qr_code' => [
+        'path' => 'tmp/qr_code/',
+    ],
+    'campaign' => [
+        'cid_qr_code_image' => 'cid:qr_code_image',
+    ]
 ];

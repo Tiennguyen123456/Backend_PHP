@@ -150,7 +150,7 @@ class CampaignService extends BaseService
     {
         foreach ($variables as $key => $value) {
             if ($key === 'CLIENT_QR_CODE') {
-                Helper::generateQrCode($value);
+                $value = "<img src='" . config('app.campaign.cid_qr_code_image') . "' alt='QR Image'>";
             }
             $content = str_replace('{{'.$key.'}}', $value, $content);
         }

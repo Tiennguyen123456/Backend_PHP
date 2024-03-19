@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Throwable;
 use App\Mail\MailCampaign;
 use Illuminate\Bus\Queueable;
 use App\Enums\MessageCodeEnum;
@@ -12,7 +13,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Throwable;
 
 class SendMailJob implements ShouldQueue
 {
