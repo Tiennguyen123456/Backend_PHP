@@ -46,7 +46,7 @@ class Helper
         try {
             $qrDir = config('app.qr_code.dir');
 
-            File::ensureDirectoryExists($qrDir, 0777, true, true);
+            File::ensureDirectoryExists(storage_path($qrDir), 0777, true, true);
 
             $filePath = $qrDir . Str::random(10) . '.png';
 
