@@ -847,6 +847,21 @@ paths:
         - Event
       summary: "Show report Event"
       operationId: getEventReport
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2024-03-20"
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2024-03-22"
       responses:
         "200":
           description: Successful
