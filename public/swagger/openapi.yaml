@@ -841,6 +841,52 @@ paths:
                     example: null
       security:
         - bearerAuth: []
+  /event/dashboard-report:
+    get:
+      tags:
+        - Event
+      summary: "Show report Event"
+      operationId: getEventReport
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        status:
+                          type: object
+                          properties:
+                            TOTAL:
+                              type: integer
+                            ACTIVE:
+                              type: integer
+                            INACTIVE:
+                              type: integer
+                        count_by_date:
+                          type: object
+                          properties:
+                            2024-03-20:
+                              type: integer
+                            2024-03-21:
+                              type: integer
+                            2024-03-22:
+                              type: integer
+      security:
+        - bearerAuth: []
   /event/{id}/custom-fields:
     get:
       tags:

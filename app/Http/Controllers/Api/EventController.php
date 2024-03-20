@@ -7,6 +7,7 @@ use App\Enums\MessageCodeEnum;
 use App\Services\Api\EventService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Event\QrCheckinRequest;
+use App\Http\Requests\Api\Event\ReportRequest;
 use App\Http\Resources\DefaultCollection;
 use App\Http\Resources\Event\EventResource;
 use App\Http\Requests\Api\Event\StoreRequest;
@@ -176,6 +177,18 @@ class EventController extends Controller
             }
 
             return $this->responseSuccess();
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function dashboardReport(ReportRequest $request)
+    {
+        try {
+            $this->service->attributes = $request->all();
+            $data = $this->service->getDashboardReport();
+            return $this->responseSuccess($data);
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);

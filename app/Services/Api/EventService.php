@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Services\BaseService;
 use App\Repositories\Event\EventRepository;
 use App\Services\Api\EventCustomFieldService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class EventService extends BaseService
@@ -178,5 +179,47 @@ class EventService extends BaseService
     {
         $modal = $this->repo->getModel();
         return $modal::getMainFields();
+    }
+
+    public function getDashboardReport()
+    {
+        $filters = [
+            'from'  => $this->attributes['from'] ?? date('Y-m-d 00:00:00', strtotime('-7 days')),
+            'to'    => $this->attributes['to'] ?? date('Y-m-d 23:59:59'),
+        ];
+        $dateFrom = Carbon::parse($filters['from']);
+        $dateTo = Carbon::parse($filters['to']);
+
+        $reportStatus = [
+            'TOTAL' => 0,
+            'ACTIVE' => 0,
+            'INACTIVE' => 0,
+        ];
+        $reportDate = [];
+
+        $queryStatus = $this->repo->reportByStatus($filters);
+        foreach ($queryStatus as $row) {
+            $reportStatus[$row->status] = $row->total;
+        }
+        $reportStatus['TOTAL'] = array_sum($reportStatus);
+
+        $queryCreatedDate = $this->repo->reportCreatedByDate($filters);
+        foreach ($queryCreatedDate as $row) {
+            $reportDate[$row->created_date] = $row->total;
+        }
+
+        for ($date = $dateFrom; $date->lte($dateTo); $date->addDay()) {
+            $_date = $date->format('Y-m-d');
+
+            if (!isset($reportDate[$_date])) {
+                $reportDate[$_date] = 0;
+            }
+        }
+        ksort($reportDate);
+
+        return [
+            'status'        => $reportStatus,
+            'count_by_date'  => $reportDate
+        ];
     }
 }

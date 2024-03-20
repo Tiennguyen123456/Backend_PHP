@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/events', [EventController::class, 'list'])->middleware('permission:event:view');
     Route::get('/event/main-fields', [EventController::class, 'listMainField'])->middleware('permission:event:config');
     Route::post('/event/qr-checkin', [EventController::class, 'qrCheckin'])->middleware('permission:event:create');
+    Route::get('/event/dashboard-report', [EventController::class, 'dashboardReport'])->middleware('permission:dashboard:view');
 
     Route::get('/event/{id}', [EventController::class, 'detail'])->middleware('permission:event:view');
     Route::post('/event/store', [EventController::class, 'store'])->middleware('permission:event:create');
