@@ -167,7 +167,7 @@ class RunCampaignJob implements ShouldQueue
 
             $mailLogData['id'] = $mailLog->id;
 
-            dispatch(new SendMailJob($arClient['email'], $mailData, $mailLogData));
+            dispatch(new SendMailJob($arClient['email'], $mailData, $mailLogData, $this->userId));
 
             sleep(1);
         }
