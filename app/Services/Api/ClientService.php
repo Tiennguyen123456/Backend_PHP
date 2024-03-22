@@ -203,12 +203,11 @@ class ClientService extends BaseService
     public function encodeQrData(array $client)
     {
         $arData = [
-            md5($client['id'] . $client['event_id'] . $client['phone']),
+            substr(md5($client['id'] . $client['event_id'] . $client['id']), 0, 5),
             $client['id'],
             rand(10, 99),
             $client['event_id'],
             rand(10, 99),
-            strrev($client['phone']),
             rand(10, 99),
         ];
 
@@ -226,11 +225,10 @@ class ClientService extends BaseService
         $client = [
             'id' => (int) $arData[1],
             'event_id' => (int) $arData[3],
-            'phone' => strrev($arData[5]),
         ];
 
         $postSecret = $arData[0];
-        $secret = md5($client['id'] . $client['event_id'] . $client['phone']);
+        $secret = substr(md5($client['id'] . $client['event_id'] . $client['id']), 0, 5);
 
         if (strcmp($secret, $postSecret) != 0) {
             return false;
