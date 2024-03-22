@@ -183,12 +183,14 @@ class ClientService extends BaseService
 
     public function generateVariables(array $client)
     {
+        $model = $this->repo->getModel();
+
         return [
-            'CLIENT_NAME' => $client['fullname'],
-            'CLIENT_EMAIL' => $client['email'],
-            'CLIENT_PHONE' => $client['phone'],
-            'CLIENT_ADDRESS' => $client['address'],
-            'CLIENT_QR_CODE' => $this->encodeQrData($client),
+            $model::MAIN_FIELD_CLIENT_FULLNAME => $client['fullname'],
+            $model::MAIN_FIELD_CLIENT_EMAIL    => $client['email'],
+            $model::MAIN_FIELD_CLIENT_PHONE    => $client['phone'],
+            $model::MAIN_FIELD_CLIENT_ADDRESS  => $client['address'],
+            $model::MAIN_FIELD_CLIENT_QRCODE   => $this->encodeQrData($client),
         ];
     }
 
