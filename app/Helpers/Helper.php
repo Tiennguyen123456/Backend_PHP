@@ -50,7 +50,10 @@ class Helper
 
             $filePath = $qrDir . Str::random(10) . '.png';
 
-            QrCode::format('png')->generate($data, storage_path($filePath));
+            QrCode::format('png')
+                ->size(250)
+                ->errorCorrection('H')
+                ->generate($data, storage_path($filePath));
 
             return $filePath;
         } catch (\Throwable $th) {
