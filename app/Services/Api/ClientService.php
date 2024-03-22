@@ -218,7 +218,7 @@ class ClientService extends BaseService
     {
         $arData = explode(';', $data);
 
-        if (count($arData) != 7) {
+        if (count($arData) != 6) {
             return false;
         }
 
