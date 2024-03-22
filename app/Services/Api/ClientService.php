@@ -3,6 +3,7 @@
 namespace App\Services\Api;
 
 use App\Imports\ClientImport;
+use App\Models\Event;
 use App\Services\BaseService;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +15,11 @@ class ClientService extends BaseService
     public function __construct()
     {
         $this->repo = new ClientRepository();
+    }
+
+    private function eventModel()
+    {
+        return Event::class;
     }
 
     public function getList()
@@ -183,7 +189,7 @@ class ClientService extends BaseService
 
     public function generateVariables(array $client)
     {
-        $model = $this->repo->getModel();
+        $model = $this->eventModel();
 
         return [
             $model::MAIN_FIELD_CLIENT_FULLNAME => $client['fullname'],
