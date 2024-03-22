@@ -6,6 +6,7 @@ use Throwable;
 use App\Helpers\Helper;
 use Illuminate\Bus\Queueable;
 use App\Enums\MessageCodeEnum;
+use App\Models\Event;
 use App\Services\Api\EventService;
 use App\Services\Api\ClientService;
 use Illuminate\Support\Facades\Auth;
@@ -136,7 +137,7 @@ class RunCampaignJob implements ShouldQueue
             $mailContent = $this->campaignService->replaceVariables($arEventVariables['email_content'], $arVariables);
 
             // Generate QR code
-            $qrCodePath = Helper::generateQrCode($arClientVariables['CLIENT_QR_CODE']);
+            $qrCodePath = Helper::generateQrCode($arClientVariables[Event::MAIN_FIELD_CLIENT_QRCODE]);
 
             if (blank($qrCodePath)) {
                 logger('Error: Generate QR code failed.' . $arClient['email']);

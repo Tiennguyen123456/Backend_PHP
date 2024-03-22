@@ -1,10 +1,11 @@
 <?php
 namespace App\Services\Api;
 
+use App\Models\Event;
+use App\Helpers\Helper;
 use App\Jobs\RunCampaignJob;
 use App\Services\BaseService;
 use App\Enums\MessageCodeEnum;
-use App\Helpers\Helper;
 use Illuminate\Support\Facades\Redis;
 use App\Repositories\Campaign\CampaignRepository;
 
@@ -149,7 +150,7 @@ class CampaignService extends BaseService
     public function replaceVariables(string $content, array $variables)
     {
         foreach ($variables as $key => $value) {
-            if ($key === 'CLIENT_QR_CODE') {
+            if ($key === Event::MAIN_FIELD_CLIENT_QRCODE) {
                 $value = "<img src='" . config('app.campaign.cid_qr_code_image') . "' alt='QR Image'>";
             }
             $content = str_replace('{{'.$key.'}}', $value, $content);
