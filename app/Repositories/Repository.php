@@ -189,7 +189,7 @@ abstract class Repository implements RepositoryInterface
     {
         $user = $this->user();
 
-        if (!$user->is_admin) {
+        if ($user && !$user->is_admin) {
             if (Helper::tableHasColumn($this->getModelTable(), 'company_id')) {
                 $query = $query->where('company_id', $user->company_id);
             }

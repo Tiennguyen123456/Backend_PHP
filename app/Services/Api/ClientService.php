@@ -3,6 +3,7 @@
 namespace App\Services\Api;
 
 use App\Imports\ClientImport;
+use App\Models\Event;
 use App\Services\BaseService;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +15,11 @@ class ClientService extends BaseService
     public function __construct()
     {
         $this->repo = new ClientRepository();
+    }
+
+    private function eventModel()
+    {
+        return Event::class;
     }
 
     public function getList()
@@ -183,24 +189,25 @@ class ClientService extends BaseService
 
     public function generateVariables(array $client)
     {
+        $model = $this->eventModel();
+
         return [
-            'CLIENT_NAME' => $client['fullname'],
-            'CLIENT_EMAIL' => $client['email'],
-            'CLIENT_PHONE' => $client['phone'],
-            'CLIENT_ADDRESS' => $client['address'],
-            'CLIENT_QR_CODE' => $this->encodeQrData($client),
+            $model::MAIN_FIELD_CLIENT_FULLNAME => $client['fullname'],
+            $model::MAIN_FIELD_CLIENT_EMAIL    => $client['email'],
+            $model::MAIN_FIELD_CLIENT_PHONE    => $client['phone'],
+            $model::MAIN_FIELD_CLIENT_ADDRESS  => $client['address'],
+            $model::MAIN_FIELD_CLIENT_QRCODE   => $this->encodeQrData($client),
         ];
     }
 
     public function encodeQrData(array $client)
     {
         $arData = [
-            md5($client['id'] . $client['event_id'] . $client['phone']),
+            substr(md5($client['id'] . $client['event_id'] . $client['id']), 0, 5),
             $client['id'],
             rand(10, 99),
             $client['event_id'],
             rand(10, 99),
-            strrev($client['phone']),
             rand(10, 99),
         ];
 
@@ -211,18 +218,17 @@ class ClientService extends BaseService
     {
         $arData = explode(';', $data);
 
-        if (count($arData) != 7) {
+        if (count($arData) != 6) {
             return false;
         }
 
         $client = [
             'id' => (int) $arData[1],
             'event_id' => (int) $arData[3],
-            'phone' => strrev($arData[5]),
         ];
 
         $postSecret = $arData[0];
-        $secret = md5($client['id'] . $client['event_id'] . $client['phone']);
+        $secret = substr(md5($client['id'] . $client['event_id'] . $client['id']), 0, 5);
 
         if (strcmp($secret, $postSecret) != 0) {
             return false;

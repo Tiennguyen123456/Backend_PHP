@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\UserController;
@@ -11,8 +12,8 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CampaignController;
-use App\Http\Controllers\Api\LogSendEmailController;
 use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\LogSendEmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +94,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     /* LOG SEND EMAIL*/
     Route::get('/campaign/{id}/log-send-email', [LogSendEmailController::class, 'list']);
+
+    /* POST */
+    Route::get('/posts', [PostController::class, 'index'])->middleware('permission:post:view');
+    Route::post('/post/store', [PostController::class, 'store'])->middleware('permission:post:create');
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);

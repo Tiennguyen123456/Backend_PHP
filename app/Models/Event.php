@@ -66,6 +66,7 @@ class Event extends BaseModel
     const MAIN_FIELD_CLIENT_FULLNAME    = 'CLIENT_FULLNAME';
     const MAIN_FIELD_CLIENT_EMAIL       = 'CLIENT_EMAIL';
     const MAIN_FIELD_CLIENT_PHONE       = 'CLIENT_PHONE';
+    const MAIN_FIELD_CLIENT_ADDRESS       = 'CLIENT_ADDRESS';
 
     const MAIN_FIELDS = [
         self::MAIN_FIELD_EVENT_CODE         => 'Event Code',
@@ -78,6 +79,7 @@ class Event extends BaseModel
         self::MAIN_FIELD_CLIENT_FULLNAME    => 'Client Name',
         self::MAIN_FIELD_CLIENT_EMAIL       => 'Client Email',
         self::MAIN_FIELD_CLIENT_PHONE       => 'Client Phone number',
+        self::MAIN_FIELD_CLIENT_ADDRESS     => 'Client address',
     ];
 
 	protected $casts = [

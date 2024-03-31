@@ -6,6 +6,7 @@ use Throwable;
 use App\Mail\MailCampaign;
 use Illuminate\Bus\Queueable;
 use App\Enums\MessageCodeEnum;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
 use App\Services\Api\LogSendMailService;
@@ -26,14 +27,17 @@ class SendMailJob implements ShouldQueue
 
     protected $logSendMailService;
 
+    protected $userId;
+
     /**
      * Create a new job instance.
      */
-    public function __construct($email, $mailData, $mailLogData)
+    public function __construct($email, $mailData, $mailLogData, $userId)
     {
         $this->email    = $email;
         $this->mailData = $mailData;
         $this->mailLogData  = $mailLogData;
+        $this->userId  = $userId;
         $this->logSendMailService = new LogSendMailService();
     }
 
@@ -45,6 +49,8 @@ class SendMailJob implements ShouldQueue
         logger('Start job send mail');
 
         $email = $this->email;
+
+        Auth::loginUsingId($this->userId);
 
         try {
             $result = Mail::to($email)->send(new MailCampaign($this->mailData));
@@ -74,6 +80,7 @@ class SendMailJob implements ShouldQueue
     {
         $this->logSendMailService->attributes = $this->mailLogData;
         $this->logSendMailService->attributes['status'] = MessageCodeEnum::ERROR;
+        $this->logSendMailService->attributes['error'] = $exception->getMessage();
         $this->logSendMailService->store();
     }
 }
