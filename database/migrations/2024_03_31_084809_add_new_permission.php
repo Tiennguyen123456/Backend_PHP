@@ -15,6 +15,7 @@ return new class extends Migration
             $permissions = [
                 'post:view',
                 'post:create',
+                'post:delete',
             ];
 
             foreach ($permissions as $permission) {

@@ -97,7 +97,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     /* POST */
     Route::get('/posts', [PostController::class, 'index'])->middleware('permission:post:view');
+    Route::get('/post/{id}', [CompanyController::class, 'detail'])->middleware('permission:post:view');
     Route::post('/post/store', [PostController::class, 'store'])->middleware('permission:post:create');
+    Route::delete('/post/{id}', [PostController::class, 'delete'])->middleware('permission:post:delete');
 
     /* COUNTRY */
     // Route::get('/countries', [CountryController::class, 'index']);
