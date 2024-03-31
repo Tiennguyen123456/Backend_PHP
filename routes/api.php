@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/campaign/{id}/log-send-email', [LogSendEmailController::class, 'list']);
 
     /* POST */
-    Route::get('/posts', [PostController::class, 'index'])->middleware('permission:post:view');
+    Route::get('/posts', [PostController::class, 'list'])->middleware('permission:post:view');
     Route::get('/post/{id}', [PostController::class, 'detail'])->middleware('permission:post:view');
     Route::post('/post/store', [PostController::class, 'store'])->middleware('permission:post:create');
     Route::delete('/post/{id}', [PostController::class, 'delete'])->middleware('permission:post:delete');

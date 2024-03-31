@@ -1358,6 +1358,151 @@ paths:
                     $ref: "#/components/schemas/ListLogSendEmailResource"
       security:
         - bearerAuth: []
+  /post/store:
+    post:
+      tags:
+        - Post
+      summary: Create or Update Post
+      operationId: updateOrCreatePost
+      description: "Create : not send ID <br><b>Update : post data with ID</b>"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/StorePost"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StorePost"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/PostResource"
+      security:
+        - bearerAuth: []
+  /posts:
+    get:
+      tags:
+        - Post
+      summary: "Show list landing page"
+      operationId: getListPost
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/pageSizeParam"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/ListPostCollection"
+      security:
+        - bearerAuth: []
+  /post/{id}:
+    get:
+      tags:
+        - Post
+      summary: "Show post by ID"
+      operationId: getPostById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/PostResource"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: eror
+                  status_code:
+                    type: string
+                    example: null
+                  message_code:
+                    type: string
+                    example: "RESOURCE_NOT_FOUND"
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Post
+      summary: Delete Post
+      operationId: deletePost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Failed"
+      security:
+        - bearerAuth: []
+
 components:
   schemas:
     Login:
@@ -2289,6 +2434,110 @@ components:
           description: "ID for update, if not ID for create"
       required:
         - code
+    ListPostCollection:
+      properties:
+        collection:
+          type: array
+          items:
+            $ref: "#/components/schemas/PostResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    PostResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        company_id:
+          type: integer
+        event_id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        content:
+          type: string
+        background_img:
+          type: string
+        form_enable:
+          type: string
+        form_title:
+          type: string
+        form_content:
+          type: string
+        form_input:
+          type: string
+        created_by:
+          type: integer
+        updated_by:
+          type: integer
+        created_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        updated_at:
+          type: string
+          example: "2024-01-20 01:43:46"
+        company:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        event:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+    StorePost:
+      type: object
+      description: "ID for update, if not ID for create"
+      properties:
+        id:
+          type: integer
+        company_id:
+          type: integer
+        event_id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        content:
+          type: string
+        background_img:
+          type: string
+        form_enable:
+          type: boolean
+        form_title:
+          type: string
+        form_content:
+          type: string
+        form_input:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+      required:
+        - name
+        - company_id
+        - event_id
+        - slug
+        - form_enable
   parameters:
     pageParam:
       in: query

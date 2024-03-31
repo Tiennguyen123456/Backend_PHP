@@ -19,7 +19,8 @@ class PostResource extends BaseResource
         ];
 
         $this->attrMores = [
-
+            'company'       => $this->company()->withStatus()->first(['id', 'name']),
+            'event'         => $this->event()->withStatus()->first(['id', 'name']),
         ];
 
         $this->attrExcepts = [

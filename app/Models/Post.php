@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Event;
+use App\Models\Company;
 use App\Models\BaseModel;
 
 class Post extends BaseModel
@@ -30,4 +32,14 @@ class Post extends BaseModel
         'form_enable'   => 'boolean',
         'form_input'    => 'array',
     ];
+
+    public function event()
+	{
+		return $this->belongsTo(Event::class);
+	}
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }
