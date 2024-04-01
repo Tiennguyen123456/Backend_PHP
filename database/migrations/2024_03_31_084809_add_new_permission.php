@@ -16,6 +16,8 @@ return new class extends Migration
                 'post:view',
                 'post:create',
                 'post:delete',
+                'dashboard:view',
+                'client:scan-qr',
             ];
 
             foreach ($permissions as $permission) {
