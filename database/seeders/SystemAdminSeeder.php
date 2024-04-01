@@ -19,7 +19,6 @@ class SystemAdminSeeder extends Seeder
         $user = User::create([
             'is_admin'              => true,
             'name'                  => 'System Admin',
-            'username'              => 'sysadmin',
             'email'                 => 'sysadmin@delfi.vn',
             'email_verified_at'     => now(),
             'password'              => Hash::make('sysadmin@'),

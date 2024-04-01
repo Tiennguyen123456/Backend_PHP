@@ -22,8 +22,7 @@ class StoreRequest extends BaseFormRequest
             'id'                => ['nullable', 'numeric', $this->tableHasId('users')],
             'role_id'           => ['nullable', 'numeric', $this->tableHasId('roles')],
             'name'              => ['required', 'string', 'max:255'],
-            'username'          => ['required', 'string', 'max:255', Rule::unique('users')],
-            'email'             => ['required', 'string', 'max:255', Rule::unique('users')],
+            'email'             => ['required', 'email', 'max:255', Rule::unique('users')],
             'password'          => ['nullable', 'string', 'min:8', 'max:255'],
             'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(User::getStatuesValid()))],
             'company_id'        => ['nullable', 'numeric', $this->tableHasId('companies')],
@@ -31,8 +30,7 @@ class StoreRequest extends BaseFormRequest
 
         if ($this->id) {
             $ruleMores = [
-                'username'    => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->id)],
-                'email'       => ['required', 'string', 'max:255', Rule::unique('users')->ignore($this->id)],
+                'email'       => ['required', 'email', 'max:255', Rule::unique('users')->ignore($this->id)],
             ];
         }
 

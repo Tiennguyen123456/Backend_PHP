@@ -16,11 +16,10 @@ class LoginResource extends BaseResource
     {
         $this->attrOnly = [
             'id'            => $this->id,
-            'username'      => $this->username,
             'name'          => $this->name,
             'email'         => $this->email,
             'type'          => $this->type,
-            'access_token'  => $this->createToken($this->username)->plainTextToken,
+            'access_token'  => $this->createToken($this->email)->plainTextToken,
             'token_type'    => 'Bearer'
         ];
 

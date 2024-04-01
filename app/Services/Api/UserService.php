@@ -50,7 +50,6 @@ class UserService extends BaseService
     {
         $attrs = [
             'name'              => $this->attributes['name'],
-            'username'          => $this->attributes['username'],
             'email'             => $this->attributes['email'],
             'status'            => $this->attributes['status'] ?? null,
             'role_id'           => $this->attributes['role_id'] ?? null,
