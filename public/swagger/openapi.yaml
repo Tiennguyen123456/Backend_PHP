@@ -1502,7 +1502,33 @@ paths:
                 $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
-
+  /post/{id}/delete-background_img:
+    delete:
+      tags:
+        - Post
+      summary: Delete Baclground Image
+      operationId: deleteBackgroundImg
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Failed"
+      security:
+        - bearerAuth: []
 components:
   schemas:
     Login:
@@ -1880,7 +1906,7 @@ components:
           example: 200
         message_code:
           type: string
-          example: null
+          example: SUCCESS
         data:
           type: string
           example: null

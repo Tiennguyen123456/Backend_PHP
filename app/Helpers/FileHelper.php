@@ -31,8 +31,15 @@ class FileHelper
     {
         try {
             Storage::disk('public')->delete($filePath);
+            return true;
         } catch (\Throwable $th) {
             logger('Error: ' . __METHOD__ . ' -> ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return false;
         }
+    }
+
+    public static function fileExists($filePath)
+    {
+        return Storage::disk('public')->exists($filePath);
     }
 }

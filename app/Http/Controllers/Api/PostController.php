@@ -71,8 +71,30 @@ class PostController extends Controller
                 return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
         } catch (\Throwable $th) {
-            logger(' Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
 
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function deleteBackgroundImg(int $id)
+    {
+        try {
+            $model = $this->service->find($id);
+
+            if (blank($model))
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+
+            if (blank($model->background_img))
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+
+            if ($this->service->deleteBackgroundImg($model)) {
+                return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
+            } else {
+                return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);
+            }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }

@@ -99,6 +99,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/posts', [PostController::class, 'list'])->middleware('permission:post:view');
     Route::get('/post/{id}', [PostController::class, 'detail'])->middleware('permission:post:view');
     Route::post('/post/store', [PostController::class, 'store'])->middleware('permission:post:create');
+    Route::delete('/post/{id}/delete-background_img', [PostController::class, 'deleteBackgroundImg'])->middleware('permission:post:create');
     Route::delete('/post/{id}', [PostController::class, 'delete'])->middleware('permission:post:delete');
 
     /* COUNTRY */

@@ -2,6 +2,7 @@
 
 namespace App\Services\Api;
 
+use App\Helpers\FileHelper;
 use App\Services\BaseService;
 use App\Repositories\Post\PostRepository;
 
@@ -48,5 +49,24 @@ class PostService extends BaseService
 
             return $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));
         }
+    }
+
+    public function deleteBackgroundImg($model)
+    {
+        if (!FileHelper::fileExists($model->background_img)) {
+            return false;
+        }
+
+        FileHelper::deleteFile($model->background_img);
+
+        $this->attributes['id'] = $model->id;
+
+        $attrs = [
+            'background_img' => null,
+            'updated_by'     => auth()->user()->id,
+            'updated_at'     => now(),
+        ];
+
+        return $this->repo->update($this->attributes['id'], $attrs);
     }
 }
