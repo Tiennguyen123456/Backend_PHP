@@ -14,7 +14,8 @@ class EventCustomField extends BaseModel
 		'description',
 		'status',
 		'created_by',
-		'updated_by'
+		'updated_by',
+        'updated_at',
 	];
 
     protected $casts = [

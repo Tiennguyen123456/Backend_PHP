@@ -31,6 +31,7 @@ class EventCustomFieldService extends BaseService
             $attrMores = [
                 'id'            => $this->attributes['id'],
                 'updated_by'    => auth()->user()->id,
+                'updated_at'    => now(),
             ];
         }
 

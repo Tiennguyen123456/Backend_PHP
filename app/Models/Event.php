@@ -104,7 +104,8 @@ class Event extends BaseModel
 		'end_time',
 		'status',
 		'created_by',
-		'updated_by'
+		'updated_by',
+        'updated_at',
 	];
 
     /* RELATIONSHIP */

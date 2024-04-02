@@ -41,6 +41,7 @@ class EventService extends BaseService
             $attrMores = [
                 'id'            => $this->attributes['id'],
                 'updated_by'    => auth()->user()->id,
+                'updated_at'    => now(),
             ];
 
             return $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));
