@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
 use App\Services\Api\PostService;
@@ -23,7 +24,7 @@ class PostController extends Controller
             $this->service->attributes = $request->all();
 
             if (!empty($list = $this->service->getList())) {
-                return $this->responseSuccess(new PostCollection($list), trans('_response.success.index'));
+                return $this->responseSuccess(new PostCollection($list), MessageCodeEnum::SUCCESS);
             } else {
                 return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
@@ -38,8 +39,18 @@ class PostController extends Controller
         try {
             $this->service->attributes = $request->all();
 
+            // Handle file upload
+            if ($request->file('background_img')) {
+                $filePath = FileHelper::storeFile(auth()->user()->id, $request->file('background_img'));
+
+                if (blank($filePath))
+                    return $this->responseError('', MessageCodeEnum::FAILED_TO_STORE);
+
+                $this->service->attributes['background_img'] = $filePath;
+            }
+
             if ($model = $this->service->store()) {
-                return $this->responseSuccess(new PostResource($model), trans('_response.success.store'));
+                return $this->responseSuccess(new PostResource($model), MessageCodeEnum::SUCCESS);
             } else {
                 return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
             }

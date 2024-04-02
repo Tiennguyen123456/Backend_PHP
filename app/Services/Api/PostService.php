@@ -17,14 +17,18 @@ class PostService extends BaseService
         $attrs = [
             'name'              => $this->attributes['name'],
             'slug'              => $this->attributes['slug'],
+            'form_enable'       => $this->attributes['form_enable'] ?? false,
             'title'             => $this->attributes['title'] ?? null,
             'subtitle'          => $this->attributes['subtitle'] ?? null,
             'content'           => $this->attributes['content'] ?? null,
-            'form_enable'       => $this->attributes['form_enable'] ?? null,
             'form_title'        => $this->attributes['form_title'] ?? null,
             'form_content'      => $this->attributes['form_content'] ?? null,
             'form_input'        => $this->attributes['form_input'] ?? null,
         ];
+
+        if (isset($this->attributes['background_img'])) {
+            $attrs['background_img'] = $this->attributes['background_img'];
+        }
 
         if (!isset($this->attributes['id'])) {
             $attrMores = [
@@ -39,6 +43,7 @@ class PostService extends BaseService
             $attrMores = [
                 'id'            => $this->attributes['id'],
                 'updated_by'    => auth()->user()->id,
+                'updated_at'    => now(),
             ];
 
             return $this->repo->update($this->attributes['id'], array_merge($attrs, $attrMores));

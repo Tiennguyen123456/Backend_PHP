@@ -24,6 +24,7 @@ class Post extends BaseModel
         'status',
         'created_by',
         'updated_by',
+        'updated_at',
     ];
 
     protected $casts = [

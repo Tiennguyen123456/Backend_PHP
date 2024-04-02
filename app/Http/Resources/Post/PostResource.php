@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources\Post;
 
-use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
+use App\Http\Resources\BaseResource;
+use Illuminate\Support\Facades\Storage;
 
 class PostResource extends BaseResource
 {
@@ -19,8 +20,9 @@ class PostResource extends BaseResource
         ];
 
         $this->attrMores = [
-            'company'       => $this->company()->withStatus()->first(['id', 'name']),
-            'event'         => $this->event()->withStatus()->first(['id', 'name']),
+            'company'           => $this->company()->withStatus()->first(['id', 'name']),
+            'event'             => $this->event()->withStatus()->first(['id', 'name']),
+            'background_img'    => $this->background_img ? asset(Storage::url($this->background_img)) : null,
         ];
 
         $this->attrExcepts = [

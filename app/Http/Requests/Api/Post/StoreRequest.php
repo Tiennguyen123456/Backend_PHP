@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\Post;
 
-use App\Http\Requests\BaseFormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Models\Post;
+use App\Http\Requests\BaseFormRequest;
 
 class StoreRequest extends BaseFormRequest
 {
@@ -21,12 +21,12 @@ class StoreRequest extends BaseFormRequest
             'company_id'        => ['required', 'numeric', $this->tableHasId('companies')],
             'event_id'          => ['required', 'numeric', $this->tableHasId('events')],
             'name'              => ['required', 'string'],
-            'slug'              => ['required', 'string', Rule::unique('posts')],
+            'slug'              => ['required', 'string', Rule::unique('posts', 'slug')],
             'title'             => ['nullable', 'string'],
             'subtitle'          => ['nullable', 'string'],
             'content'           => ['nullable', 'string'],
             'background_img'    => ['nullable', 'file', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'form_enable'       => ['required', 'boolean'],
+            'form_enable'       => ['nullable', 'boolean'],
             'form_title'        => ['nullable', 'string'],
             'form_content'      => ['nullable', 'string'],
             'form_input'        => ['nullable', 'array'],
@@ -35,13 +35,23 @@ class StoreRequest extends BaseFormRequest
         if (!empty($this->id)) {
             $ruleMores = [
                 'id'    => ['numeric', $this->tableHasId('posts')],
-                // 'slug' => ['required', 'string', Rule::unique('posts')->ignore($this->id)->where(function ($query) {
-                //     return $query->where('status', '!=', Post::STATUS_DELETED);
-                // })],
                 'slug' => ['required', 'string', Rule::unique('posts', 'slug')->ignore($this->id)],
             ];
         }
 
         return array_merge($rules, $ruleMores);
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        // Convert string to boolean
+
+        $this->merge([
+            'form_enable' => filter_var($this->form_enable , FILTER_VALIDATE_BOOLEAN),
+            'slug' => Str::slug($this->slug),
+        ]);
     }
 }
