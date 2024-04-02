@@ -1502,7 +1502,7 @@ paths:
                 $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
-  /post/{id}/delete-background_img:
+  /post/{id}/delete-background-img:
     delete:
       tags:
         - Post
