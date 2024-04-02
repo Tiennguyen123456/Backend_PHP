@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\Post;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\BaseFormRequest;
+use App\Models\Post;
 
 class StoreRequest extends BaseFormRequest
 {
@@ -30,6 +31,7 @@ class StoreRequest extends BaseFormRequest
             'form_title'        => ['nullable', 'string'],
             'form_content'      => ['nullable', 'string'],
             'form_input'        => ['nullable', 'array'],
+            'status'            => ['required', 'string', 'max:50', Rule::in(array_keys(Post::getStatuesValid()))],
         ];
 
         if (!empty($this->id)) {

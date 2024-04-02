@@ -25,6 +25,7 @@ class PostService extends BaseService
             'form_title'        => $this->attributes['form_title'] ?? null,
             'form_content'      => $this->attributes['form_content'] ?? null,
             'form_input'        => $this->attributes['form_input'] ?? null,
+            'status'            => $this->attributes['status'] ?? null,
         ];
 
         if (isset($this->attributes['background_img'])) {
