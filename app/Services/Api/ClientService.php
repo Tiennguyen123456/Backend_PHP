@@ -109,8 +109,8 @@ class ClientService extends BaseService
 
         if (!isset($this->attributes['id'])) {
             $attrMores = [
-                'created_by'    => auth()->user()->id,
-                'updated_by'    => auth()->user()->id,
+                'created_by'    => auth()->user()->id ?? null,
+                'updated_by'    => auth()->user()->id ?? null,
                 'event_id'      => $this->attributes['event_id']
             ];
         } else {

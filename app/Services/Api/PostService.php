@@ -71,4 +71,9 @@ class PostService extends BaseService
 
         return $this->repo->update($this->attributes['id'], $attrs);
     }
+
+    public function findByUniqueId($uniqueId)
+    {
+        return $this->repo->findByUniqueId($uniqueId);
+    }
 }

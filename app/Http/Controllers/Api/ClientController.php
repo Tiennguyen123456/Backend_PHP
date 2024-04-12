@@ -13,6 +13,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\Api\Client\StoreRequest;
 use App\Http\Requests\Api\Client\ImportRequest;
 use App\Http\Resources\Client\ClientCollection;
+use App\Http\Requests\Api\Client\RegisterRequest;
 
 class ClientController extends Controller
 {
@@ -182,6 +183,22 @@ class ClientController extends Controller
             $encryptData = $this->service->encodeQrData($client->toArray());
 
             return $this->responseSuccess($encryptData);
+        } catch (\Throwable $th) {
+            logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function registerClient(RegisterRequest $request)
+    {
+        try {
+            $this->service->attributes = $request->safe();
+
+            if ($model = $this->service->store()) {
+                return $this->responseSuccess(new BaseResource($model), trans('_response.success.store'));
+            } else {
+                return $this->responseError(trans('_response.failed.400'), MessageCodeEnum::FAILED_TO_STORE);
+            }
         } catch (\Throwable $th) {
             logger()->error(__METHOD__ . PHP_EOL . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
             return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
