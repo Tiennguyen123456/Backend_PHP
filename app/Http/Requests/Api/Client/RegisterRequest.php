@@ -34,11 +34,11 @@ class RegisterRequest extends BaseFormRequest
     protected function prepareForValidation(): void
     {
         $event_id = null;
-        $formId = $this->form_id;
+        $uniqueId = $this->unique_id;
 
-        if (!blank($formId)) {
+        if (!blank($uniqueId)) {
             $postService = app(PostService::class);
-            $post = $postService->findByUniqueId($formId);
+            $post = $postService->findByUniqueId($uniqueId);
 
             if ($post)
                 $event_id = $post->event_id;

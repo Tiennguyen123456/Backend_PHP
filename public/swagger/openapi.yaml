@@ -1529,6 +1529,39 @@ paths:
                 $ref: "#/components/schemas/Failed"
       security:
         - bearerAuth: []
+  /event/register-client:
+    post:
+      tags:
+        - Event Client
+      summary: Use for register client from LandingPage
+      operationId: registerClient
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/RegisterClient"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterClient"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/PostResource"
 components:
   schemas:
     Login:
@@ -2564,6 +2597,23 @@ components:
         - event_id
         - slug
         - form_enable
+    RegisterClient:
+      type: object
+      description: "ID for update, if not ID for create"
+      properties:
+        form_id:
+          type: string
+        phone:
+          type: string
+        fullname:
+          type: string
+        email:
+          type: string
+      required:
+        - form_id
+        - phone
+        - fullname
+        - email
   parameters:
     pageParam:
       in: query
