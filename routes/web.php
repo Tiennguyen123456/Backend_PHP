@@ -20,7 +20,3 @@ Route::get('/', function () {
 Route::get('/swagger-ui', function () {
     return view('swagger');
 });
-
-Route::get('/test', function () {
-    dd('test');
-});
