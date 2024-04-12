@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Api\Client;
 
-use App\Models\Client;
-use Illuminate\Validation\Rule;
 use App\Rules\UniquePhoneInEvent;
 use App\Services\Api\PostService;
 use App\Http\Requests\BaseFormRequest;
