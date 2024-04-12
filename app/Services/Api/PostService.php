@@ -38,6 +38,7 @@ class PostService extends BaseService
                 'company_id'    => $this->attributes['company_id'],
                 'created_by'    => auth()->user()->id,
                 'updated_by'    => auth()->user()->id,
+                'unique_id'     => uniqid(),
             ];
 
             return $this->repo->create(array_merge($attrs, $attrMores));

@@ -9,6 +9,7 @@ use App\Models\BaseModel;
 class Post extends BaseModel
 {
     protected $fillable = [
+        'unique_id',
         'company_id',
         'event_id',
         'name',
