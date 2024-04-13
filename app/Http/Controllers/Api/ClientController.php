@@ -23,17 +23,22 @@ class ClientController extends Controller
 
     public function list(Request $request, int $eventId)
     {
-        $this->service->attributes = $request->all();
-        $this->service->attributes['filters']['event_id'] = $eventId;
+        try {
+            $this->service->attributes = $request->all();
+            $this->service->attributes['filters']['event_id'] = $eventId;
 
-        if (!empty($list = $this->service->getList())) {
-            $summary = $this->service->summary();
-            $totalClient = $summary['totalClient'];
-            $totalClientCheckin = $summary['totalCheckin'];
+            if (!empty($list = $this->service->getList())) {
+                $summary = $this->service->summary();
+                $totalClient = $summary['totalClient'];
+                $totalClientCheckin = $summary['totalCheckin'];
 
-            return $this->responseSuccess(new ClientCollection($list, $totalClient, $totalClientCheckin));
-        } else {
-            return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+                return $this->responseSuccess(new ClientCollection($list, $totalClient, $totalClientCheckin));
+            } else {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
+            }
+        } catch (\Throwable $th) {
+           logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+           return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
         }
     }
 
