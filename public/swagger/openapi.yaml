@@ -2601,8 +2601,9 @@ components:
       type: object
       description: "ID for update, if not ID for create"
       properties:
-        form_id:
+        unique_id:
           type: string
+          description: "ID of post"
         phone:
           type: string
         fullname:
@@ -2610,7 +2611,7 @@ components:
         email:
           type: string
       required:
-        - form_id
+        - unique_id
         - phone
         - fullname
         - email
