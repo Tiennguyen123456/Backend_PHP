@@ -21,4 +21,15 @@ class PostRepository extends Repository implements PostRepositoryInterface
 
         return $this->model->where('unique_id', $uniqueId)->first();
     }
+
+    public function findBySlug($slug)
+    {
+        $query = $this->model;
+
+        if (Helper::tableHasColumn($this->getModelTable(), 'status')) {
+            $query = $query->where('status', '!=', $query::STATUS_DELETED);
+        }
+
+        return $this->model->where('slug', $slug)->first();
+    }
 }

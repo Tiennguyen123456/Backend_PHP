@@ -45,7 +45,11 @@ Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword'])
 
 Route::get('/event/client/import-sample', [ClientController::class, 'sample']);
 
+# Register client from LP
 Route::post('/event/register-client', [ClientController::class, 'registerClient']);
+
+# Get post by slug
+Route::get('/post/get-by-slug', [PostController::class, 'getBySlug']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/test', [TestController::class, 'testRedis']);

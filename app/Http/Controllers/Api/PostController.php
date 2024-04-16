@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Enums\MessageCodeEnum;
 use App\Services\Api\PostService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Post\SearchSlugRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Requests\Api\Post\StoreRequest;
@@ -92,6 +93,23 @@ class PostController extends Controller
                 return $this->responseSuccess('', MessageCodeEnum::SUCCESS);
             } else {
                 return $this->responseError('', MessageCodeEnum::FAILED_TO_DELETE);
+            }
+        } catch (\Throwable $th) {
+            logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());
+            return $this->responseError(trans('_response.failed.500'), MessageCodeEnum::INTERNAL_SERVER_ERROR, 500);
+        }
+    }
+
+    public function getBySlug(SearchSlugRequest $request)
+    {
+        try {
+            $slug = $request->get('slug');
+            $model = $this->service->findBySlug($slug);
+
+            if ($model) {
+                return $this->responseSuccess(new PostResource($model), MessageCodeEnum::SUCCESS);
+            } else {
+                return $this->responseError('', MessageCodeEnum::RESOURCE_NOT_FOUND);
             }
         } catch (\Throwable $th) {
             logger('Error: ' . $th->getMessage() . ' on file: ' . $th->getFile() . ':' . $th->getLine());

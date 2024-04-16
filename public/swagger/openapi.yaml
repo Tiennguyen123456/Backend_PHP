@@ -1424,6 +1424,58 @@ paths:
                     $ref: "#/components/schemas/ListPostCollection"
       security:
         - bearerAuth: []
+  /post/get-by-slug:
+    get:
+      tags:
+        - Post
+      summary: "Show post by slug"
+      operationId: getPostBySlug
+      parameters:
+        - name: slug
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  message_code:
+                    type: string
+                    example: null
+                  data:
+                    $ref: "#/components/schemas/PostResource"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: eror
+                  status_code:
+                    type: string
+                    example: null
+                  message_code:
+                    type: string
+                    example: "RESOURCE_NOT_FOUND"
+                  data:
+                    type: string
+                    example: null
+      security:
+        - bearerAuth: []
   /post/{id}:
     get:
       tags:
@@ -1561,7 +1613,7 @@ paths:
                     type: string
                     example: null
                   data:
-                    $ref: "#/components/schemas/PostResource"
+                    $ref: "#/components/schemas/ClientResource"
 components:
   schemas:
     Login:
@@ -2603,7 +2655,6 @@ components:
       properties:
         unique_id:
           type: string
-          description: "ID of post"
         phone:
           type: string
         fullname:

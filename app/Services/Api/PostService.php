@@ -76,4 +76,9 @@ class PostService extends BaseService
     {
         return $this->repo->findByUniqueId($uniqueId);
     }
+
+    public function findBySlug($slug)
+    {
+        return $this->repo->findBySlug($slug);
+    }
 }
